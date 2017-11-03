@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:calendar="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_centerInParent="true"
+    android:background="@color/date_picker_bg"
+
+    android:orientation="vertical" >
+    <!-- 日历时间选择栏 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="horizontal"
+        >
+        <RelativeLayout
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/addTxteTv"
+                android:layout_width="80dp"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:text="@string/add_text"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dp"
+                />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:id="@+id/date_text_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                >
+                <ImageView
+                    android:id="@+id/iv_left"
+                    android:layout_width="30dp"
+                    android:layout_height="40dp"
+                    android:scaleType="centerInside"
+                    android:src="@mipmap/left_arrow" />
+
+                <TextView
+                    android:id="@+id/tv_today"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginRight="5dp"
+                    android:text="今"
+                    android:gravity="center"
+                    android:background="#FFD700"
+                    android:textColor="#ffffff"
+                    android:visibility="gone"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/date_text"
+                    style="@style/myschedule_current_month_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="17sp"
+                    android:text="2012-12" />
+                <ImageView
+                    android:id="@+id/iv_right"
+                    android:layout_width="30dp"
+                    android:layout_height="40dp"
+                    android:scaleType="centerInside"
+                    android:src="@mipmap/right_arrow" />
+                <!--<LinearLayout-->
+                <!--android:id="@+id/date_operator_ll"-->
+                <!--android:layout_width="fill_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center_vertical"-->
+                <!--android:gravity="center"-->
+                <!--android:layout_centerInParent="true"-->
+                <!--android:orientation="horizontal" >-->
+
+                <!--</LinearLayout>-->
+            </LinearLayout>
+
+            <TextView
+                android:layout_below="@id/date_text_layout"
+                android:id="@+id/date_text_2"
+                style="@style/myschedule_current_month_tv"
+                android:layout_centerHorizontal="true"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center|top"
+                android:textColor="@color/white"
+                android:textSize="17sp"
+                android:text="闰十二月二十" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/check_tv"
+                android:layout_width="80dp"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:text="@string/check_text"
+                android:textColor="@color/white"
+                android:layout_centerVertical="true"
+                android:textSize="16sp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="15dp"
+                />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/date_picker_bg"
+        android:orientation="vertical" >
+
+        <com.yuanshi.maisong.view.datepickview.WeekDayView
+            android:layout_width="match_parent"
+            android:layout_height="30dp" />
+        <com.yuanshi.maisong.view.datepickview.MonthDateView
+            android:id="@+id/monthDateView"
+            android:layout_width="fill_parent"
+            android:layout_height="250dp"
+            calendar:EnableDateColor="#000000"
+            calendar:UnableDateColor="#CBCBCB"
+            calendar:CircleColor="#68CB00"
+            calendar:RelaxColor="#68CB00" 
+            calendar:WorkColor="#FF9B12"
+            calendar:PriceColor="#FF9B12"
+            calendar:SelectBGColor="#13A4D3"
+            calendar:CurrentColor="#68CB00"
+            calendar:DateHeight="35dp"
+            calendar:PriceSize="10sp"
+            calendar:DateSize="14sp"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:background="@color/date_picker_bg">
+            <TextView
+                android:visibility="gone"
+              android:id="@+id/selectDate_text"
+              style="@style/myschedule_current_month_tv"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:gravity="center_horizontal"
+              android:layout_marginLeft="10dp"
+              android:layout_centerVertical="true"
+              android:textColor="#93C73C"
+              android:textSize="17sp"
+              android:text="2月25日	周四" />
+            <!--<TextView-->
+              <!--android:id="@+id/selectDate_description"-->
+              <!--style="@style/myschedule_current_month_tv"-->
+              <!--android:layout_width="wrap_content"-->
+              <!--android:layout_height="wrap_content"-->
+              <!--android:gravity="center_horizontal"-->
+              <!--android:layout_alignParentRight="true"-->
+              <!--android:layout_centerVertical="true"-->
+              <!--android:textColor="#93C73C"-->
+              <!--android:textSize="15sp"-->
+              <!--android:text="展示其它信息" />-->
+        </RelativeLayout>
+
+    </LinearLayout>
+</LinearLayout>

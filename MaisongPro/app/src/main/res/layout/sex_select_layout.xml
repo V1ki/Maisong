@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:background="@color/white"
+        >
+    <TextView
+        android:id="@+id/select_boy"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textColor="@color/main_text"
+        android:textSize="14sp"
+        android:gravity="center_vertical|left"
+        android:paddingLeft="20dp"
+        android:text="@string/sex_boy"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/subline"
+        />
+    <TextView
+        android:id="@+id/select_girl"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textColor="@color/main_text"
+        android:textSize="14sp"
+        android:gravity="center_vertical|left"
+        android:paddingLeft="20dp"
+        android:text="@string/sex_girl"
+        />
+</LinearLayout>

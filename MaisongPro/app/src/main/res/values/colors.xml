@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="main_color">#303F9F</color>
+    <color name="main_color_click">#303F9F</color>
+    <color name="white">#ffffff</color>
+    <color name="pop_checked_text_color">#333333</color>
+    <color name="transparent">#00000000</color>
+    <color name="date_picker_bg">#666666</color>
+    <color name="date_select_bg">#f9be00</color>
+    <color name="date_gone_text">#808080</color>
+    <color name="date_line">#b3b3b3</color>
+    <color name="subline">#cccccc</color>
+    <color name="main_text">#181818</color>
+    <color name="hint_text">#cccccc</color>
+    <color name="btn_bg">#f9be00</color>
+    <color name="tab_select">#f9be00</color>
+    <color name="tab_unselected">#808080</color>
+    <color name="edittext_bg">#eeeeee</color>
+    <color name="main_bg">#e8e8e8</color>
+    <color name="second_color">#888888</color>
+    <color name="withdraw_bg">#b0b0b0</color>
+    <color name="red_text">#ff4f4f</color>
+</resources>

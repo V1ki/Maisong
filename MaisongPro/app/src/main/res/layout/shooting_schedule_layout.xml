@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main_bg"
+    >
+    <RelativeLayout
+        android:id="@+id/title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:paddingTop="25dp"
+        android:background="@color/white"
+        >
+        <ImageButton
+            android:id="@+id/back_icon"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@null"
+            android:src="@mipmap/icon_back"
+            />
+        <TextView
+            android:layout_centerHorizontal="true"
+            android:textSize="20sp"
+            android:text="@string/shooting_schedule"
+            android:gravity="center"
+            android:textColor="@color/main_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_alignParentBottom="true"
+            android:background="@color/subline"
+            />
+    </RelativeLayout>
+
+    <ListView
+        android:divider="@null"
+        android:layout_marginTop="10dp"
+        android:dividerHeight="10dp"
+        android:id="@+id/shooting_schedule_listView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></ListView>
+
+</LinearLayout>

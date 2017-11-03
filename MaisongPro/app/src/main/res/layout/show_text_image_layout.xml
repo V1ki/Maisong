@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main_bg"
+    >
+    <RelativeLayout
+        android:id="@+id/title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:paddingTop="25dp"
+        android:background="@color/white"
+        >
+        <ImageButton
+            android:id="@+id/back_icon"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@null"
+            android:src="@mipmap/icon_back"
+            />
+        <TextView
+            android:id="@+id/title_text"
+            android:layout_centerHorizontal="true"
+            android:textSize="20sp"
+            android:text="@string/memoire"
+            android:gravity="center"
+            android:textColor="@color/main_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_alignParentBottom="true"
+            android:background="@color/subline"
+            />
+    </RelativeLayout>
+    <ScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+            <TextView
+                android:id="@+id/text_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:gravity="center"
+                android:textColor="@color/main_text"
+                android:textStyle="bold"
+                android:textSize="25sp"
+                android:padding="10dp"
+                android:text="这里显示文章标题呵呵呵呵哈哈哈嘿嘿嘿拉拉阿拉我是卖报的小行家 "
+                />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:orientation="horizontal"
+                android:background="@color/white"
+                >
+                <TextView
+                    android:id="@+id/autherName"
+                    android:layout_weight="1"
+                    android:gravity="left|center_vertical"
+                    android:paddingLeft="20dp"
+                    android:textSize="14sp"
+                    android:textColor="@color/second_color"
+                    android:text="\@王自健"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent" />
+                <TextView
+                    android:id="@+id/create_date"
+                    android:layout_weight="1"
+                    android:gravity="right|center_vertical"
+                    android:paddingRight="20dp"
+                    android:textSize="14sp"
+                    android:textColor="@color/second_color"
+                    android:text="2017-11-18"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+            <TextView
+                android:id="@+id/subline"
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/subline"/>
+            <com.yuanshi.maisong.view.MixedTextImageLayout
+                android:id="@+id/mixed_text_image_layout"
+                android:background="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"></com.yuanshi.maisong.view.MixedTextImageLayout>
+        </LinearLayout>
+
+    </ScrollView>
+
+
+</LinearLayout>
