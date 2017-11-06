@@ -42,7 +42,7 @@
             android:paddingRight="20dp"
             android:gravity="center"
             android:text="@string/release"
-            android:textColor="@color/btn_bg"
+            android:textColor="@drawable/text_click_selector1"
             />
         <TextView
             android:layout_width="match_parent"

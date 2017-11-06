@@ -13,14 +13,21 @@ import rx.Observable;
 public interface HttpServer {
 
 
+
+    @POST("index.php")
+    Observable<Status> getverify(@Query("m") String m, @Query("c") String c, @Query("a") String a, @Query("phone") String phone);
     /**
      * 用户登录接口
-     * @param deviceID  冰箱号,
-     * @param username  用户名/用户卡号
-     * @param password   密码，或为空
-     * @param appId   移动设备唯一ID
      * @returnz
      */
     @POST("index.php")
-    Observable<Status> userLogin(@Query("m") String m, @Query("c") String c, @Query("a") String a, @Query("deviceID") String deviceID, @Query("userName") String username, @Query("userPwd") String password, @Query("appId") String appId);
+    Observable<Status> login(@Query("m") String m, @Query("c") String c, @Query("a") String a, @Query("phone") String phone , @Query("verify") String verify);
+
+    /**
+     * 用户自动登录接口
+     * @returnz
+     */
+    @POST("index.php")
+    Observable<Status> login2(@Query("m") String m, @Query("c") String c, @Query("a") String a, @Query("uid") String phone);
+
 }

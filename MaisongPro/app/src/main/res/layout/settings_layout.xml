@@ -145,7 +145,7 @@
             android:id="@+id/logout_btn"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:textColor="@color/red_text"
+            android:textColor="@drawable/text_click_selector3"
             android:gravity="center"
             android:textSize="14sp"
             android:text="@string/logout"

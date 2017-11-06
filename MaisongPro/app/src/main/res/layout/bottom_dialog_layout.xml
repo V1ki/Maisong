@@ -8,13 +8,15 @@
         >
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="50dp"
+        android:background="@color/popup_title_bg"
+        >
         <TextView
             android:id="@+id/cancel_btn"
             android:text="@string/cancel"
             android:layout_width="80dp"
             android:layout_height="match_parent"
-            android:textColor="@color/black_deep"
+            android:textColor="@drawable/text_click_selector2"
             android:layout_alignParentLeft="true"
             android:gravity="center"
             />
@@ -24,10 +26,10 @@
             android:text="@string/commit"
             android:layout_width="80dp"
             android:layout_height="match_parent"
-            android:textColor="@color/black_deep"
-            android:layout_alignParentRight="true"
+            android:textColor="@drawable/text_click_selector2"
             android:gravity="center"
-            />
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true" />
     </RelativeLayout>
     <com.yuanshi.maisong.view.WheelView
         android:id="@+id/wheelView"

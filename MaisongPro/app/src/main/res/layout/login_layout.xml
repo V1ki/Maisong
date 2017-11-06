@@ -40,6 +40,7 @@
                 android:layout_height="match_parent"
                 android:hint="@string/input_tel_no"
                 android:textColorHint="@color/hint_text"
+                android:inputType="number"
                 android:textSize="16sp"
                 />
         </LinearLayout>
@@ -73,7 +74,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:textSize="16sp"
-                android:textColor="@color/btn_bg"
+                android:clickable="true"
+                android:textColor="@drawable/text_click_selector1"
                 android:text="@string/get_check_code"
                 android:gravity="center"
                 />
@@ -86,7 +88,7 @@
             android:layout_height="0dp"
             android:layout_marginLeft="50dp"
             android:layout_marginRight="50dp"
-            android:background="@color/btn_bg"
+            android:background="@drawable/btn_selector"
             android:textSize="20sp"
             android:textColor="#ffffff"
             android:text="@string/login"

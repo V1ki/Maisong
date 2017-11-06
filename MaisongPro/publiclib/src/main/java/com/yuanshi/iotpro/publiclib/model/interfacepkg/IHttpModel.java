@@ -10,13 +10,15 @@ import rx.Observer;
 public interface IHttpModel {
     /**
      * 用户登录
-     * @param deviceID
-     * @param username
-     * @param password
+     * @param phone
+     * @param verify
      * @param observer
      */
-    void userLogin(String deviceID, String username, String password, String appId, Observer observer);
+    void login(String phone, String verify , Observer observer);
 
+    void getverify(String phone, Observer observer);
+
+    void login2(String uid, Observer observer);
 
 
 }

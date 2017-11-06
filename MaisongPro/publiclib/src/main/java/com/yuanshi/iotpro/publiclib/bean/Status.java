@@ -7,7 +7,7 @@ package com.yuanshi.iotpro.publiclib.bean;
 public class Status<T> {
     //{"status":{"status_code":"999","status_reason":"????????,?????!"}}
     private int status;
-    private String msg;
+    private String info;
     private  T data;
     public  T getData() {
         return data;
@@ -28,19 +28,19 @@ public class Status<T> {
         this.status = status;
     }
 
-    public String getMsg() {
-        return msg;
+    public String getInfo() {
+        return info;
     }
 
-    public void setMsg(String msg) {
-        this.msg = msg;
+    public void setInfo(String info) {
+        this.info = info;
     }
 
     @Override
     public String toString() {
         return "Status{" +
                 "status='" + status + '\'' +
-                ", msg='" + msg + '\'' +
+                ", msg='" + info + '\'' +
                 ",data=" +data+"\'"+
                 '}';
     }

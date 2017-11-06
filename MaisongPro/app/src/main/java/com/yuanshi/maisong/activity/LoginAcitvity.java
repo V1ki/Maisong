@@ -53,12 +53,16 @@ public class LoginAcitvity extends BaseActivity {
 
     @OnClick({R.id.get_check_code_btn, R.id.login_btn,R.id.login_logo_img})
     public void onViewClicked(View view) {
+        String phone = edUserName.getText().toString().trim();
+        String checkCode = edPassword.getText().toString().trim();
         switch (view.getId()) {
             case R.id.get_check_code_btn:
+                iHttpPresenter.getverify(phone);
                 break;
             case R.id.login_btn:
 //              singup();
-                startNextActivity();
+//                startNextActivity();
+                iHttpPresenter.login(phone,checkCode);
                 break;
             case R.id.login_logo_img:
                 singout();
@@ -132,5 +136,29 @@ public class LoginAcitvity extends BaseActivity {
         Intent intent = new Intent(LoginAcitvity.this, PerfectDataActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public void onHttpSuccess(String msgType, String msg, Object obj) {
+        switch (msgType){
+            case "login":
+                YLog.e("~~~~~"+msg);
+                break;
+            case "getverify":
+                YLog.e("~~~~~"+msg);
+                break;
+        }
+    }
+
+    @Override
+    public void onHttpFaild(String msgType, String msg, Object obj) {
+        switch (msgType){
+            case "login":
+                YLog.e("~~~~~"+msg);
+                break;
+            case "getverify":
+                YLog.e("~~~~~"+msg);
+                break;
+        }
     }
 }

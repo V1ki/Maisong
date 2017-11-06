@@ -27,8 +27,24 @@ public class IHttpModelImpl implements IHttpModel {
     }
 
     @Override
-    public void userLogin(String deviceID, String username, String password,String appId ,Observer observer) {
-        server.userLogin("Api","App","userLogin",deviceID,username,password,appId).subscribeOn(Schedulers.from(MyApplication.THREAD_EXCUTER))
+    public void login(String phone,String verify  ,Observer observer) {
+        server.login("App","Index","login",phone,verify).subscribeOn(Schedulers.from(MyApplication.THREAD_EXCUTER))
+                .observeOn(AndroidSchedulers.mainThread())
+                . timeout(5, TimeUnit.SECONDS)
+                .subscribe(observer);
+    }
+
+    @Override
+    public void getverify(String phone, Observer observer) {
+        server.getverify("App","Index","getverify",phone).subscribeOn(Schedulers.from(MyApplication.THREAD_EXCUTER))
+                .observeOn(AndroidSchedulers.mainThread())
+                . timeout(5, TimeUnit.SECONDS)
+                .subscribe(observer);
+    }
+
+    @Override
+    public void login2(String uid, Observer observer) {
+        server.login2("App","Index","login2",uid).subscribeOn(Schedulers.from(MyApplication.THREAD_EXCUTER))
                 .observeOn(AndroidSchedulers.mainThread())
                 . timeout(5, TimeUnit.SECONDS)
                 .subscribe(observer);

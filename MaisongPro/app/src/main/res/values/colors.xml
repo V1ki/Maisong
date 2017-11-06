@@ -8,6 +8,7 @@
     <color name="white">#ffffff</color>
     <color name="pop_checked_text_color">#333333</color>
     <color name="transparent">#00000000</color>
+    <color name="transparent_half">#40ffffff</color>
     <color name="date_picker_bg">#666666</color>
     <color name="date_select_bg">#f9be00</color>
     <color name="date_gone_text">#808080</color>

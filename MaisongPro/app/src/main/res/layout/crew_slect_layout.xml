@@ -59,6 +59,7 @@
             android:layout_alignParentRight="true"
             android:layout_width="50dp"
             android:layout_height="match_parent"
+            android:textColor="@drawable/text_click_selector2"
             android:text="@string/cancel"
             android:gravity="center"
             />

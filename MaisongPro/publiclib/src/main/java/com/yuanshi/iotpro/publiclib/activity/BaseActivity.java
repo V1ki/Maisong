@@ -11,6 +11,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
+import com.yuanshi.iotpro.publiclib.presenter.IHttpPresenter;
+import com.yuanshi.iotpro.publiclib.presenter.IHttpPresenterIml;
 import com.yuanshi.iotpro.publiclib.utils.NativeReadBroadcast;
 import com.yuanshi.iotpro.publiclib.utils.SystemBarTintManager;
 import com.yuanshi.iotpro.publiclib.utils.YLog;
@@ -26,7 +28,7 @@ import butterknife.ButterKnife;
 public abstract class BaseActivity extends AppCompatActivity implements IBaseView {
     public static ArrayList<Activity> activities = new ArrayList<>();
     protected abstract int getContentViewId();
-
+    protected IHttpPresenter iHttpPresenter;
     protected abstract void init(Bundle savedInstanceState);
 
     protected Context mContext;
@@ -37,6 +39,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
         hideTitle();
         setContentView(getContentViewId());
         setTranslucentStatus(this);
+        iHttpPresenter = new IHttpPresenterIml(this);
         ButterKnife.bind(this);
         mContext = this;
         activities.add(this);
@@ -157,6 +160,11 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
     @Override
     public void onGetPushMessage(String msg) {
         rabbitMqGetPushMessage(msg);
+    }
+
+    @Override
+    public void onError(String msgType, String msg, Object obj) {
+
     }
 
     /**

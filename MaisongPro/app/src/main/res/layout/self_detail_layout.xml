@@ -81,6 +81,7 @@
             <RelativeLayout
                 android:id="@+id/account_setting_layout"
                 android:layout_width="match_parent"
+                android:background="@drawable/view_click_selector1"
                 android:layout_height="60dp">
                 <ImageView
                     android:id="@+id/myinfo_icon"
@@ -90,16 +91,7 @@
                     android:src="@mipmap/self_detail_icon"
                     android:layout_centerVertical="true"
                     />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:text="@string/myinfo"
-                    android:textColor="@color/main_text"
-                    android:textSize="18sp"
-                    android:layout_toRightOf="@+id/myinfo_icon"
-                    android:layout_marginLeft="10dp"
-                    />
+
                 <ImageView
                     android:id="@+id/forword_icon"
                     android:layout_width="25dp"
@@ -118,11 +110,25 @@
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
                     />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="@string/myinfo"
+                    android:textColor="@color/main_text"
+                    android:textSize="18sp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_toEndOf="@+id/myinfo_icon"
+                    android:layout_marginStart="12dp"
+                    android:id="@+id/textView3" />
             </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/my_friends_layout"
                 android:layout_width="match_parent"
+                android:background="@drawable/view_click_selector1"
                 android:layout_height="60dp">
                 <ImageView
                     android:id="@+id/myfriends_icon"
@@ -164,15 +170,9 @@
             <RelativeLayout
                 android:id="@+id/help_layout"
                 android:layout_width="match_parent"
+                android:background="@drawable/view_click_selector1"
                 android:layout_height="60dp">
-                <ImageView
-                    android:id="@+id/help_icon"
-                    android:layout_width="50dp"
-                    android:layout_height="60dp"
-                    android:padding="12dp"
-                    android:src="@mipmap/help_icon"
-                    android:layout_centerVertical="true"
-                    />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -199,12 +199,22 @@
                     android:layout_alignParentBottom="true"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
-                    />
+                    android:id="@+id/textView4" />
+
+                <ImageView
+                    android:id="@+id/help_icon"
+                    android:layout_width="50dp"
+                    android:layout_height="60dp"
+                    android:padding="12dp"
+                    android:src="@mipmap/help_icon"
+                    android:layout_above="@+id/textView4"
+                    android:layout_alignParentStart="true" />
             </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/settings_layout"
                 android:layout_width="match_parent"
+                android:background="@drawable/view_click_selector1"
                 android:layout_height="60dp">
                 <ImageView
                     android:id="@+id/settings_icon"

@@ -129,7 +129,7 @@
             android:layout_height="50dp"
             android:layout_marginLeft="70dp"
             android:layout_marginRight="70dp"
-            android:background="@color/btn_bg"
+            android:background="@drawable/btn_selector"
             android:textSize="20sp"
             android:textColor="@color/white"
             android:layout_marginTop="70dp"

@@ -41,7 +41,7 @@
             android:layout_height="50dp"
             android:layout_alignParentRight="true"
             android:paddingRight="20dp"
-            android:textColor="@color/btn_bg"
+            android:textColor="@drawable/text_click_selector1"
             android:textSize="14sp"
             android:gravity="center"
             android:text="@string/save_intent"

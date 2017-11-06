@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@drawable/view_click_selector1"
     >
 
     <RelativeLayout
@@ -26,7 +26,7 @@
             android:layout_height="match_parent"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
-            android:background="@color/btn_bg"
+            android:background="@drawable/btn_selector"
             android:textColor="@color/white"
             android:textSize="16sp"
             android:gravity="center"

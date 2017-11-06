@@ -8,4 +8,5 @@ public interface IBaseView<T> {
     void onGetPushMessage(String msg);//收到推送消息调用
     void onHttpSuccess(String msgType, String msg, Object obj);
     void onHttpFaild(String msgType, String msg, Object obj);
+    void onError(String msgType, String msg, Object obj);
 }

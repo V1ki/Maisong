@@ -84,7 +84,7 @@
                     android:id="@+id/modify_crew_name"
                     android:layout_weight="1"
                     android:layout_width="0dp"
-                    android:textColor="@color/btn_bg"
+                    android:textColor="@drawable/text_click_selector1"
                     android:paddingRight="15dp"
                     android:text="@string/modify"
                     android:textSize="14sp"
@@ -407,7 +407,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:textSize="16sp"
-                android:textColor="@color/red_text"
+                android:textColor="@drawable/text_click_selector3"
                 android:gravity="center"
                 android:text="@string/quite_crew"
                 />

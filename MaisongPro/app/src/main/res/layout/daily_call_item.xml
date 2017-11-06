@@ -36,7 +36,7 @@
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="10dp"
             android:layout_alignParentRight="true"
-            android:background="@color/btn_bg"
+            android:background="@drawable/half_corner_org"
             android:text="@string/has_no_readed"
             android:textSize="16sp"
             android:textColor="@color/white"
@@ -93,7 +93,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:orientation="horizontal"
-        android:background="@color/white">
+        >
         <LinearLayout
             android:id="@+id/checkLayout"
             android:layout_weight="1"
@@ -101,6 +101,7 @@
             android:layout_height="match_parent"
             android:orientation="horizontal"
             android:gravity="center"
+            android:background="@drawable/view_click_selector1"
             >
             <ImageView
                 android:layout_width="wrap_content"
@@ -126,6 +127,7 @@
             android:layout_height="match_parent"
             android:orientation="horizontal"
             android:gravity="center"
+            android:background="@drawable/view_click_selector1"
             >
             <ImageView
                 android:layout_width="wrap_content"
