@@ -96,5 +96,15 @@
     <string name="wechat_name">微信号</string>
     <string name="email">邮箱</string>
     <string name="my_tel">手机号</string>
+    <string name="friend_detail">好友详情</string>
+    <string name="send_msg">发送消息</string>
+    <string name="information">联系方式</string>
+    <string name="department">所在部门</string>
+    <string name="position">担任职位</string>
+    <string name="height_of_contact">身高</string>
+    <string name="weight_of_contact">体重</string>
+    <string name="sex_of_contact_girl">girl</string>
+    <string name="add_to_friend">添加好友</string>
+    <string name="his_info">Ta的资料</string>
 
 </resources>

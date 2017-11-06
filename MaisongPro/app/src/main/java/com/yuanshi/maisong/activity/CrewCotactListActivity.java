@@ -1,12 +1,14 @@
 package com.yuanshi.maisong.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
@@ -69,6 +71,18 @@ public class CrewCotactListActivity extends BaseActivity {
         }
         adapter = new ListViewAdapter(this, newPersons);
         listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent = new Intent(CrewCotactListActivity.this, FriendDetailActivity.class);
+                if(i%2 ==0){
+                    intent.putExtra("openType",0);
+                }else{
+                    intent.putExtra("openType",1);
+                }
+                startActivity(intent);
+            }
+        });
     }
 
     /**

@@ -16,6 +16,7 @@
     <color name="main_text">#181818</color>
     <color name="hint_text">#cccccc</color>
     <color name="btn_bg">#f9be00</color>
+    <color name="btn_bg_press">#FFA500</color>
     <color name="tab_select">#f9be00</color>
     <color name="tab_unselected">#808080</color>
     <color name="edittext_bg">#eeeeee</color>
@@ -23,4 +24,5 @@
     <color name="second_color">#888888</color>
     <color name="withdraw_bg">#b0b0b0</color>
     <color name="red_text">#ff4f4f</color>
+    <color name="popup_title_bg">#f5f6f7</color>
 </resources>

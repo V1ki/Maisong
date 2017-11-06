@@ -146,11 +146,11 @@ public class DailyCallActivity extends BaseActivity {
 
             switch (dailyCallBean.getReadState()){//阅读状态
                 case READ_STATE_NO_READ:
-                    holder.readState.setBackgroundColor(getResources().getColor(R.color.btn_bg));
+                    holder.readState.setBackgroundResource(R.drawable.half_corner_org);
                     holder.readState.setText(R.string.has_no_readed);
                     break;
                 case READ_STATE_READED:
-                    holder.readState.setBackgroundColor(getResources().getColor(R.color.edittext_bg));
+                    holder.readState.setBackgroundResource(R.drawable.half_corner_grey);
                     holder.readState.setText(R.string.has_readed);
                     break;
             }

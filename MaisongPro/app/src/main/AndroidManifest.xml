@@ -86,6 +86,8 @@
 
         <activity android:name=".activity.AccountSettingActivity"/>
 
+        <activity android:name=".activity.FriendDetailActivity"/>
+
         <!-- 环信sdk相关activity-->
         <activity android:name="com.hyphenate.easeui.ui.EaseShowBigImageActivity"/>
         <activity android:name="com.yuanshi.maisong.activity.ESContactsActivity"/>
