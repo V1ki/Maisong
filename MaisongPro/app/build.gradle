@@ -39,5 +39,6 @@ dependencies {
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile project(':album')
     compile files('libs/pinyin4j-2.5.0.jar')
+    compile project(':okhttp3-persistent-cookiejar')
 }
 

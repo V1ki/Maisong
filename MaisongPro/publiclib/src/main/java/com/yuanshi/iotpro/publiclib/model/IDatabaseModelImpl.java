@@ -21,7 +21,7 @@ public class IDatabaseModelImpl implements IDatabaseModel {
     }
 
     @Override
-    public int delete(Class clazz,String[] conditions) {
+    public int delete(Class clazz,String... conditions) {
         if(conditions == null || conditions.length == 0){
             return DataSupport.deleteAll(clazz);
         }else{
@@ -30,12 +30,12 @@ public class IDatabaseModelImpl implements IDatabaseModel {
     }
 
     @Override
-    public int update(Class clazz,String columnName,ContentValues value, String[] conditions) {
+    public int update(Class clazz ,ContentValues value, String... conditions) {
         return DataSupport.updateAll(clazz, value, conditions);
     }
 
     @Override
-    public List<? extends DataSupport> select(Class clazz, String[] conditions) {
+    public List<? extends DataSupport> select(Class clazz, String... conditions) {
         if(conditions == null || conditions.length == 0){
             return DataSupport.findAll(clazz,true);
         }else{

@@ -9,6 +9,7 @@ public class Status<T> {
     private int status;
     private String info;
     private  T data;
+
     public  T getData() {
         return data;
     }
@@ -16,9 +17,6 @@ public class Status<T> {
     public void setData(T data) {
         this.data = data;
     }
-
-
-
 
     public int getStatus() {
         return status;

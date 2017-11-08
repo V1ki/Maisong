@@ -1,16 +1,21 @@
 package com.yuanshi.maisong.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.yuanshi.iotpro.publiclib.activity.BaseActivity;
+import com.yuanshi.iotpro.publiclib.utils.Constant;
 import com.yuanshi.maisong.R;
+import com.yuanshi.maisong.bean.UserInfoBean;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -59,20 +64,63 @@ public class PerfectDataActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.boy_radio:
-                sexCheck = 0;
+                sexCheck = 1;
                 boyRadio.setImageResource(R.mipmap.boy_checked);
                 girlRadio.setImageResource(R.mipmap.girl_unchecked);
                 break;
             case R.id.girl_radio:
-                sexCheck = 1;
+                sexCheck = 0;
                 boyRadio.setImageResource(R.mipmap.boy_unchecked);
                 girlRadio.setImageResource(R.mipmap.girl_checked);
                 break;
             case R.id.submint_btn:
-                Intent intent= new Intent(PerfectDataActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
+                UserInfoBean userInfoBean = new UserInfoBean();
+                userInfoBean.setName(edNikeName.getText().toString().trim());
+                userInfoBean.setSex(String.valueOf(sexCheck));
+//                userInfoBean.setPhone(getSharedPreferences(Constant.MAIN_SH_NAME,MODE_PRIVATE).getString(Constant.USER_PHONE_KEY,""));
+                iHttpPresenter.edituser(userInfoBean.getQureyMap());
                 break;
         }
     }
+
+    @Override
+    public void onHttpFaild(String msgType, String msg, Object obj) {
+        switch (msgType){
+            case "edituser":
+                if(!TextUtils.isEmpty(msg)){
+                    Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onError(String msgType, String msg, Object obj) {
+        switch (msgType){
+            case "edituser":
+                if(!TextUtils.isEmpty(msg)){
+                    Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onHttpSuccess(String msgType, String msg, Object obj) {
+        switch (msgType){
+            case "edituser":
+                if(!TextUtils.isEmpty(msg)){
+                    saveUserInfo();
+                    Intent intent= new Intent(PerfectDataActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+                break;
+        }
+    }
+    public void saveUserInfo(){
+        SharedPreferences sp = getSharedPreferences(Constant.MAIN_SH_NAME,MODE_PRIVATE);
+        sp.edit().putBoolean(Constant.HAS_PUT_USER_INFO_KEY,true).commit();
+    }
+
 }

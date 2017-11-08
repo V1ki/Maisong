@@ -106,5 +106,6 @@
     <string name="sex_of_contact_girl">girl</string>
     <string name="add_to_friend">添加好友</string>
     <string name="his_info">Ta的资料</string>
+    <string name="seconds_later"  formatted="false">%dS后重发</string>
 
 </resources>

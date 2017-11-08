@@ -1,5 +1,8 @@
 package com.yuanshi.iotpro.publiclib.model.interfacepkg;
 
+import java.util.Map;
+
+import okhttp3.RequestBody;
 import rx.Observer;
 
 
@@ -20,5 +23,7 @@ public interface IHttpModel {
 
     void login2(String uid, Observer observer);
 
+    void edituser(Map<String, String> map, Observer observer);
 
+    void logout(Observer observer);
 }

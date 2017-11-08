@@ -13,6 +13,8 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.yuanshi.iotpro.publiclib.presenter.IHttpPresenter;
 import com.yuanshi.iotpro.publiclib.presenter.IHttpPresenterIml;
+import com.yuanshi.iotpro.publiclib.presenter.ILoginInfoDBPresenter;
+import com.yuanshi.iotpro.publiclib.presenter.ILoginInfoDBPresenterIml;
 import com.yuanshi.iotpro.publiclib.utils.NativeReadBroadcast;
 import com.yuanshi.iotpro.publiclib.utils.SystemBarTintManager;
 import com.yuanshi.iotpro.publiclib.utils.YLog;
@@ -29,6 +31,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
     public static ArrayList<Activity> activities = new ArrayList<>();
     protected abstract int getContentViewId();
     protected IHttpPresenter iHttpPresenter;
+    protected ILoginInfoDBPresenter iLoginInfoDBPresenter;
     protected abstract void init(Bundle savedInstanceState);
 
     protected Context mContext;
@@ -39,9 +42,10 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
         hideTitle();
         setContentView(getContentViewId());
         setTranslucentStatus(this);
-        iHttpPresenter = new IHttpPresenterIml(this);
-        ButterKnife.bind(this);
         mContext = this;
+        iHttpPresenter = new IHttpPresenterIml(this,mContext);
+        iLoginInfoDBPresenter = new ILoginInfoDBPresenterIml(this);
+        ButterKnife.bind(this);
         activities.add(this);
         init(savedInstanceState);
     }

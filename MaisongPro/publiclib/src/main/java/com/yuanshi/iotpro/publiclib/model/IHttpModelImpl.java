@@ -2,13 +2,17 @@ package com.yuanshi.iotpro.publiclib.model;
 
 
 
+import android.content.Context;
+
 import com.yuanshi.iotpro.publiclib.application.MyApplication;
 import com.yuanshi.iotpro.publiclib.model.http.ApiManager;
 import com.yuanshi.iotpro.publiclib.model.http.HttpServer;
 import com.yuanshi.iotpro.publiclib.model.interfacepkg.IHttpModel;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.RequestBody;
 import retrofit2.Retrofit;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
@@ -21,8 +25,8 @@ import rx.schedulers.Schedulers;
 public class IHttpModelImpl implements IHttpModel {
     Retrofit retrofit;
     HttpServer server;
-    public IHttpModelImpl(){
-        retrofit = ApiManager.mRetrofit;
+    public IHttpModelImpl(Context context){
+        retrofit = ApiManager.getmRetrofit(context);
         server = retrofit.create(HttpServer.class);
     }
 
@@ -49,4 +53,21 @@ public class IHttpModelImpl implements IHttpModel {
                 . timeout(5, TimeUnit.SECONDS)
                 .subscribe(observer);
     }
+
+    @Override
+    public void edituser(Map<String, String> map, Observer observer) {
+        server.edituser("App","Index","edituser",map).subscribeOn(Schedulers.from(MyApplication.THREAD_EXCUTER))
+                .observeOn(AndroidSchedulers.mainThread())
+                . timeout(5, TimeUnit.SECONDS)
+                .subscribe(observer);
+    }
+
+    @Override
+    public void logout(Observer observer) {
+        server.logout("App","Index","logout").subscribeOn(Schedulers.from(MyApplication.THREAD_EXCUTER))
+                .observeOn(AndroidSchedulers.mainThread())
+                . timeout(5, TimeUnit.SECONDS)
+                .subscribe(observer);
+    }
+
 }

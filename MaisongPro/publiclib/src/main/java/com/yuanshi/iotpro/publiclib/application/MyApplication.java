@@ -20,6 +20,7 @@ public class MyApplication extends LitePalApplication {
     public static final ThreadPoolExecutor THREAD_EXCUTER  = new ThreadPoolExecutor(100,200,15, TimeUnit.SECONDS,new ArrayBlockingQueue(200));
     public static Calendar calendar;
     public static Timer timer;
+    public static boolean isLogin = false;
     @Override
     public void onCreate() {
         super.onCreate();

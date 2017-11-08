@@ -2,6 +2,7 @@ package com.yuanshi.maisong.application;
 
 
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMOptions;
 import com.hyphenate.easeui.EaseUI;
 import com.yuanshi.iotpro.publiclib.application.MyApplication;
 
@@ -14,7 +15,10 @@ public class MSongAppliacation extends MyApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        EaseUI.getInstance().init(this,null);
+        EMOptions options = new EMOptions();
+        // 默认添加好友时，是不需要验证的，改成需要验证
+        options.setAcceptInvitationAlways(false);
+        EaseUI.getInstance().init(this,options);
         EMClient.getInstance().setDebugMode(true);
     }
 }

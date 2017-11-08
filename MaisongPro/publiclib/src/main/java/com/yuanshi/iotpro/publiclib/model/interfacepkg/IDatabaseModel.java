@@ -24,17 +24,16 @@ public interface IDatabaseModel {
      * @param conditions //删除条件
      * @return 受影响的数据
      */
-    int delete(Class clazz, String[] conditions);
+    int delete(Class clazz, String... conditions);
 
 
     /**
      * 修改数据
      * @param clazz 操作的表
-     * @param columnName 修改的列名
      * @param value 修改后的数据
      * @param conditions 筛选条件
      */
-    int update(Class clazz, String columnName, ContentValues value, String[] conditions);
+    int update(Class clazz, ContentValues value, String... conditions);
 
     /**
      * 查询
@@ -42,6 +41,6 @@ public interface IDatabaseModel {
      * @param conditions 查询条件
      * @return
      */
-    List<? extends DataSupport>  select(Class clazz, String[] conditions);
+    List<? extends DataSupport>  select(Class clazz, String... conditions);
 
 }

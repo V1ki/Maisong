@@ -4,14 +4,11 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,27 +28,19 @@ import com.yanzhenjie.album.Action;
 import com.yanzhenjie.album.Album;
 import com.yanzhenjie.album.AlbumFile;
 import com.yuanshi.iotpro.publiclib.activity.BaseActivity;
-import com.yuanshi.iotpro.publiclib.utils.YLog;
 import com.yuanshi.maisong.R;
-import com.yuanshi.maisong.bean.DateBean;
 import com.yuanshi.maisong.utils.Utils;
 import com.yuanshi.maisong.view.CircleImageView;
-import com.yuanshi.maisong.view.datepickview.CalendarView;
-import com.yuanshi.maisong.view.datepickview.DayAndPrice;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
-import static android.R.attr.path;
 
 /**
  * Created by Dengbocheng on 2017/11/3.
@@ -112,7 +101,7 @@ public class AccountSettingActivity extends BaseActivity {
                 break;
             case R.id.select_sex_tv:
             case R.id.select_sex_icon:
-                showSexpopup();
+                showSexDialog();
                 break;
         }
     }
@@ -240,7 +229,7 @@ public class AccountSettingActivity extends BaseActivity {
     /**
      * 弹出选择性别popupWindow
      */
-    public void showSexpopup(){
+    public void showSexDialog(){
             final Dialog mCameraDialog = new Dialog(this, R.style.datePickerStyle);
             LinearLayout root = (LinearLayout) LayoutInflater.from(this).inflate(
                     R.layout.sex_select_layout, null);

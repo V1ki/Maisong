@@ -1,5 +1,11 @@
 package com.yuanshi.iotpro.publiclib.model.http;
 
+import android.content.Context;
+
+import com.franmontiel.persistentcookiejar.ClearableCookieJar;
+import com.franmontiel.persistentcookiejar.PersistentCookieJar;
+import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
+import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.yuanshi.iotpro.publiclib.utils.Constant;
 import com.yuanshi.iotpro.publiclib.utils.YLog;
 
@@ -19,18 +25,25 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 public class ApiManager {
+    private static  Retrofit mRetrofit = null;
 
-    public static final Retrofit mRetrofit = new Retrofit.Builder()
-            .baseUrl(Constant.SERVER_DOMAIN)//url固定部分
-            .addConverterFactory(GsonConverterFactory.create())//使用Gson解析
-            .addCallAdapterFactory(RxJavaCallAdapterFactory.create())// 使用RxJava作为回调适配器
-            .client(genericClient())
-            .build();
-
-    private static OkHttpClient genericClient() {
+    public static Retrofit getmRetrofit(Context context){
+        if(mRetrofit == null){
+            mRetrofit =  new Retrofit.Builder()
+                    .baseUrl(Constant.SERVER_DOMAIN)//url固定部分
+                    .addConverterFactory(GsonConverterFactory.create())//使用Gson解析
+                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())// 使用RxJava作为回调适配器
+                    .client(genericClient(context))
+                    .build();
+        }
+        return  mRetrofit;
+    }
+    private static OkHttpClient genericClient(Context context) {
+        ClearableCookieJar cookieJar =
+                new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context));
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient httpClient = new OkHttpClient.Builder()
+        OkHttpClient httpClient = new OkHttpClient.Builder().cookieJar(cookieJar)
                 .addInterceptor(new Interceptor() {
                     @Override
                     public Response intercept(Chain chain) throws IOException {
