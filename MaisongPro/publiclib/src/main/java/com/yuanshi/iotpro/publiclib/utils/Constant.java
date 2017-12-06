@@ -12,4 +12,14 @@ public class Constant {
     public static final String MAIN_SH_NAME = "MySongSp";
     public static final String HAS_PUT_USER_INFO_KEY = "has_put_user_info";
     public static final String USER_PHONE_KEY ="user_phone_key";
+
+    public static final int CHATROOM_MAX_MENBER_COUNT = 1000;//聊天室最大人数
+
+    //请求类型
+    public static final String HTTP_REQUEST_NOTICE = "Notice";//通知单请求；
+    public static final String HTTP_REQUEST_MEMORANDUM = "Memorandum ";//备忘录请求；
+    public static final String HTTP_REQUEST_REMIND = "Remind";//剧组通知请求；
+    public static final String HTTP_REQUEST_BIGPLAN = "Bigplan";//拍摄大计划请求；
+    public static final String HTTP_REQUEST_SCRIPTPAGE = "Scriptpage";//剧组扉页请求；
+
 }

@@ -7,6 +7,7 @@ import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.yuanshi.iotpro.publiclib.utils.Constant;
+import com.yuanshi.iotpro.publiclib.utils.StringConverterFactory;
 import com.yuanshi.iotpro.publiclib.utils.YLog;
 
 import java.io.IOException;

@@ -14,6 +14,7 @@ public class ChatActivity extends BaseActivity {
 
     @Override
     protected int getContentViewId() {
+
         return R.layout.chat_layout;
     }
 

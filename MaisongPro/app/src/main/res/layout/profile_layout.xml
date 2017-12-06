@@ -19,6 +19,15 @@
             android:src="@mipmap/icon_back"
             />
         <TextView
+            android:id="@+id/save_intent"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:textColor="@drawable/text_click_selector1"
+            android:text="@string/save_intent"
+            android:gravity="center"
+            />
+        <TextView
             android:layout_centerHorizontal="true"
             android:textSize="20sp"
             android:text="@string/profile"
@@ -74,6 +83,8 @@
                     android:paddingLeft="15dp"
                     android:textColor="@color/main_text"
                     android:text="这个手刹不太灵"
+                    android:maxLines="1"
+                    android:ellipsize="end"
                     android:textSize="16sp"
                     android:gravity="center_vertical|left"
                     android:layout_height="match_parent"
@@ -89,7 +100,9 @@
                     android:text="@string/modify"
                     android:textSize="14sp"
                     android:gravity="center_vertical|right"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:visibility="gone"
+                    />
 
             </LinearLayout>
 
@@ -299,7 +312,7 @@
                         android:gravity="center_vertical|left"
                         android:layout_height="match_parent" />
 
-                    <TextView
+                    <EditText
                         android:layout_weight="1.2"
                         android:layout_width="0dp"
                         android:paddingLeft="15dp"

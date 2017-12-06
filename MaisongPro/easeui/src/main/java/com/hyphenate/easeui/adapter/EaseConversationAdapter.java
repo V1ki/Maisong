@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TextView.BufferType;
 
+import com.google.gson.Gson;
 import com.hyphenate.chat.EMChatRoom;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
@@ -30,6 +31,9 @@ import com.hyphenate.easeui.utils.EaseUserUtils;
 import com.hyphenate.easeui.widget.EaseConversationList.EaseConversationListHelper;
 import com.hyphenate.easeui.widget.EaseImageView;
 import com.hyphenate.util.DateUtils;
+import com.yuanshi.iotpro.daoutils.UserBeanDaoUtil;
+import com.yuanshi.iotpro.publiclib.bean.UserInfoBean;
+import com.yuanshi.iotpro.publiclib.utils.YLog;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -52,6 +56,7 @@ public class EaseConversationAdapter extends ArrayAdapter<EMConversation> {
     protected int primarySize;
     protected int secondarySize;
     protected float timeSize;
+    private UserBeanDaoUtil userBeanDaoUtil ;
 
     public EaseConversationAdapter(Context context, int resource,
                                    List<EMConversation> objects) {
@@ -59,6 +64,7 @@ public class EaseConversationAdapter extends ArrayAdapter<EMConversation> {
         conversationList = objects;
         copyConversationList = new ArrayList<EMConversation>();
         copyConversationList.addAll(objects);
+        userBeanDaoUtil = new UserBeanDaoUtil(context);
     }
 
     @Override
@@ -103,7 +109,11 @@ public class EaseConversationAdapter extends ArrayAdapter<EMConversation> {
         EMConversation conversation = getItem(position);
         // get username or group id
         String username = conversation.conversationId();
-        
+        UserInfoBean userInfoBean = userBeanDaoUtil.qeuryUserInfo(Long.parseLong(conversation.conversationId()));
+        YLog.e("phonegetuser getUserInfo-->"+new Gson().toJson(userInfoBean));
+        if(userInfoBean != null){
+            username = userInfoBean.getNickname();
+        }
         if (conversation.getType() == EMConversationType.GroupChat) {
             String groupId = conversation.conversationId();
             if(EaseAtMessageHelper.get().hasAtMeMsg(groupId)){

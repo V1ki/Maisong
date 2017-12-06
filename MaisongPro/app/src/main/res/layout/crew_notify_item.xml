@@ -115,7 +115,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:src="@mipmap/delete_icon"
+                android:src="@mipmap/check_icon"
                 android:layout_marginRight="10dp"
                 />
             <TextView
@@ -141,7 +141,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:src="@mipmap/delete_icon"
+                android:src="@mipmap/withdraw_icon"
                 android:layout_marginRight="10dp"
                 />
             <TextView

@@ -1,16 +1,46 @@
 package com.yuanshi.maisong.utils;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.TextUtils;
 
+import com.google.gson.Gson;
+import com.hyphenate.chat.EMChatRoom;
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMGroup;
+import com.hyphenate.chat.EMGroupManager;
+import com.hyphenate.chat.EMGroupOptions;
+import com.hyphenate.chat.EMMessage;
+import com.hyphenate.exceptions.HyphenateException;
+import com.yuanshi.iotpro.publiclib.application.MyApplication;
+import com.yuanshi.iotpro.publiclib.bean.UserInfoBean;
+import com.yuanshi.iotpro.publiclib.utils.Constant;
 import com.yuanshi.iotpro.publiclib.utils.YLog;
 
+import net.sourceforge.pinyin4j.PinyinHelper;
+import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
+import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
+import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
+
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * Created by Dengbocheng on 2017/10/25.
@@ -29,6 +59,14 @@ public class Utils {
 
     public static String getHeadIconPath(){
         File file = new File(Environment.getExternalStorageDirectory()+"/MySong/HeadIcon/");
+        if(!file.exists()){
+            file.mkdirs();
+        }
+        return file.getAbsolutePath();
+    }
+
+    public static String getPicPath(){
+        File file = new File(Environment.getExternalStorageDirectory()+"/MySong/Pics/");
         if(!file.exists()){
             file.mkdirs();
         }
@@ -108,5 +146,161 @@ public class Utils {
      */
     public static double fahrenheitDegreeToCentigrade(double fahrenheitDegree){
         return (fahrenheitDegree - 32) / 1.8;
+    }
+
+    public static <T> List<T> jsonToList(String json, Class<T[]> clazz)
+    {
+        Gson gson = new Gson();
+        T[] array = gson.fromJson(json, clazz);
+        return Arrays.asList(array);
+    }
+
+    /**
+     * 创建群组
+     * @param groupName 群组名
+     * @param desc 描述
+     * @param allMembers  初始成员
+     * @param reason
+     * @return
+     */
+    public static EMGroup createChatRoom(final String groupName, final String desc, final String[] allMembers, final String reason){
+        YLog.e("insertDeviceInfo");
+        try {
+            return MyApplication.THREAD_EXCUTER.submit(new Callable<EMGroup>() {
+                @Override
+                public EMGroup call() throws Exception {
+                    EMGroupOptions option = new EMGroupOptions();
+                    option.maxUsers = 200;
+                    option.style = EMGroupManager.EMGroupStyle.EMGroupStylePrivateMemberCanInvite;
+                    EMGroup group =    EMClient.getInstance().groupManager().createGroup(groupName, desc, allMembers, reason, option);
+                    EMMessage message = EMMessage.createTxtSendMessage("我创建了"+groupName+"群组", group.getGroupId());//发送一条消息
+                    message.setChatType(EMMessage.ChatType.GroupChat);
+                    EMClient.getInstance().chatManager().sendMessage(message);
+                    return group;
+                }
+            }).get();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static String getPingYin(String inputString) {
+        HanyuPinyinOutputFormat format = new HanyuPinyinOutputFormat();
+        format.setCaseType(HanyuPinyinCaseType.LOWERCASE);
+        format.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
+        format.setVCharType(HanyuPinyinVCharType.WITH_V);
+
+        char[] input = inputString.trim().toCharArray();
+        String output = "";
+
+        try {
+            for (char curchar : input) {
+                if (java.lang.Character.toString(curchar).matches("[\\u4E00-\\u9FA5]+")) {
+                    String[] temp = PinyinHelper.toHanyuPinyinStringArray(curchar, format);
+                    output += temp[0];
+                } else
+                    output += java.lang.Character.toString(curchar);
+            }
+        } catch (BadHanyuPinyinOutputFormatCombination e) {
+            e.printStackTrace();
+        }
+        return output;
+    }
+
+
+    /**
+     * 图片压缩
+     * @param filePath
+     * @return
+     */
+    public static Bitmap compressPixel(String filePath){
+        Bitmap bmp = null;
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        //setting inSampleSize value allows to load a scaled down version of the original image
+        options.inSampleSize = 2;
+
+        //inJustDecodeBounds set to false to load the actual bitmap
+        options.inJustDecodeBounds = false;
+        options.inTempStorage = new byte[16 * 1024];
+        try {
+            //load the bitmap from its path
+            bmp = BitmapFactory.decodeFile(filePath, options);
+            if (bmp == null) {
+                InputStream inputStream = null;
+                try {
+                    inputStream = new FileInputStream(filePath);
+                    BitmapFactory.decodeStream(inputStream, null, options);
+                    inputStream.close();
+                } catch (FileNotFoundException exception) {
+                    exception.printStackTrace();
+                } catch (IOException exception) {
+                    exception.printStackTrace();
+                }
+            }
+        } catch (OutOfMemoryError exception) {
+            exception.printStackTrace();
+        }finally {
+            return bmp;
+        }
+    }
+
+    /**
+     * 保存图片到sd卡
+     * @param mBitmap
+     */
+    public static  String savePics(Bitmap mBitmap, String picName) {
+        File file = new File(getPicPath()+"/picName");
+        if(!file.exists()){
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        FileOutputStream out = null;
+        try {
+            out = new FileOutputStream(file);
+            mBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            YLog.e("图片写入完成  headpath-->"+file.getPath());
+            return file.getPath();
+//            headIconPath = file.getPath();
+//            resetHeadIcon(headIconPath);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        try {
+            out.flush();
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return file.getPath();
+    }
+    public static HashMap<String, Object>getEditInfoMap(UserInfoBean userInfoBean){
+        HashMap<String, Object> map = new HashMap();
+        if(!TextUtils.isEmpty(userInfoBean.getName())){
+            map.put("name",userInfoBean.getName());
+        }
+        map.put("sex",userInfoBean.getSex());
+        if(!TextUtils.isEmpty(userInfoBean.getBirthday())){
+            map.put("birthday",userInfoBean.getBirthday());
+        }
+        if(!TextUtils.isEmpty(userInfoBean.getQq())){
+            map.put("qq",userInfoBean.getQq());
+        }
+        if(!TextUtils.isEmpty(userInfoBean.getPhone())){
+            map.put("phone",userInfoBean.getPhone());
+        }
+        if(!TextUtils.isEmpty(userInfoBean.getWeixin())){
+            map.put("weixin",userInfoBean.getWeixin());
+        }
+        if(!TextUtils.isEmpty(userInfoBean.getEmail())){
+            map.put("email",userInfoBean.getEmail());
+        }
+        if(!TextUtils.isEmpty(userInfoBean.getAvatar())){
+            map.put("avatar",userInfoBean.getAvatar());
+        }
+        return map;
     }
 }

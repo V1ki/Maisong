@@ -2,6 +2,7 @@ package com.yuanshi.maisong.activity;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +14,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.yuanshi.iotpro.publiclib.activity.BaseActivity;
+import com.yuanshi.iotpro.publiclib.utils.Constant;
+import com.yuanshi.iotpro.publiclib.utils.YLog;
 import com.yuanshi.maisong.R;
 import com.yuanshi.maisong.bean.DailyCallBean;
+import com.yuanshi.maisong.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,13 +39,14 @@ public class DailyCallActivity extends BaseActivity {
     ImageButton backIcon;
     @BindView(R.id.daily_call_listView)
     ListView dailyCallListView;
-    private ArrayList<DailyCallBean> dailyCallList = new ArrayList<>();
+    private List<DailyCallBean> dailyCallList = new ArrayList<>();
     private MyCallsAdapter adapter;
+    private String crewId;
 
     public static final int READ_STATE_NO_READ = 0;//阅读状态：未读
     public static final int READ_STATE_READED = 1; //阅读状态：已读
-    public static final int CALL_STATE_NORMOL = 0;//通知状态：正常
-    public static final int CALL_STATE_WITH_DRAW = 1;//通知状态：已撤回
+    public static final String CALL_STATE_NORMOL = "1";//通知状态：正常
+    public static final String CALL_STATE_WITH_DRAW = "0";//通知状态：已撤回
 
     @Override
     protected int getContentViewId() {
@@ -48,41 +55,33 @@ public class DailyCallActivity extends BaseActivity {
 
     @Override
     protected void init(Bundle savedInstanceState) {
-        initData();
+        crewId = getIntent().getStringExtra("crewId");
+        if(TextUtils.isEmpty(crewId)){
+            Toast.makeText(getApplicationContext(), R.string.crew_id_null, Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+        iHttpPresenter.index(Constant.HTTP_REQUEST_NOTICE,crewId);
         adapter = new MyCallsAdapter(this);
         dailyCallListView.setAdapter(adapter);
     }
 
-    public void initData() {
-        DailyCallBean dailyCallBean = new DailyCallBean();
-        dailyCallBean.setTitle("呜啦啦拉拉大家好，我是王尼玛");
-        dailyCallBean.setContent("通知详情");
-        dailyCallBean.setNoReadCount(6);
-        dailyCallBean.setReleaseDate("2017-9-9");
-        dailyCallBean.setReadState(READ_STATE_NO_READ);
-        dailyCallBean.setState(CALL_STATE_NORMOL);
+    public void initData(Object obj) {
+        Gson gson = new Gson();
+        String json = gson.toJson(obj);
+        dailyCallList = (List<DailyCallBean>) Utils.jsonToList(json, DailyCallBean[].class);
+        YLog.e("通告单个数--》"+dailyCallList.size());
+        adapter.notifyDataSetChanged();
+    }
 
-        DailyCallBean dailyCallBean1 = new DailyCallBean();
-        dailyCallBean1.setTitle("呜啦啦拉拉大家好，我是哈哈哈哈");
-        dailyCallBean1.setContent("通知详情");
-        dailyCallBean1.setNoReadCount(3);
-        dailyCallBean.setReleaseDate("2017-9-9");
-        dailyCallBean1.setReadState(READ_STATE_READED);
-        dailyCallBean1.setState(CALL_STATE_NORMOL);
 
-        DailyCallBean dailyCallBean2 = new DailyCallBean();
-        dailyCallBean2.setTitle("呜啦啦拉拉大家好，我是哈哈哈哈");
-        dailyCallBean2.setContent("通知详情");
-        dailyCallBean2.setNoReadCount(3);
-        dailyCallBean.setReleaseDate("2017-9-9");
-        dailyCallBean2.setReadState(READ_STATE_READED);
-        dailyCallBean2.setState(CALL_STATE_WITH_DRAW);
-        dailyCallBean2.setWithdrawMessage("王尼玛撤回了一条信息");
-
-        dailyCallList.add(dailyCallBean);
-        dailyCallList.add(dailyCallBean1);
-        dailyCallList.add(dailyCallBean);
-        dailyCallList.add(dailyCallBean2);
+    @Override
+    public void onHttpSuccess(String msgType, String msg, Object obj) {
+        switch (msgType){
+            case Constant.HTTP_REQUEST_NOTICE+":index":
+                initData(obj);
+                break;
+        }
     }
 
     @Override
@@ -129,40 +128,38 @@ public class DailyCallActivity extends BaseActivity {
             } else {
                 holder = (ViewHolder) view.getTag();
             }
-            DailyCallBean dailyCallBean = dailyCallList.get(i);
-            if (dailyCallBean.getState() == CALL_STATE_WITH_DRAW) {//如果已撤回
+            final DailyCallBean dailyCallBean = dailyCallList.get(i);
+            if (dailyCallBean.getStatus() == CALL_STATE_WITH_DRAW) {//如果已撤回
                 holder.titleLayout.setVisibility(View.GONE);
                 holder.releaselayout.setVisibility(View.GONE);
                 holder.btnLayout.setVisibility(View.GONE);
                 holder.withdrawMsgLayout.setVisibility(View.VISIBLE);
-                holder.withdrawText.setText(dailyCallBean.getWithdrawMessage());
+                holder.withdrawText.setText(R.string.withdraw);
             }else{
                 holder.titleLayout.setVisibility(View.VISIBLE);
                 holder.releaselayout.setVisibility(View.VISIBLE);
                 holder.btnLayout.setVisibility(View.VISIBLE);
                 holder.withdrawMsgLayout.setVisibility(View.GONE);
-                holder.withdrawText.setText(dailyCallBean.getWithdrawMessage());
+                holder.withdrawText.setText(R.string.withdraw);
             }
 
-            switch (dailyCallBean.getReadState()){//阅读状态
-                case READ_STATE_NO_READ:
-                    holder.readState.setBackgroundResource(R.drawable.half_corner_org);
-                    holder.readState.setText(R.string.has_no_readed);
-                    break;
-                case READ_STATE_READED:
-                    holder.readState.setBackgroundResource(R.drawable.half_corner_grey);
-                    holder.readState.setText(R.string.has_readed);
-                    break;
+            if (dailyCallBean.isHasRead()){//阅读状态
+                holder.readState.setBackgroundResource(R.drawable.half_corner_grey);
+                holder.readState.setText(R.string.has_readed);
+            }else{
+                holder.readState.setBackgroundResource(R.drawable.half_corner_org);
+                holder.readState.setText(R.string.has_no_readed);
             }
             holder.title.setText(dailyCallBean.getTitle());
-            String releaseDateTxt = String.format(getString(R.string.calls_release_date),dailyCallBean.getReleaseDate());
+            String releaseDateTxt = String.format(getString(R.string.calls_release_date),dailyCallBean.getAddtime());
             holder.releaseDate.setText(releaseDateTxt);
-            String noReadCountTxt = String.format(getString(R.string.no_read_count),dailyCallBean.getNoReadCount());
+            String noReadCountTxt = String.format(getString(R.string.no_read_count),dailyCallBean.getNoreadcount());
             holder.noReadCount.setText(noReadCountTxt);
             holder.checkLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Toast.makeText(getApplicationContext(),"选择查看第"+i+"条通知",Toast.LENGTH_SHORT).show();
+                    iHttpPresenter.details(Constant.HTTP_REQUEST_NOTICE,dailyCallBean.getId());
                 }
             });
 

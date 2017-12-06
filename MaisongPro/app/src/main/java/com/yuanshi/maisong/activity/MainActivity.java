@@ -6,20 +6,39 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.baidu.mapapi.map.Text;
+import com.google.gson.Gson;
+import com.hyphenate.chat.EMChatRoom;
+import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
+import com.hyphenate.chat.EMGroup;
 import com.hyphenate.easeui.EaseConstant;
+import com.hyphenate.easeui.model.EaseAtMessageHelper;
 import com.hyphenate.easeui.ui.EaseConversationListFragment;
+import com.hyphenate.easeui.utils.EaseUserUtils;
+import com.hyphenate.exceptions.HyphenateException;
+import com.yuanshi.iotpro.daoutils.UserBeanDaoUtil;
+import com.yuanshi.iotpro.publiclib.bean.UserInfoBean;
+import com.yuanshi.iotpro.publiclib.utils.YLog;
 import com.yuanshi.maisong.R;
+import com.yuanshi.maisong.bean.CrewHttpBean;
+import com.yuanshi.maisong.bean.GroupBean;
 import com.yuanshi.maisong.fragment.CrewFragment;
+import com.yuanshi.maisong.fragment.EMconversationFragment;
 import com.yuanshi.maisong.fragment.MoreFragment;
 import com.yuanshi.maisong.fragment.ServiceFlatformFragment;
 import com.yuanshi.iotpro.publiclib.activity.BaseActivity;
+import com.yuanshi.maisong.utils.Utils;
 import com.yuanshi.maisong.view.BottomTabItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 
@@ -28,6 +47,7 @@ public class MainActivity extends BaseActivity {
     ViewPager mainViewPager;
     @BindView(R.id.bottom_layout)
     LinearLayout bottomLayout;
+    public List<CrewHttpBean> crewList = new ArrayList<>();//我的剧组列表
     private Fragment[] fragments = {
             null,//代码中使用环信sdk的会话列表fragment
             CrewFragment.getInstance(),
@@ -63,8 +83,9 @@ public class MainActivity extends BaseActivity {
         instance = this;
     }
 
+
     public void initFragmentPager(){
-        EaseConversationListFragment conversationListFragment = new EaseConversationListFragment();
+        final EMconversationFragment conversationListFragment = new EMconversationFragment();
         conversationListFragment.setOnAddBtnClickListener(new EaseConversationListFragment.OnAddBtnClickLister() {
             @Override
             public void onAddbtnClick(View view) {
@@ -74,9 +95,36 @@ public class MainActivity extends BaseActivity {
         conversationListFragment.setConversationListItemClickListener(new EaseConversationListFragment.EaseConversationListItemClickListener() {
             @Override
             public void onListItemClicked(EMConversation conversation) {
-                startActivity(new Intent(MainActivity.this, ChatActivity.class).putExtra(EaseConstant.EXTRA_USER_ID, conversation.conversationId()));
+                String conversationName = conversation.conversationId();
+                if (conversation.getType() == EMConversation.EMConversationType.GroupChat) {
+                    EMGroup group = EMClient.getInstance().groupManager().getGroup(conversation.conversationId());
+                    conversationName= group != null ? group.getGroupName() : conversation.conversationId();
+                } else if(conversation.getType() == EMConversation.EMConversationType.ChatRoom){
+                    EMChatRoom room = EMClient.getInstance().chatroomManager().getChatRoom(conversation.conversationId());
+                    conversationName = (room != null && !TextUtils.isEmpty(room.getName()) ? room.getName() : conversation.conversationId());
+                }else if(conversation.getType() == EMConversation.EMConversationType.Chat){
+                    UserBeanDaoUtil userBeanDaoUtil = new UserBeanDaoUtil(MainActivity.this);
+                    UserInfoBean userInfoBean = userBeanDaoUtil.qeuryUserInfo(Long.parseLong(conversation.conversationId()));
+                    if(!TextUtils.isEmpty(userInfoBean.getNickname())){
+                        conversationName = userInfoBean.getNickname();
+                    }
+                }
+                Intent intent = new Intent(MainActivity.this, ChatActivity.class);
+                intent.putExtra(EaseConstant.EXTRA_USER_ID, conversation.conversationId());
+                intent.putExtra("title",conversationName);
+                startActivity(intent);
             }
         });
+        //删除和某个user会话，如果需要保留聊天记录，传false
+        conversationListFragment.setConversationListItemLongClickListener(new EaseConversationListFragment.EaseConversationListItemLongClickListener() {
+            @Override
+            public void onListItemLongClicked(final EMConversation conversation) {
+                    boolean flag = EMClient.getInstance().chatManager().deleteConversation(conversation.conversationId(), true);
+                    YLog.e("长按--》"+conversation.conversationId()+":"+flag);
+                conversationListFragment.reloadCrewListData();
+            }
+        });
+//
         fragments[0] = conversationListFragment;
         mainViewPager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
         mainViewPager.setCurrentItem(0);
@@ -155,8 +203,31 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        iHttpPresenter.index();
     }
 
+
+    @Override
+    public void onHttpSuccess(String msgType, String msg, Object obj) {
+        switch (msgType){
+            case "index":
+                String json = new Gson().toJson(obj);
+                crewList = Utils.jsonToList(json, CrewHttpBean[].class);
+                reloadCrewListData();
+                break;
+            }
+    }
+
+    /**
+     * 刷新剧组列表相关数据
+     */
+    public void reloadCrewListData(){
+        List<String> groupidList = new ArrayList<>();
+
+        ((EMconversationFragment)fragments[0]).reloadCrewListData();
+        ((CrewFragment)fragments[1]).reloadCrewListData();
+
+    }
 
     /**
      * 改变底部tab的选中状态
@@ -179,8 +250,8 @@ public class MainActivity extends BaseActivity {
                 }
             }
         }
-
     }
+
 
     @Override
     protected void onDestroy() {

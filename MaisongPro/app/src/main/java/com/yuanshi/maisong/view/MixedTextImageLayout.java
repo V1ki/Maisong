@@ -57,9 +57,7 @@ public class MixedTextImageLayout extends LinearLayout {
             if (!TextUtils.isEmpty(text)) {
                 appendTextView(clearNewlineChar(text));
             }
-            YLog.e("图片URL ---》"+matcher.group());
             appendImageView(content.substring(matcher.start() + 5, matcher.end() - 6));
-            YLog.e("剪切后 ---》"+content.substring(matcher.start() + 5, matcher.end() - 6));
             startPos = matcher.end();
         }
         text = content.substring(startPos);

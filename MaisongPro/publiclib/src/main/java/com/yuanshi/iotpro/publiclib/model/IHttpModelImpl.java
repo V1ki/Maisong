@@ -9,9 +9,12 @@ import com.yuanshi.iotpro.publiclib.model.http.ApiManager;
 import com.yuanshi.iotpro.publiclib.model.http.HttpServer;
 import com.yuanshi.iotpro.publiclib.model.interfacepkg.IHttpModel;
 
+import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Retrofit;
 import rx.Observer;
@@ -55,7 +58,7 @@ public class IHttpModelImpl implements IHttpModel {
     }
 
     @Override
-    public void edituser(Map<String, String> map, Observer observer) {
+    public void edituser(Map<String, Object> map, Observer observer) {
         server.edituser("App","Index","edituser",map).subscribeOn(Schedulers.from(MyApplication.THREAD_EXCUTER))
                 .observeOn(AndroidSchedulers.mainThread())
                 . timeout(5, TimeUnit.SECONDS)
@@ -65,6 +68,129 @@ public class IHttpModelImpl implements IHttpModel {
     @Override
     public void logout(Observer observer) {
         server.logout("App","Index","logout").subscribeOn(Schedulers.from(MyApplication.THREAD_EXCUTER))
+                .observeOn(AndroidSchedulers.mainThread())
+                . timeout(5, TimeUnit.SECONDS)
+                .subscribe(observer);
+    }
+
+    @Override
+    public void appupload(MultipartBody.Part body , Observer observer) {
+        server.appupload("Home","File","appupload",body).subscribeOn(Schedulers.from(MyApplication.THREAD_EXCUTER))
+                .observeOn(AndroidSchedulers.mainThread())
+                . timeout(5, TimeUnit.SECONDS)
+                .subscribe(observer);
+    }
+
+    @Override
+    public void index(Observer observer) {
+        server.index("App","Crew","index").subscribeOn(Schedulers.from(MyApplication.THREAD_EXCUTER))
+                .observeOn(AndroidSchedulers.mainThread())
+                . timeout(5, TimeUnit.SECONDS)
+                .subscribe(observer);
+    }
+
+    @Override
+    public void searchcrew(String keyword, Observer observer) {
+        server.searchcrew("App","Crew","searchcrew",keyword).subscribeOn(Schedulers.from(MyApplication.THREAD_EXCUTER))
+                .observeOn(AndroidSchedulers.mainThread())
+                . timeout(5, TimeUnit.SECONDS)
+                .subscribe(observer);
+    }
+
+    @Override
+    public void doAdd(String id, String title ,String director, String produced, String makinger, String  stime, String etime,String pw,String groupid,Observer observer) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("id",id);
+        map.put("title",title);
+        map.put("director",director);
+        map.put("produced",produced);
+        map.put("makinger",makinger);
+        map.put("stime",stime);
+        map.put("etime",etime);
+        map.put("pw",pw);
+        map.put("groupid",groupid);
+        server.doAdd("App","Crew","doAdd",map).subscribeOn(Schedulers.from(MyApplication.THREAD_EXCUTER))
+                .observeOn(AndroidSchedulers.mainThread())
+                . timeout(5, TimeUnit.SECONDS)
+                .subscribe(observer);
+    }
+
+    @Override
+    public void thecrewinfo(String id, Observer observer) {
+        server.thecrewinfo("App","Crew","thecrewinfo",id).subscribeOn(Schedulers.from(MyApplication.THREAD_EXCUTER))
+                .observeOn(AndroidSchedulers.mainThread())
+                . timeout(5, TimeUnit.SECONDS)
+                .subscribe(observer);
+    }
+
+
+    @Override
+    public void editusercrew(Map<String, Object> map, Observer observer) {
+        server.editusercrew("App","Crew","editusercrew",map).subscribeOn(Schedulers.from(MyApplication.THREAD_EXCUTER))
+                .observeOn(AndroidSchedulers.mainThread())
+                . timeout(5, TimeUnit.SECONDS)
+                .subscribe(observer);
+    }
+
+    @Override
+    public void joins(Map<String, Object> map, Observer observer) {
+        server.joins("App","Crew","joins",map).subscribeOn(Schedulers.from(MyApplication.THREAD_EXCUTER))
+                .observeOn(AndroidSchedulers.mainThread())
+                . timeout(5, TimeUnit.SECONDS)
+                .subscribe(observer);
+    }
+
+    @Override
+    public void department(String id, Observer observer) {
+        server.department("App","Crew","department",id).subscribeOn(Schedulers.from(MyApplication.THREAD_EXCUTER))
+                .observeOn(AndroidSchedulers.mainThread())
+                . timeout(5, TimeUnit.SECONDS)
+                .subscribe(observer);
+    }
+
+    @Override
+    public void usercrew(String id, Observer observer) {
+        server.usercrew("App","Crew","usercrew",id).subscribeOn(Schedulers.from(MyApplication.THREAD_EXCUTER))
+                .observeOn(AndroidSchedulers.mainThread())
+                . timeout(5, TimeUnit.SECONDS)
+                .subscribe(observer);
+    }
+
+    @Override
+    public void phonegetuser(String phone, String groupid,Observer observer) {
+        server.phonegetuser("App","Index","phonegetuser",phone,groupid).subscribeOn(Schedulers.from(MyApplication.THREAD_EXCUTER))
+                .observeOn(AndroidSchedulers.mainThread())
+                . timeout(5, TimeUnit.SECONDS)
+                .subscribe(observer);
+    }
+
+    @Override
+    public void index(String requestType, String id, Observer observer) {
+        server.index("App",requestType,"index",id).subscribeOn(Schedulers.from(MyApplication.THREAD_EXCUTER))
+                .observeOn(AndroidSchedulers.mainThread())
+                . timeout(5, TimeUnit.SECONDS)
+                .subscribe(observer);
+    }
+
+    @Override
+    public void details(String requestType, String id, Observer observer) {
+        server.details("App",requestType,"details",id).subscribeOn(Schedulers.from(MyApplication.THREAD_EXCUTER))
+                .observeOn(AndroidSchedulers.mainThread())
+                . timeout(5, TimeUnit.SECONDS)
+                .subscribe(observer);
+    }
+
+    @Override
+    public void del(String requestType, String id, Observer observer) {
+        server.del("App",requestType,"del",id).subscribeOn(Schedulers.from(MyApplication.THREAD_EXCUTER))
+                .observeOn(AndroidSchedulers.mainThread())
+                . timeout(5, TimeUnit.SECONDS)
+                .subscribe(observer);
+    }
+
+    @Override
+    public void doAdd(String requestType, String id, Map<String, Object> map,Observer observer) {
+        server.doAdd("App",requestType,"doAdd",id,map).subscribeOn(Schedulers.from(MyApplication.THREAD_EXCUTER))
                 .observeOn(AndroidSchedulers.mainThread())
                 . timeout(5, TimeUnit.SECONDS)
                 .subscribe(observer);

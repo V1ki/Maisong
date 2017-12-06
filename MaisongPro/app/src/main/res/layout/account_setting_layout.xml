@@ -10,8 +10,8 @@
         android:id="@+id/title_layout"
         android:layout_width="match_parent"
         android:layout_height="75dp"
-        android:paddingTop="25dp"
         android:background="@color/white"
+        android:fitsSystemWindows="true"
         >
         <ImageButton
             android:id="@+id/back_icon"
@@ -77,11 +77,11 @@
             />
         <com.yuanshi.maisong.view.CircleImageView
             android:id="@+id/headIcon"
-            android:layout_width="wrap_content"
+            android:layout_width="70dp"
             android:layout_height="match_parent"
             android:src="@mipmap/ic_launcher"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="20dp"
+            android:layout_margin="3dp"
             app:border_width="0dp"
             app:border_color="@color/transparent"
             />

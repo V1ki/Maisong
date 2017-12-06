@@ -107,5 +107,23 @@
     <string name="add_to_friend">添加好友</string>
     <string name="his_info">Ta的资料</string>
     <string name="seconds_later"  formatted="false">%dS后重发</string>
+    <string name="crew_name_not_null">剧组名不能为空！</string>
+    <string name="crew_pwd_not_null">剧组密码不能为空！</string>
+    <string name="crew_director_not_null">导演不能为空！</string>
+    <string name="crew_start_time_not_null">开始时间不能为空！</string>
+    <string name="crew_end_time_not_null">结束时间不能为空！</string>
+    <string name="makinger">制片</string>
+    <string name="no_check_crew">您没有选中任何剧组！</string>
+    <string name="group_id_is_null">剧组id获取失败</string>
+    <string name="save_success">保存成功！</string>
+    <string name="six_12_pwd">6-12位数字密码</string>
+    <string name="department_">部门</string>
+    <string name="pls_choose_department">请选择部门</string>
+    <string name="position_">职位</string>
+    <string name="pls_choose_position">请选择职位</string>
+    <string name="in_crew">进组</string>
+    <string name="user_phone_null">用户账号信息获取失败！</string>
+    <string name="crew_id_null">剧组信息获取失败！</string>
+    <string name="apply_notice_success">发布成功！</string>
 
 </resources>

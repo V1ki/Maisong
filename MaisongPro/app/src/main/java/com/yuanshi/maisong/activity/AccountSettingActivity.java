@@ -4,6 +4,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,11 +26,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 import com.yanzhenjie.album.Action;
 import com.yanzhenjie.album.Album;
 import com.yanzhenjie.album.AlbumFile;
 import com.yuanshi.iotpro.publiclib.activity.BaseActivity;
+import com.yuanshi.iotpro.publiclib.bean.LoginInfoBean;
+import com.yuanshi.iotpro.publiclib.utils.Constant;
+import com.yuanshi.iotpro.publiclib.utils.YLog;
 import com.yuanshi.maisong.R;
+import com.yuanshi.maisong.bean.HttpImgUrlBean;
 import com.yuanshi.maisong.utils.Utils;
 import com.yuanshi.maisong.view.CircleImageView;
 
@@ -37,10 +44,16 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 /**
  * Created by Dengbocheng on 2017/11/3.
@@ -67,8 +80,11 @@ public class AccountSettingActivity extends BaseActivity {
     @BindView(R.id.ed_tel_no)
     EditText edTelNo;
     private ArrayList<AlbumFile> myAlbumFiles  = new ArrayList<>();
-    public String headIconPath;//待提交的头像路径
+//    public String headIconPath;//待提交的头像路径
     private String path ;
+    private Bitmap head;
+    private LoginInfoBean loginInfoBean;
+    private String userPhone;
 
     @Override
     protected int getContentViewId() {
@@ -78,6 +94,27 @@ public class AccountSettingActivity extends BaseActivity {
     @Override
     protected void init(Bundle savedInstanceState) {
         path = Utils.getHeadIconPath();
+        userPhone = getSharedPreferences(Constant.MAIN_SH_NAME,MODE_PRIVATE).getString(Constant.USER_PHONE_KEY,"");
+        YLog.e("userPhone--->"+userPhone);
+        loginInfoBean = getLoginInfoBean(userPhone);
+        YLog.e("loginInfoBean--->"+loginInfoBean);
+        if(loginInfoBean != null){
+            edNikeName.setText(loginInfoBean.getNickname());
+            edEmail.setText(loginInfoBean.getEmail());
+            edTelNo.setText(loginInfoBean.getPhone());
+            edWechat.setText(loginInfoBean.getWeixin());
+            if(loginInfoBean.getSex().equals("0")){
+                selectSexTv.setText(R.string.sex_girl);
+            }else{
+                selectSexTv.setText(R.string.sex_boy);
+            }
+            YLog.e("头像地址--》"+loginInfoBean.getAvatar());
+            Glide.with(this).load(loginInfoBean.getAvatar()).error(R.mipmap.ic_launcher).into(headIcon);
+        }
+    }
+
+    public LoginInfoBean getLoginInfoBean(String userPhone){
+       return iLoginInfoDBPresenter.selectLoginInfo(userPhone);
     }
 
     @Override
@@ -95,6 +132,8 @@ public class AccountSettingActivity extends BaseActivity {
                 break;
             case R.id.save_btn:
                 //保存个人信息
+                uploadHeadIcon();
+//                iHttpPresenter.edituser();
                 break;
             case R.id.headIcon:
                 selectHeadIcon();
@@ -104,14 +143,6 @@ public class AccountSettingActivity extends BaseActivity {
                 showSexDialog();
                 break;
         }
-    }
-
-    /**
-     * 重新设置头像
-     * @param headIconPath
-     */
-    private void resetHeadIcon(String headIconPath){
-        Glide.with(this).load(headIconPath).into(headIcon);
     }
 
     private static final int REQUEST_CODE_FOR_PIC = 0x0010;
@@ -149,21 +180,81 @@ public class AccountSettingActivity extends BaseActivity {
         startActivityForResult(intent, REQUEST_CODE_CROP_PIC);
     }
 
-    /**
-     * @param requestCode
-     * @param resultCode
-     * @param data
-     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == REQUEST_CODE_CROP_PIC){//图片裁剪完成，返回裁剪后的图片地址
+
             Bundle extras = data.getExtras();
-            Bitmap head = extras.getParcelable("data");
-            if (head != null) {
+            head = extras.getParcelable("data");
+            YLog.e("图片裁剪完成  head-->"+head);
+            if(head != null){
                 setPicToView(head);
+                Drawable drawable =new BitmapDrawable(head);
+                headIcon.setImageDrawable(drawable);
             }
         }
+    }
+
+    public void editUserInfo(){
+        loginInfoBean.setNickname(edNikeName.getText().toString().trim());
+        loginInfoBean.setEmail(edEmail.getText().toString().trim());
+        loginInfoBean.setWeixin(edWechat.getText().toString().trim());
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("name",loginInfoBean.getNickname());
+        map.put("sex",loginInfoBean.getSex());
+        map.put("weixin",loginInfoBean.getWeixin());
+        map.put("email",loginInfoBean.getEmail());
+        map.put("avatar",loginInfoBean.getAvatar());
+        YLog.e("保存修改--》"+loginInfoBean.getAvatar());
+        iHttpPresenter.edituser(map);
+    }
+    public void uploadHeadIcon(){
+        if (head != null) {
+//            setPicToView(head);
+            File file = new File(path+"/head.jpg");
+            RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+            MultipartBody.Part body =
+                    MultipartBody.Part.createFormData("file", file.getName(), requestFile);
+            iHttpPresenter.appupload(body,file.getPath());
+        }else{
+            editUserInfo();
+        }
+    }
+
+    @Override
+    public void onHttpSuccess(String msgType, String msg, Object obj) {
+        switch (msgType){
+            case "edituser":
+                YLog.e("保存修改成功");
+                saveLoginInfo();
+                finish();
+                break;
+            case "appupload":
+                Gson gson = new Gson();
+                String json = gson.toJson(obj);
+                HttpImgUrlBean httpImgUrlBean = gson.fromJson(json, HttpImgUrlBean.class);
+                if(httpImgUrlBean != null){
+                    String httpIconUrl = httpImgUrlBean.getImgUrl();
+                    YLog.e("图片上传成功--》"+httpIconUrl);
+                    loginInfoBean.setAvatar(httpIconUrl);
+                }
+                editUserInfo();
+                break;
+        }
+    }
+
+    /**
+     * 保存修改后的用户信息
+     */
+    public void saveLoginInfo(){
+        iLoginInfoDBPresenter.updateNickName(loginInfoBean.getNickname(),loginInfoBean.getPhone());
+        iLoginInfoDBPresenter.updateAvatar(loginInfoBean.getAvatar(),loginInfoBean.getPhone());
+        YLog.e("存储图片地址到数据库---》"+loginInfoBean.getAvatar());
+        iLoginInfoDBPresenter.updateWeixin(loginInfoBean.getWeixin(),loginInfoBean.getPhone());
+        iLoginInfoDBPresenter.updateSex(loginInfoBean.getSex(),loginInfoBean.getPhone());
+        iLoginInfoDBPresenter.updateEmail(loginInfoBean.getEmail(),loginInfoBean.getPhone());
     }
 
     /**
@@ -171,7 +262,7 @@ public class AccountSettingActivity extends BaseActivity {
      * @param mBitmap
      */
     private void setPicToView(Bitmap mBitmap) {
-        File file = new File(path+"head.jpg");
+        File file = new File(path+"/head.jpg");
         if(!file.exists()){
             try {
                 file.createNewFile();
@@ -183,8 +274,9 @@ public class AccountSettingActivity extends BaseActivity {
         try {
             out = new FileOutputStream(file);
             mBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
-            headIconPath = file.getPath();
-            resetHeadIcon(headIconPath);
+            YLog.e("图片写入完成  headpath-->"+file.getPath());
+//            headIconPath = file.getPath();
+//            resetHeadIcon(headIconPath);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -236,6 +328,9 @@ public class AccountSettingActivity extends BaseActivity {
             root.findViewById(R.id.select_boy).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    if(loginInfoBean!= null){
+                        loginInfoBean.setSex("1");
+                    }
                     selectSexTv.setText(R.string.sex_boy);
                     mCameraDialog.dismiss();
                 }
@@ -243,6 +338,9 @@ public class AccountSettingActivity extends BaseActivity {
         root.findViewById(R.id.select_girl).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(loginInfoBean!= null){
+                    loginInfoBean.setSex("0");
+                }
                 selectSexTv.setText(R.string.sex_girl);
                 mCameraDialog.dismiss();
             }

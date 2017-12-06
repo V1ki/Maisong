@@ -9,6 +9,8 @@ import com.yuanshi.iotpro.publiclib.bean.LoginInfoBean;
 import com.yuanshi.iotpro.publiclib.model.IDatabaseModelImpl;
 import com.yuanshi.iotpro.publiclib.model.interfacepkg.IDatabaseModel;
 
+import org.litepal.crud.DataSupport;
+
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -44,13 +46,34 @@ public class ILoginInfoDBPresenterIml implements ILoginInfoDBPresenter {
     }
 
     @Override
-    public List <LoginInfoBean> selectLoginInfo() {
+    public List<LoginInfoBean> selectAllLoginInfo() {
         try {
             return MyApplication.THREAD_EXCUTER.submit(new Callable<List<LoginInfoBean>>() {
                 @Override
                 public List<LoginInfoBean> call() throws Exception {
                     List<LoginInfoBean> list = (List<LoginInfoBean>) iDatabaseModel.select(LoginInfoBean.class);
                     return list;
+                }
+            }).get();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public LoginInfoBean selectLoginInfo(final String phone) {
+        try {
+            return MyApplication.THREAD_EXCUTER.submit(new Callable<LoginInfoBean>() {
+                @Override
+                public LoginInfoBean call() throws Exception {
+                    List<LoginInfoBean> list = DataSupport.where("phone = ? ", phone).find(LoginInfoBean.class,true);
+                    if(list!= null && list.size() > 0){
+                        return list.get(0);
+                    }else{
+                        return null;
+                    }
+
                 }
             }).get();
         } catch (Exception e) {
@@ -234,6 +257,18 @@ public class ILoginInfoDBPresenterIml implements ILoginInfoDBPresenter {
             public void run() {
                 ContentValues values = new ContentValues();
                 values.put("note",note);
+                iDatabaseModel.update(LoginInfoBean.class,values,"phone = ?",phone);
+            }
+        });
+    }
+
+    @Override
+    public void updateEmail(final String email,final String phone) {
+        MyApplication.THREAD_EXCUTER.execute(new Runnable() {
+            @Override
+            public void run() {
+                ContentValues values = new ContentValues();
+                values.put("email",email);
                 iDatabaseModel.update(LoginInfoBean.class,values,"phone = ?",phone);
             }
         });

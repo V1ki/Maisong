@@ -9,6 +9,7 @@
         android:paddingTop="25dp"
         >
         <ImageButton
+            android:id="@+id/back_icon"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@null"
@@ -29,40 +30,49 @@
             android:background="@color/subline"
             />
     </RelativeLayout>
+    <com.yuanshi.maisong.view.ClearEditText
+        android:id="@+id/filter_edit"
+        android:layout_marginTop="5dip"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="@color/edittext_bg"
+        android:drawableLeft="@mipmap/search_icon"
+        android:hint="请输入关键字"
+        android:singleLine="true"
+        android:textSize="15.0dip" />
+
     <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#ffffff" >
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
 
         <ListView
-            android:id="@+id/listView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:cacheColorHint="#00000000"
-            android:fadingEdge="none"
-            android:scrollbars="none" >
-        </ListView>
+            android:id="@+id/country_lvcountry"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center"
+            android:divider="@null" />
 
         <TextView
-            android:id="@+id/tv"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:id="@+id/dialog"
+            android:layout_width="80.0dip"
+            android:layout_height="80.0dip"
             android:layout_gravity="center"
-            android:background="#f0606060"
+            android:background="@color/black_deep"
             android:gravity="center"
-            android:text="A"
-            android:textColor="#ffffff"
-            android:textSize="30sp" />
+            android:textColor="#ffffffff"
+            android:textSize="30.0dip"
+            android:visibility="invisible" />
 
-        <LinearLayout
-            android:id="@+id/layout"
-            android:layout_width="wrap_content"
+        <com.yuanshi.maisong.view.SideBar
+            android:id="@+id/sidrbar"
+            android:layout_width="30.0dip"
             android:layout_height="fill_parent"
-            android:layout_gravity="right"
-            android:background="#d7d7d7"
-            android:gravity="center"
-            android:orientation="vertical" >
-        </LinearLayout>
+            android:layout_gravity="right|center" />
     </FrameLayout>
 
 </LinearLayout>

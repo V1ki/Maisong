@@ -79,6 +79,7 @@ public class LoginAcitvity extends BaseActivity {
                 if(checkPhone(phone) && checkCode(checkCode)){
                     iHttpPresenter.login(phone,checkCode);
                 }
+                singup(phone,phone);
                 break;
         }
     }
@@ -105,17 +106,17 @@ public class LoginAcitvity extends BaseActivity {
                 EMClient.getInstance().login(userName,pwd, new EMCallBack() {
                     @Override
                     public void onSuccess() {
-                        YLog.e("login success!!");
+                        YLog.e("EMClient login success!!");
                         startNextActivity();
                     }
                     @Override
                     public void onError(int i, String s) {
-                        YLog.e("login error!!--"+s);
+                        YLog.e(" EMClient login error!!--"+s);
                     }
 
                     @Override
                     public void onProgress(int i, String s) {
-                        YLog.e("logining!!--"+s);
+                        YLog.e("EMClient logining!!--"+s);
                     }
                 });
             }
@@ -198,7 +199,9 @@ public class LoginAcitvity extends BaseActivity {
      * 保存登录信息
      */
     public void saveLoginInfo(LoginInfoBean loginInfoBean){
+        YLog.e("保存用户信息到数据库");
         iLoginInfoDBPresenter.insertLoginInfo(loginInfoBean);
+        getSharedPreferences(Constant.MAIN_SH_NAME,MODE_PRIVATE).edit().putString(Constant.USER_PHONE_KEY,loginInfoBean.getPhone()).commit();
     }
 
     private int waitSecond = 60;

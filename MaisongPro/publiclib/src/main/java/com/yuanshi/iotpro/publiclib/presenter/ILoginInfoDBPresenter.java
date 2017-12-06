@@ -12,7 +12,8 @@ import java.util.List;
 public interface ILoginInfoDBPresenter {
     void insertLoginInfo(LoginInfoBean loginInfoBean);
     void deleteLoginInfo(String phone);
-    List<LoginInfoBean> selectLoginInfo();
+    List<LoginInfoBean> selectAllLoginInfo();
+    LoginInfoBean selectLoginInfo(String phone);
     void updateNickName(String nickname,String phone);
     void updateTrueName(String truename,String phone);
     void updateSex(String sex,String phone);
@@ -31,5 +32,6 @@ public interface ILoginInfoDBPresenter {
     void updateLang(String lang,String phone);
     void updateAttribution(String attribution,String phone);
     void updateNote(String note,String phone);
+    void updateEmail(String email,String phone);
 
 }

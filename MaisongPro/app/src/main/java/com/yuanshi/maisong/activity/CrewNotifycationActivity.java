@@ -3,6 +3,7 @@ package com.yuanshi.maisong.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +17,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 import com.yuanshi.iotpro.publiclib.activity.BaseActivity;
+import com.yuanshi.iotpro.publiclib.utils.Constant;
+import com.yuanshi.iotpro.publiclib.utils.YLog;
 import com.yuanshi.maisong.R;
 import com.yuanshi.maisong.bean.DailyCallBean;
+import com.yuanshi.maisong.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,8 +44,9 @@ public class CrewNotifycationActivity extends BaseActivity {
     ListView crewNotifyListView;
     @BindView(R.id.edit_notify)
     ImageButton editNotify;
-    private ArrayList<DailyCallBean> dailyCallList = new ArrayList<>();
+    private List<DailyCallBean> dailyCallList = new ArrayList<>();
     private MyCallsAdapter adapter;
+    private String crewId;
 
     @Override
     protected int getContentViewId() {
@@ -48,46 +55,33 @@ public class CrewNotifycationActivity extends BaseActivity {
 
     @Override
     protected void init(Bundle savedInstanceState) {
-        initData();
+        crewId = getIntent().getStringExtra("crewId");
+        if(TextUtils.isEmpty(crewId)){
+            Toast.makeText(getApplicationContext(), R.string.crew_id_null, Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+        iHttpPresenter.index(Constant.HTTP_REQUEST_REMIND,crewId);
         adapter = new MyCallsAdapter(this);
         crewNotifyListView.setAdapter(adapter);
     }
 
-    public void initData() {
-        DailyCallBean dailyCallBean = new DailyCallBean();
-        dailyCallBean.setTitle("呜啦啦拉拉大家好，我是王尼玛");
-        dailyCallBean.setContent("通知详情");
-        dailyCallBean.setNoReadCount(6);
-        dailyCallBean.setReleaseDate("2017-9-9");
-        dailyCallBean.setImgUrl("http://www.quanjing.com/image/2017index/ms4.png");
-        dailyCallBean.setReadState(DailyCallActivity.READ_STATE_NO_READ);
-        dailyCallBean.setState(DailyCallActivity.CALL_STATE_NORMOL);
-
-        DailyCallBean dailyCallBean1 = new DailyCallBean();
-        dailyCallBean1.setTitle("呜啦啦拉拉大家好，我是哈哈哈哈");
-        dailyCallBean1.setContent("通知详情");
-        dailyCallBean1.setImgUrl("http://www.quanjing.com/image/2017index/lx1.png");
-        dailyCallBean1.setNoReadCount(3);
-        dailyCallBean.setReleaseDate("2017-9-9");
-        dailyCallBean1.setReadState(DailyCallActivity.READ_STATE_READED);
-        dailyCallBean1.setState(DailyCallActivity.CALL_STATE_NORMOL);
-
-        DailyCallBean dailyCallBean2 = new DailyCallBean();
-        dailyCallBean2.setTitle("呜啦啦拉拉大家好，我是哈哈哈哈");
-        dailyCallBean2.setContent("通知详情");
-        dailyCallBean2.setImgUrl("http://www.quanjing.com/image/2017index/ms3.png");
-        dailyCallBean2.setNoReadCount(3);
-        dailyCallBean.setReleaseDate("2017-9-9");
-        dailyCallBean2.setReadState(DailyCallActivity.READ_STATE_READED);
-        dailyCallBean2.setState(DailyCallActivity.CALL_STATE_WITH_DRAW);
-        dailyCallBean2.setWithdrawMessage("王尼玛撤回了一条信息");
-
-        dailyCallList.add(dailyCallBean);
-        dailyCallList.add(dailyCallBean1);
-        dailyCallList.add(dailyCallBean);
-        dailyCallList.add(dailyCallBean2);
+    public void initData(Object obj) {
+        Gson gson = new Gson();
+        String json = gson.toJson(obj);
+        dailyCallList = (List<DailyCallBean>) Utils.jsonToList(json, DailyCallBean[].class);
+        YLog.e("通告单个数--》"+dailyCallList.size());
+        adapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void onHttpSuccess(String msgType, String msg, Object obj) {
+        switch (msgType){
+            case Constant.HTTP_REQUEST_REMIND+":index":
+                initData(obj);
+                break;
+        }
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,6 +97,8 @@ public class CrewNotifycationActivity extends BaseActivity {
                 break;
             case R.id.edit_notify:
                 Intent intent = new Intent(this,EditNotifyActivity.class);
+                intent.putExtra("editType",Constant.HTTP_REQUEST_REMIND);
+                intent.putExtra("crewId", crewId);
                 startActivity(intent);
                 break;
         }
@@ -141,40 +137,37 @@ public class CrewNotifycationActivity extends BaseActivity {
             } else {
                 holder = (ViewHolder) view.getTag();
             }
-            DailyCallBean dailyCallBean = dailyCallList.get(i);
-            if (dailyCallBean.getState() == DailyCallActivity.CALL_STATE_WITH_DRAW) {//如果已撤回
+            final DailyCallBean dailyCallBean = dailyCallList.get(i);
+            if (dailyCallBean.getStatus() == DailyCallActivity.CALL_STATE_WITH_DRAW) {//如果已撤回
                 holder.titleLayout.setVisibility(View.GONE);
                 holder.releaselayout.setVisibility(View.GONE);
                 holder.btnLayout.setVisibility(View.GONE);
                 holder.imageView.setVisibility(View.GONE);
                 holder.withdrawMsgLayout.setVisibility(View.VISIBLE);
-                holder.withdrawText.setText(dailyCallBean.getWithdrawMessage());
+                holder.withdrawText.setText(R.string.withdraw);
             } else {
                 holder.titleLayout.setVisibility(View.VISIBLE);
                 holder.releaselayout.setVisibility(View.VISIBLE);
                 holder.btnLayout.setVisibility(View.VISIBLE);
                 holder.withdrawMsgLayout.setVisibility(View.GONE);
-                holder.withdrawText.setText(dailyCallBean.getWithdrawMessage());
+                holder.withdrawText.setText(R.string.withdraw);
                 holder.imageView.setVisibility(View.VISIBLE);
             }
 
-            switch (dailyCallBean.getReadState()) {//阅读状态
-                case DailyCallActivity.READ_STATE_NO_READ:
-                    holder.readState.setBackgroundResource(R.drawable.half_corner_org);
-                    holder.readState.setText(R.string.has_no_readed);
-                    break;
-                case DailyCallActivity.READ_STATE_READED:
-                    holder.readState.setBackgroundResource(R.drawable.half_corner_grey);
-                    holder.readState.setText(R.string.has_readed);
-                    break;
+            if (dailyCallBean.isHasRead()) {//阅读状态
+                holder.readState.setBackgroundResource(R.drawable.half_corner_grey);
+                holder.readState.setText(R.string.has_readed);
+            }else{
+                holder.readState.setBackgroundResource(R.drawable.half_corner_org);
+                holder.readState.setText(R.string.has_no_readed);
             }
             holder.title.setText(dailyCallBean.getTitle());
-            String releaseDateTxt = String.format(getString(R.string.calls_release_date), dailyCallBean.getReleaseDate());
+            String releaseDateTxt = String.format(getString(R.string.calls_release_date), dailyCallBean.getAddtime());
             holder.releaseDate.setText(releaseDateTxt);
-            String noReadCountTxt = String.format(getString(R.string.no_read_count), dailyCallBean.getNoReadCount());
+            String noReadCountTxt = String.format(getString(R.string.no_read_count), dailyCallBean.getNoreadcount());
             holder.noReadCount.setText(noReadCountTxt);
             Glide.with(CrewNotifycationActivity.this).
-                    load(dailyCallBean.getImgUrl()).
+                    load(dailyCallBean.getPics()[0]).
                     placeholder(R.mipmap.ic_launcher).
                     error(R.mipmap.delete_icon).
                     thumbnail(0.1f).centerCrop().
@@ -183,6 +176,11 @@ public class CrewNotifycationActivity extends BaseActivity {
                 @Override
                 public void onClick(View view) {
                     Toast.makeText(getApplicationContext(), "选择查看第" + i + "条通知", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(CrewNotifycationActivity.this, ShowTextImageActivity.class);
+                    intent.putExtra("title",getString(R.string.notifycation_of_crew));
+                    intent.putExtra("id",dailyCallBean.getId());
+                    startActivity(intent);
+
                 }
             });
 

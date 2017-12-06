@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +25,8 @@ import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.github.dvdme.ForecastIOLib.ForecastIO;
 import com.google.gson.Gson;
+import com.yuanshi.iotpro.publiclib.presenter.IHttpPresenter;
+import com.yuanshi.iotpro.publiclib.presenter.IHttpPresenterIml;
 import com.yuanshi.maisong.R;
 import com.yuanshi.maisong.activity.CreateCrewActivity;
 import com.yuanshi.maisong.activity.CrewCotactListActivity;
@@ -32,11 +34,13 @@ import com.yuanshi.maisong.activity.CrewNotifycationActivity;
 import com.yuanshi.maisong.activity.CrewSelectActivity;
 import com.yuanshi.maisong.activity.DailyCallActivity;
 import com.yuanshi.maisong.activity.EditNotifyActivity;
+import com.yuanshi.maisong.activity.MainActivity;
 import com.yuanshi.maisong.activity.ProfileActivity;
 import com.yuanshi.maisong.activity.ScriptUpdateActivity;
 import com.yuanshi.maisong.activity.SearchMemoireActivity;
 import com.yuanshi.maisong.activity.ShootingScheduleActivity;
 import com.yuanshi.maisong.activity.ShowTextImageActivity;
+import com.yuanshi.maisong.bean.CrewHttpBean;
 import com.yuanshi.maisong.bean.DateBean;
 import com.yuanshi.maisong.bean.WeatherBean;
 import com.yuanshi.iotpro.publiclib.application.MyApplication;
@@ -59,7 +63,7 @@ import butterknife.Unbinder;
 /**
  * Created by Administrator on 2016/9/12.
  */
-public class CrewFragment extends Fragment {
+public class CrewFragment extends BaseFragment {
     @BindView(R.id.join_crew_btn)
     TextView joinCrewBtn;
     @BindView(R.id.create_crew_btn)
@@ -99,10 +103,12 @@ public class CrewFragment extends Fragment {
     TextView profile;
     private View m_View;
     public static CrewFragment crewFragment;
-    public ArrayList<String> crewList = new ArrayList<>();
+    private IHttpPresenter iHttpPresenter;
+    private CrewHttpBean currentCrew;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    protected View getMainView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        iHttpPresenter = new IHttpPresenterIml(this,getActivity());
         if (m_View == null) {
             m_View = inflater.inflate(R.layout.crew_layout, null);
         }
@@ -124,11 +130,11 @@ public class CrewFragment extends Fragment {
     }
 
     private void initView() {
-        crewList.add("《唐伯虎点蚊香》");
-        crewList.add("《鲁迅漂流记》");
-        crewList.add("《剪刀手爱刘德华》");
-        crewList.add("《这个手刹不太灵》");
-        crewList.add("《钢铁侠是怎样炼成的》");
+//        crewNameList.add("《唐伯虎点蚊香》");
+//        crewNameList.add("《鲁迅漂流记》");
+//        crewNameList.add("《剪刀手爱刘德华》");
+//        crewNameList.add("《这个手刹不太灵》");
+//        crewNameList.add("《钢铁侠是怎样炼成的》");
         getWeatherInfo();//获取天气信息；
     }
 
@@ -149,6 +155,13 @@ public class CrewFragment extends Fragment {
             }
         }
     };
+
+    public void reloadCrewListData(){
+        if(((MainActivity)getActivity()).crewList != null && ((MainActivity)getActivity()).crewList.size() > 0){
+            crewName.setText(((MainActivity)getActivity()).crewList.get(0).getTitle());
+            currentCrew = ((MainActivity)getActivity()).crewList.get(0);
+        }
+    }
 
     /**
      * 加载天气信息
@@ -279,29 +292,50 @@ public class CrewFragment extends Fragment {
                 break;
             case R.id.call_sheet://点击每日通告单，查看每日通告
                 intent.setClass(getActivity(),DailyCallActivity.class);
+                intent.putExtra("crewId",currentCrew.getId());
                 startActivity(intent);
                 break;
             case R.id.notifycation_of_crew://点击剧组通知，查看剧组通知
                 intent.setClass(getActivity(),CrewNotifycationActivity.class);
+                intent.putExtra("crewId",currentCrew.getId());
                 startActivity(intent);
                 break;
             case R.id.script_update://点击剧本扉页
                 intent.setClass(getActivity(),ScriptUpdateActivity.class);
+                intent.putExtra("crewId",currentCrew.getId());
                 startActivity(intent);
                 break;
             case R.id.shooting_schedule://点击拍摄大计划
                 intent.setClass(getActivity(),ShootingScheduleActivity.class);
+                intent.putExtra("crewId",currentCrew.getId());
                 startActivity(intent);
                 break;
             case R.id.crew_contacts://点击剧组通讯录
                 intent.setClass(getActivity(),CrewCotactListActivity.class);
+                intent.putExtra("crewId",currentCrew.getId());
                 startActivity(intent);
                 break;
             case R.id.profile://点击我在剧组
                 intent.setClass(getActivity(),ProfileActivity.class);
-                startActivity(intent);
+                if(currentCrew!= null && !TextUtils.isEmpty(currentCrew.getId())){
+                    intent.putExtra("groupId",currentCrew.getId());
+                    intent.putExtra("crewName",currentCrew.getTitle());
+                    startActivity(intent);
+                }else{
+                    Toast.makeText(getActivity().getApplicationContext(),R.string.no_check_crew,Toast.LENGTH_SHORT).show();
+                }
+
                 break;
         }
+    }
+
+    public CrewHttpBean findCrewByName(String gourpTitle){
+        for(CrewHttpBean crewhttpBean:((MainActivity)getActivity()).crewList){
+            if(crewhttpBean.getTitle().equals(gourpTitle)){
+                return crewhttpBean;
+            }
+        }
+        return null;
     }
 
 
@@ -313,8 +347,12 @@ public class CrewFragment extends Fragment {
         Window dialogWindow = mCameraDialog.getWindow();
         dialogWindow.setGravity(Gravity.BOTTOM);
         final WheelView wheelView = (WheelView) root.findViewById(R.id.wheelView);
-        wheelView.setItems(crewList);
-        wheelView.setSeletion(crewList.indexOf(crewName.getText().toString()));
+        ArrayList nameList = new ArrayList();
+        for(CrewHttpBean bean: ((MainActivity)getActivity()).crewList){
+            nameList.add(bean.getTitle());
+        }
+        wheelView.setItems(nameList);
+        wheelView.setSeletion(nameList.indexOf(crewName.getText().toString()));
         root.findViewById(R.id.cancel_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -329,6 +367,7 @@ public class CrewFragment extends Fragment {
                 YLog.e("选中了列表的第"+wheelView.getSeletedIndex()+"项-->"+wheelView.getSeletedItem());
                 if(mCameraDialog != null && mCameraDialog.isShowing()){
                     crewName.setText(wheelView.getSeletedItem());
+                    currentCrew = findCrewByName(wheelView.getSeletedItem());
                     mCameraDialog.dismiss();
                 }
             }
@@ -427,5 +466,22 @@ public class CrewFragment extends Fragment {
         lp.alpha = 9f; // 透明度
         dialogWindow.setAttributes(lp);
         mCameraDialog.show();
+    }
+
+    @Override
+    public void onHttpSuccess(String msgType, String msg, Object obj) {
+        switch (msgType){
+            case "index":
+                break;
+        }
+    }
+
+    @Override
+    public void onHttpFaild(String msgType, String msg, Object obj) {
+        switch (msgType){
+            case "index":
+                Toast.makeText(getActivity().getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+                break;
+        }
     }
 }

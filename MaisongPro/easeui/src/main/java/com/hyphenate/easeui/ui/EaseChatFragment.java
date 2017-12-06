@@ -74,6 +74,7 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
     protected static final int REQUEST_CODE_MAP = 1;
     protected static final int REQUEST_CODE_CAMERA = 2;
     protected static final int REQUEST_CODE_LOCAL = 3;
+    private String title;
 
     /**
      * params to fragment
@@ -127,8 +128,8 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-
         fragmentArgs = getArguments();
+        title = fragmentArgs.getString("title");
         // check if single chat or group chat
         chatType = fragmentArgs.getInt(EaseConstant.EXTRA_CHAT_TYPE, EaseConstant.CHATTYPE_SINGLE);
         // userId you are chat with or group id
@@ -195,7 +196,7 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
     }
 
     protected void setUpView() {
-        titleBar.setTitle(toChatUsername);
+        titleBar.setTitle(title);
         if (chatType == EaseConstant.CHATTYPE_SINGLE) {
             // set title
             if(EaseUserUtils.getUserInfo(toChatUsername) != null){

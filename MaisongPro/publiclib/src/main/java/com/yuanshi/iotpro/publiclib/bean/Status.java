@@ -5,7 +5,7 @@ package com.yuanshi.iotpro.publiclib.bean;
  */
 
 public class Status<T> {
-    //{"status":{"status_code":"999","status_reason":"????????,?????!"}}
+    //{"status":{"status":"999","info":"????????,?????!"}}
     private int status;
     private String info;
     private  T data;

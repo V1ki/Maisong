@@ -52,7 +52,7 @@ public class WelcomActivity extends BaseActivity {
         }, 1000, 1000);
     }
 
-    private int wait_seconds = 4;
+    private int wait_seconds = 3;
     private static final int CHANGE_SECONDS = 0x0010;
     private Handler handler = new Handler() {
         @Override
@@ -139,7 +139,7 @@ public class WelcomActivity extends BaseActivity {
      * 查询数据库登录信息
      */
     public void checkLoginInfo(){
-        List<LoginInfoBean> logininfos= iLoginInfoDBPresenter.selectLoginInfo();
+        List<LoginInfoBean> logininfos= iLoginInfoDBPresenter.selectAllLoginInfo();
         if(logininfos!= null && logininfos.size()>0){
             hasLoginInfo = true;
             LoginComparator loginComparator = new LoginComparator();

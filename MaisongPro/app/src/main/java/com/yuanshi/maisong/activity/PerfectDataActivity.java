@@ -15,7 +15,10 @@ import android.widget.Toast;
 import com.yuanshi.iotpro.publiclib.activity.BaseActivity;
 import com.yuanshi.iotpro.publiclib.utils.Constant;
 import com.yuanshi.maisong.R;
-import com.yuanshi.maisong.bean.UserInfoBean;
+import com.yuanshi.iotpro.publiclib.bean.UserInfoBean;
+import com.yuanshi.maisong.utils.Utils;
+
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -76,9 +79,9 @@ public class PerfectDataActivity extends BaseActivity {
             case R.id.submint_btn:
                 UserInfoBean userInfoBean = new UserInfoBean();
                 userInfoBean.setName(edNikeName.getText().toString().trim());
-                userInfoBean.setSex(String.valueOf(sexCheck));
+                userInfoBean.setSex(sexCheck);
 //                userInfoBean.setPhone(getSharedPreferences(Constant.MAIN_SH_NAME,MODE_PRIVATE).getString(Constant.USER_PHONE_KEY,""));
-                iHttpPresenter.edituser(userInfoBean.getQureyMap());
+                iHttpPresenter.edituser(Utils.getEditInfoMap(userInfoBean));
                 break;
         }
     }

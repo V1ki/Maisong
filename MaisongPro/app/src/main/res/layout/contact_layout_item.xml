@@ -2,16 +2,67 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="#9c9c9c"
+    android:background="@color/white"
     android:orientation="vertical"
-    android:paddingBottom="5dp"
-    android:paddingLeft="10dp"
-    android:paddingTop="5dp" >
+     >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@drawable/view_click_selector1"
+        >
+        <ImageView
+            android:id="@+id/headIcon"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_margin="3dp"
+            android:src="@mipmap/ic_launcher"
+            />
+        <TextView
+            android:layout_toRightOf="@id/headIcon"
+            android:id="@+id/userName"
+            android:text="1311111"
+            android:textSize="20sp"
+            android:gravity="center|left"
+            android:paddingLeft="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="@color/gray_normal" />
 
-    <TextView
-        android:id="@+id/indexTv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#0f0f0f" />
+        <LinearLayout
+            android:layout_toRightOf="@+id/userName"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:orientation="vertical"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="35dp"
+            >
+            <TextView
+                android:id="@+id/departmentTv"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:textColor="@color/gray_normal"
+                android:gravity="center_vertical|right"
+                />
+            <TextView
+                android:id="@+id/positionTv"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:textColor="@color/gray_normal"
+                android:gravity="center_vertical|right"
+                />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_alignParentBottom="true"
+            android:background="@color/subline"
+            />
+    </RelativeLayout>
+
+
 
 </LinearLayout>

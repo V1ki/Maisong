@@ -1,9 +1,11 @@
 package com.yuanshi.maisong.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,10 +13,18 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.yuanshi.iotpro.publiclib.activity.IBaseView;
+import com.yuanshi.iotpro.publiclib.bean.LoginInfoBean;
+import com.yuanshi.iotpro.publiclib.presenter.ILoginInfoDBPresenter;
+import com.yuanshi.iotpro.publiclib.presenter.ILoginInfoDBPresenterIml;
+import com.yuanshi.iotpro.publiclib.utils.Constant;
 import com.yuanshi.maisong.R;
 import com.yuanshi.maisong.activity.AccountSettingActivity;
 import com.yuanshi.maisong.activity.SettingsActivity;
 import com.yuanshi.maisong.view.CircleImageView;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,7 +35,7 @@ import butterknife.Unbinder;
 /**
  * Created by Administrator on 2016/9/12.
  */
-public class MoreFragment extends Fragment {
+public class MoreFragment extends BaseFragment{
     @BindView(R.id.headIcon)
     CircleImageView headIcon;
     @BindView(R.id.userName)
@@ -53,10 +63,10 @@ public class MoreFragment extends Fragment {
     Unbinder unbinder;
     private View m_View;
     public static MoreFragment moreFragment;
+    private String userPhone;
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    protected View getMainView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (m_View == null) {
             m_View = inflater.inflate(R.layout.self_detail_layout, null);
         }
@@ -64,9 +74,9 @@ public class MoreFragment extends Fragment {
         if (parent != null) {
             parent.removeView(m_View);
         }
-        initView();
         moreFragment = this;
         unbinder = ButterKnife.bind(this, m_View);
+        initView();
         return m_View;
     }
 
@@ -78,6 +88,15 @@ public class MoreFragment extends Fragment {
     }
 
     private void initView() {
+        userPhone = getActivity().getSharedPreferences(Constant.MAIN_SH_NAME, Context.MODE_PRIVATE).getString(Constant.USER_PHONE_KEY,"");
+        LoginInfoBean loginInfoBean = getLoginInfoBean(userPhone);
+        if(loginInfoBean!= null && !TextUtils.isEmpty(loginInfoBean.getAvatar())){
+            Glide.with(getActivity()).load(loginInfoBean.getAvatar()).error(R.mipmap.ic_launcher).into(headIcon);
+        }
+    }
+
+    public LoginInfoBean getLoginInfoBean(String userPhone){
+        return  new ILoginInfoDBPresenterIml(this).selectLoginInfo(userPhone);
     }
 
     @Override

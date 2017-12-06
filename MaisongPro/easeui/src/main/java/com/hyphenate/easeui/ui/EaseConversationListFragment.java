@@ -25,10 +25,17 @@ import android.widget.ImageView;
 import com.hyphenate.EMConnectionListener;
 import com.hyphenate.EMConversationListener;
 import com.hyphenate.EMError;
+import com.hyphenate.chat.EMChatManager;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
+import com.hyphenate.chat.EMCursorResult;
+import com.hyphenate.chat.EMGroup;
+import com.hyphenate.chat.EMGroupInfo;
+import com.hyphenate.chat.adapter.EMAChatManager;
+import com.hyphenate.chat.adapter.EMAConversation;
 import com.hyphenate.easeui.R;
 import com.hyphenate.easeui.widget.EaseConversationList;
+import com.hyphenate.exceptions.HyphenateException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -99,13 +106,23 @@ public class EaseConversationListFragment extends EaseBaseFragment{
         
         if(listItemClickListener != null){
             conversationListView.setOnItemClickListener(new OnItemClickListener() {
-
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     EMConversation conversation = conversationListView.getItem(position);
                     listItemClickListener.onListItemClicked(conversation);
                 }
             });
+            conversationListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
+                @Override
+                public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    EMConversation conversation = conversationListView.getItem(i);
+                    if(listItemLongClickListener != null){
+                        listItemLongClickListener.onListItemLongClicked(conversation);
+                    }
+                    return false;
+                }
+            });
+
         }
         
         EMClient.getInstance().addConnectionListener(connectionListener);
@@ -119,7 +136,6 @@ public class EaseConversationListFragment extends EaseBaseFragment{
                     clearSearch.setVisibility(View.INVISIBLE);
                 }
             }
-
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
@@ -161,6 +177,8 @@ public class EaseConversationListFragment extends EaseBaseFragment{
         }
     };
     private EaseConversationListItemClickListener listItemClickListener;
+
+    private EaseConversationListItemLongClickListener listItemLongClickListener;
     
     protected Handler handler = new Handler(){
         public void handleMessage(android.os.Message msg) {
@@ -184,7 +202,7 @@ public class EaseConversationListFragment extends EaseBaseFragment{
             }
         }
     };
-    
+
     /**
      * connected to server
      */
@@ -229,6 +247,7 @@ public class EaseConversationListFragment extends EaseBaseFragment{
                 }
             }
         }
+
         try {
             // Internal is TimSort algorithm, has bug
             sortConversationByLastChatTime(sortList);
@@ -242,6 +261,16 @@ public class EaseConversationListFragment extends EaseBaseFragment{
         return list;
     }
 
+
+
+    public boolean isGroupExist(String groupId){
+        for(EMConversation emConversation: conversationList){
+            if(emConversation.conversationId().equals(groupId)){
+                return true;
+            }
+        }
+        return false;
+    }
     /**
      * sort conversations according time stamp of last message
      * 
@@ -313,6 +342,10 @@ public class EaseConversationListFragment extends EaseBaseFragment{
          */
         void onListItemClicked(EMConversation conversation);
     }
+
+    public interface EaseConversationListItemLongClickListener{
+        void onListItemLongClicked(EMConversation conversation);
+    }
     
     /**
      * set conversation list item click listener
@@ -320,6 +353,10 @@ public class EaseConversationListFragment extends EaseBaseFragment{
      */
     public void setConversationListItemClickListener(EaseConversationListItemClickListener listItemClickListener){
         this.listItemClickListener = listItemClickListener;
+    }
+
+    public void setConversationListItemLongClickListener(EaseConversationListItemLongClickListener listItemLongClickListener){
+        this.listItemLongClickListener = listItemLongClickListener;
     }
 
     public void setOnAddBtnClickListener(OnAddBtnClickLister onClickListener){

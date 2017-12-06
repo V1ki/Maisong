@@ -53,32 +53,47 @@
             android:layout_weight="3.5"
             android:layout_width="match_parent"
             android:layout_height="0dp">
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:layout_centerInParent="true"
-                >
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true">
                 <com.yuanshi.maisong.view.CircleImageView
+                    android:id="@+id/headIcon"
                     android:layout_weight="2.5"
                     android:layout_width="80dp"
                     android:layout_height="0dp"
                     android:layout_gravity="center_horizontal"
-                    android:src="@mipmap/ic_launcher"
                     app:border_color="@color/transparent"
                     app:border_width="0dp"
                     />
-                <TextView
-                    android:id="@+id/nickName"
+                <RelativeLayout
                     android:layout_weight="1"
                     android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:textColor="@color/main_text"
-                    android:gravity="center"
-                    android:text="好友昵称"
-                    android:textSize="18sp"
-                    android:layout_gravity="center_horizontal"
-                    />
+                    android:layout_height="0dp">
+                    <TextView
+                        android:id="@+id/nickName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:textColor="@color/main_text"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:text="nicheng"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center_horizontal"
+                        />
+                    <ImageView
+                        android:layout_toRightOf="@+id/nickName"
+                        android:id="@+id/sex_icon"
+                        android:layout_width="25dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="35dp"
+                        android:src="@mipmap/boy_checked"
+                        />
+                </RelativeLayout>
                 <TextView
                     android:id="@+id/account"
                     android:layout_weight="1"
@@ -86,7 +101,6 @@
                     android:layout_height="0dp"
                     android:textSize="16sp"
                     android:textColor="@color/second_color"
-                    android:text="138*****131"
                     android:layout_gravity="center_horizontal"
                     />
             </LinearLayout>
@@ -101,6 +115,7 @@
             android:layout_marginLeft="50dp"
             android:layout_marginRight="50dp"
             android:layout_marginBottom="10dp"
+            android:visibility="gone"
             >
             <LinearLayout
                 android:layout_weight="1"
@@ -122,7 +137,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="2"
-                    android:text="168"
                     android:gravity="center"
                     android:textColor="@color/main_text"
                     android:textSize="28sp"
@@ -157,7 +171,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="2"
-                    android:text="56"
                     android:gravity="center"
                     android:textColor="@color/main_text"
                     android:textSize="28sp"
@@ -192,10 +205,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="2"
-                    android:src="@mipmap/sex_of_contact_girl"
                     android:padding="10dp"
                     />
                 <TextView
+                    android:id="@+id/sexTv"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
@@ -242,7 +255,6 @@
                     android:paddingLeft="20dp"
                     android:textColor="@color/main_text"
                     android:textSize="16sp"
-                    android:text="1380000131"
                     />
                 <TextView
                     android:layout_width="match_parent"
@@ -277,7 +289,6 @@
                     android:paddingLeft="20dp"
                     android:textColor="@color/main_text"
                     android:textSize="16sp"
-                    android:text="制片"
                     />
                 <TextView
                     android:layout_width="match_parent"
@@ -312,7 +323,6 @@
                     android:paddingLeft="20dp"
                     android:textColor="@color/main_text"
                     android:textSize="16sp"
-                    android:text="制片主任"
                     />
                 <TextView
                     android:layout_width="match_parent"
@@ -327,7 +337,7 @@
                 android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:visibility="gone"
+                android:visibility="visible"
                 >
                 <TextView
                     android:id="@+id/wechat"
@@ -349,7 +359,6 @@
                     android:paddingLeft="20dp"
                     android:textColor="@color/main_text"
                     android:textSize="16sp"
-                    android:text="W13800000131"
                     />
                 <TextView
                     android:layout_width="match_parent"
@@ -364,7 +373,7 @@
                 android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:visibility="gone"
+                android:visibility="visible"
                 >
                 <TextView
                     android:id="@+id/email"
@@ -386,7 +395,6 @@
                     android:paddingLeft="20dp"
                     android:textColor="@color/main_text"
                     android:textSize="16sp"
-                    android:text="13800000131@163.com"
                     />
             </RelativeLayout>
             <TextView

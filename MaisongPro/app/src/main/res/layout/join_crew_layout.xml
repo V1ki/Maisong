@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <RelativeLayout
+        android:id="@+id/title_layout"
+        android:layout_width="match_parent"
+        android:fitsSystemWindows="true"
+        android:layout_height="75dp"
+        >
+        <ImageButton
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@null"
+            android:src="@mipmap/icon_back"
+            />
+        <TextView
+            android:layout_centerHorizontal="true"
+            android:textSize="20sp"
+            android:text="@string/join_crew"
+            android:gravity="center"
+            android:textColor="@color/main_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/apply_btn"
+            android:layout_centerHorizontal="true"
+            android:textSize="20sp"
+            android:text="@string/in_crew"
+            android:gravity="center"
+            android:textColor="@drawable/text_click_selector1"
+            android:layout_width="80dp"
+            android:layout_alignParentRight="true"
+            android:layout_height="match_parent" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_alignParentBottom="true"
+            android:background="@color/subline"
+            />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/crewNameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="25dp"
+        >
+        <TextView
+            android:layout_weight="1"
+            android:layout_centerHorizontal="true"
+            android:textSize="17sp"
+            android:text="@string/crew_pwd"
+            android:textColor="@color/main_text"
+            android:gravity="center|left"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+        <EditText
+            android:layout_weight="3"
+            android:id="@+id/ed_crew_pwd"
+            android:textColorHint="@color/hint_text"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:textSize="17sp"
+            android:background="@null"
+            android:hint="@string/six_12_pwd"
+            />
+    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_alignParentBottom="true"
+        android:background="@color/subline"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        />
+
+    <LinearLayout
+        android:id="@+id/productNameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="25dp"
+        >
+        <TextView
+            android:layout_weight="1"
+            android:layout_centerHorizontal="true"
+            android:textSize="17sp"
+            android:text="@string/department_"
+            android:textColor="@color/main_text"
+            android:gravity="center|left"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:layout_weight="3"
+            android:id="@+id/ed_department"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:textSize="17sp"
+            android:maxLength="60"
+            android:gravity="center|left"
+            android:ellipsize="end"
+            android:textColorHint="@color/hint_text"
+            android:hint="@string/pls_choose_department"
+            />
+    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_alignParentBottom="true"
+        android:background="@color/subline"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        />
+
+    <LinearLayout
+        android:id="@+id/recipeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="25dp"
+        >
+        <TextView
+            android:layout_weight="1"
+            android:layout_centerHorizontal="true"
+            android:textSize="17sp"
+            android:text="@string/position_"
+            android:textColor="@color/main_text"
+            android:gravity="center|left"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:layout_weight="3"
+            android:id="@+id/ed_position"
+            android:layout_width="0dp"
+            android:textSize="17sp"
+            android:layout_height="match_parent"
+            android:gravity="center|left"
+            android:hint="@string/pls_choose_position"
+            android:textColorHint="@color/hint_text"
+            android:background="@null"
+            />
+    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_alignParentBottom="true"
+        android:background="@color/subline"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        />
+
+</LinearLayout>
