@@ -30,6 +30,7 @@ import com.google.gson.Gson;
 import com.yanzhenjie.album.Action;
 import com.yanzhenjie.album.Album;
 import com.yanzhenjie.album.AlbumFile;
+import com.yuanshi.iotpro.daoutils.LoginBeanDaoUtil;
 import com.yuanshi.iotpro.publiclib.activity.BaseActivity;
 import com.yuanshi.iotpro.publiclib.bean.LoginInfoBean;
 import com.yuanshi.iotpro.publiclib.utils.Constant;
@@ -85,6 +86,7 @@ public class AccountSettingActivity extends BaseActivity {
     private Bitmap head;
     private LoginInfoBean loginInfoBean;
     private String userPhone;
+    private LoginBeanDaoUtil loginBeanDaoUtil;
 
     @Override
     protected int getContentViewId() {
@@ -93,6 +95,7 @@ public class AccountSettingActivity extends BaseActivity {
 
     @Override
     protected void init(Bundle savedInstanceState) {
+        loginBeanDaoUtil = new LoginBeanDaoUtil(this);
         path = Utils.getHeadIconPath();
         userPhone = getSharedPreferences(Constant.MAIN_SH_NAME,MODE_PRIVATE).getString(Constant.USER_PHONE_KEY,"");
         YLog.e("userPhone--->"+userPhone);
@@ -114,7 +117,7 @@ public class AccountSettingActivity extends BaseActivity {
     }
 
     public LoginInfoBean getLoginInfoBean(String userPhone){
-       return iLoginInfoDBPresenter.selectLoginInfo(userPhone);
+       return loginBeanDaoUtil.qeuryUserInfo(Long.parseLong(userPhone));
     }
 
     @Override
@@ -249,12 +252,9 @@ public class AccountSettingActivity extends BaseActivity {
      * 保存修改后的用户信息
      */
     public void saveLoginInfo(){
-        iLoginInfoDBPresenter.updateNickName(loginInfoBean.getNickname(),loginInfoBean.getPhone());
-        iLoginInfoDBPresenter.updateAvatar(loginInfoBean.getAvatar(),loginInfoBean.getPhone());
-        YLog.e("存储图片地址到数据库---》"+loginInfoBean.getAvatar());
-        iLoginInfoDBPresenter.updateWeixin(loginInfoBean.getWeixin(),loginInfoBean.getPhone());
-        iLoginInfoDBPresenter.updateSex(loginInfoBean.getSex(),loginInfoBean.getPhone());
-        iLoginInfoDBPresenter.updateEmail(loginInfoBean.getEmail(),loginInfoBean.getPhone());
+        LoginInfoBean localBean = loginBeanDaoUtil.qeuryUserInfo(Long.parseLong(loginInfoBean.getPhone()));
+        loginInfoBean.set_id(localBean.get_id());
+        loginBeanDaoUtil.updateUserInfo(loginInfoBean);
     }
 
     /**

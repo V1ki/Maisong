@@ -1,12 +1,14 @@
 package com.yuanshi.iotpro.publiclib.model.http;
 
 import com.yuanshi.iotpro.publiclib.bean.Status;
+import com.yuanshi.iotpro.publiclib.utils.FileCallBack;
 
 import java.io.File;
 import java.util.Map;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
@@ -17,6 +19,8 @@ import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
+import retrofit2.http.Streaming;
+import retrofit2.http.Url;
 import rx.Observable;
 import rx.Observer;
 
@@ -146,5 +150,9 @@ public interface HttpServer {
     @FormUrlEncoded
     @POST("index.php")
     Observable<Status> doAdd(@Query("m") String m, @Query("c") String c, @Query("a") String a, @Field("id") String id,@FieldMap Map<String, Object> map);
+
+    @Streaming
+    @GET
+    Observable<ResponseBody> download(@Url String url);
 
 }

@@ -84,11 +84,27 @@
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:background="@color/subline"/>
+
             <com.yuanshi.maisong.view.MixedTextImageLayout
                 android:id="@+id/mixed_text_image_layout"
                 android:background="@color/white"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"></com.yuanshi.maisong.view.MixedTextImageLayout>
+                android:layout_height="match_parent" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/subline"
+                />
+
+            <com.yuanshi.maisong.view.NoScrollListView
+                android:id="@+id/fileLisetView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:divider="@null"
+                android:background="@color/main_bg"
+                android:dividerHeight="2dp"
+                android:layout_marginBottom="5dp"
+                />
         </LinearLayout>
 
     </ScrollView>

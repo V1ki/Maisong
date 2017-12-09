@@ -1,10 +1,15 @@
 package com.yuanshi.iotpro.publiclib.presenter;
 
+import android.view.View;
+
+import com.yuanshi.iotpro.publiclib.utils.FileCallBack;
+
 import java.io.File;
 import java.util.Map;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import rx.Observer;
 
 /**
@@ -86,9 +91,8 @@ public interface IHttpPresenter {
     /**
      * 加入剧组
      * @param map
-     * @param observer
      */
-    void joins(Map<String, Object> map,Observer observer);
+    void joins(Map<String, Object> map);
 
     /**
      * 获取部门列表和部门下的职位列表
@@ -137,4 +141,7 @@ public interface IHttpPresenter {
      * @param map 参数map： title、 content、cid 剧组ID、pics 图组 ,号分割 例: 1.jpg,2.jpg,3.jpg,、status [选填，默认1 ]
      */
     void doAdd( String requestType, String id, Map<String, Object> map);
+
+    //文件下载
+    void download(String url,String desDir, String destFileName,View convertView);
 }

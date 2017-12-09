@@ -1,5 +1,7 @@
 package com.yuanshi.maisong.bean;
 
+import java.util.ArrayList;
+
 /**
  * Created by Dengbocheng on 2017/11/30.
  */
@@ -31,10 +33,18 @@ public class NoticeDetailBean {
     private String status;
     private String addtime;
     private String[] pics;
-    private String file;
     private String crewtitle;
     private String author;
     private int readed;
+    private ArrayList<String> file;//文件列表
+
+    public ArrayList<String> getFile() {
+        return file;
+    }
+
+    public void setFile(ArrayList<String> file) {
+        this.file = file;
+    }
 
     public String getId() {
         return id;
@@ -98,14 +108,6 @@ public class NoticeDetailBean {
 
     public void setPics(String[] pics) {
         this.pics = pics;
-    }
-
-    public String getFile() {
-        return file;
-    }
-
-    public void setFile(String file) {
-        this.file = file;
     }
 
     public String getCrewtitle() {

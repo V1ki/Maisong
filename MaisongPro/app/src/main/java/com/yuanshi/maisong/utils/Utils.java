@@ -11,16 +11,16 @@ import android.os.Environment;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
-import com.hyphenate.chat.EMChatRoom;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMGroup;
 import com.hyphenate.chat.EMGroupManager;
 import com.hyphenate.chat.EMGroupOptions;
 import com.hyphenate.chat.EMMessage;
-import com.hyphenate.exceptions.HyphenateException;
 import com.yuanshi.iotpro.publiclib.application.MyApplication;
+import com.yuanshi.iotpro.publiclib.bean.LoginInfoBean;
 import com.yuanshi.iotpro.publiclib.bean.UserInfoBean;
-import com.yuanshi.iotpro.publiclib.utils.Constant;
 import com.yuanshi.iotpro.publiclib.utils.YLog;
 
 import net.sourceforge.pinyin4j.PinyinHelper;
@@ -36,7 +36,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -54,9 +56,47 @@ public class Utils {
             file.mkdirs();
         }
         return file.getAbsolutePath();
-
     }
 
+    /**
+     * File 目录下文件是否存在
+     * @param fileName
+     * @return
+     */
+    public static boolean isFileExist(String fileName){
+        File file = new File(getFileDownloadRealPath()+"/"+fileName);
+        return file.exists();
+    }
+
+
+    /**
+     * 获取下载文件暂存地址
+     * @return
+     */
+    public static String getFileDownloadTempPath(){
+        File file = new File(Environment.getExternalStorageDirectory()+"/MySong/TempFiles/");
+        if(!file.exists()){
+            file.mkdirs();
+        }
+        return file.getAbsolutePath();
+    }
+
+    /**
+     * 获取下载文件真实地址
+     * @return
+     */
+    public static String getFileDownloadRealPath(){
+        File file = new File(Environment.getExternalStorageDirectory()+"/MySong/Files/");
+        if(!file.exists()){
+            file.mkdirs();
+        }
+        return file.getAbsolutePath();
+    }
+
+    /**
+     * 获取头像保存地址
+     * @return
+     */
     public static String getHeadIconPath(){
         File file = new File(Environment.getExternalStorageDirectory()+"/MySong/HeadIcon/");
         if(!file.exists()){
@@ -65,6 +105,10 @@ public class Utils {
         return file.getAbsolutePath();
     }
 
+    /**
+     * 获取图片地址
+     * @return
+     */
     public static String getPicPath(){
         File file = new File(Environment.getExternalStorageDirectory()+"/MySong/Pics/");
         if(!file.exists()){
@@ -74,6 +118,16 @@ public class Utils {
     }
 
 
+    /**
+     * 将暂存文件保存到真实目录下
+     * @param fileName
+     */
+    public static void moveFile(String fileName){
+        File oldFile = new File(getFileDownloadTempPath()+"/"+fileName);
+        if(oldFile.exists()){
+            oldFile.renameTo(new File(getFileDownloadRealPath()+"/"+fileName));
+        }
+    }
     /**
      * 获取位置信息
      * @param context
@@ -140,6 +194,13 @@ public class Utils {
         return dateStr;
     }
 
+    public static String getCurrentDate(Long millisecond){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String dateStr = sdf.format(millisecond*1000);
+        YLog.e(dateStr);
+        return dateStr;
+    }
+
     /**
      * 华氏度转摄氏度
      * @return
@@ -155,6 +216,19 @@ public class Utils {
         return Arrays.asList(array);
     }
 
+    public static <T> List<T> jsonToList2(String json, Class<T> clazz)
+    {
+        Type type = new TypeToken<List<JsonObject>>()
+        {}.getType();
+        ArrayList<JsonObject> jsonObjects = new Gson().fromJson(json, type);
+
+        ArrayList<T> arrayList = new ArrayList<>();
+        for (JsonObject jsonObject : jsonObjects)
+        {
+            arrayList.add(new Gson().fromJson(jsonObject, clazz));
+        }
+        return arrayList;
+    }
     /**
      * 创建群组
      * @param groupName 群组名
@@ -163,7 +237,7 @@ public class Utils {
      * @param reason
      * @return
      */
-    public static EMGroup createChatRoom(final String groupName, final String desc, final String[] allMembers, final String reason){
+    public static EMGroup createChatRoom(final LoginInfoBean loginInfoBean,final String groupName, final String desc, final String[] allMembers, final String reason){
         YLog.e("insertDeviceInfo");
         try {
             return MyApplication.THREAD_EXCUTER.submit(new Callable<EMGroup>() {
@@ -174,6 +248,9 @@ public class Utils {
                     option.style = EMGroupManager.EMGroupStyle.EMGroupStylePrivateMemberCanInvite;
                     EMGroup group =    EMClient.getInstance().groupManager().createGroup(groupName, desc, allMembers, reason, option);
                     EMMessage message = EMMessage.createTxtSendMessage("我创建了"+groupName+"群组", group.getGroupId());//发送一条消息
+                    message.setAttribute("chatUserId",loginInfoBean.getPhone());
+                    message.setAttribute("chatUserHead",loginInfoBean.getAvatar());
+                    message.setAttribute("chatUserName",loginInfoBean.getNickname());
                     message.setChatType(EMMessage.ChatType.GroupChat);
                     EMClient.getInstance().chatManager().sendMessage(message);
                     return group;
@@ -182,6 +259,30 @@ public class Utils {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+
+    /**
+     * f发送打招呼消息
+     * @return
+     */
+    public static void sendHelloMessage(final LoginInfoBean loginInfoBean,final String phone, final String msg){
+        YLog.e("insertDeviceInfo");
+        try {
+             MyApplication.THREAD_EXCUTER.execute(new Runnable() {
+                @Override
+                public void run() {
+                    EMMessage message = EMMessage.createTxtSendMessage(msg,phone);//发送一条消息
+                    message.setAttribute("chatUserId",loginInfoBean.getPhone());
+                    message.setAttribute("chatUserHead",loginInfoBean.getAvatar());
+                    message.setAttribute("chatUserName",loginInfoBean.getNickname());
+                    message.setChatType(EMMessage.ChatType.GroupChat);
+                    EMClient.getInstance().chatManager().sendMessage(message);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -302,5 +403,26 @@ public class Utils {
             map.put("avatar",userInfoBean.getAvatar());
         }
         return map;
+    }
+
+    public static void deleteFile(File file){
+        if(!file.exists()){
+            return;
+        }
+        if(file.isFile()){
+            file.delete();
+            return;
+        }
+        if(file.isDirectory()){
+            File[] childFile = file.listFiles();
+            if(childFile == null || childFile.length == 0){
+                file.delete();
+                return;
+            }
+            for(File f : childFile){
+                deleteFile(f);
+            }
+            file.delete();
+        }
     }
 }

@@ -2,13 +2,17 @@ package com.yuanshi.iotpro.publiclib.presenter;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.view.View;
+import android.widget.ProgressBar;
 
+import com.google.gson.Gson;
 import com.yuanshi.iotpro.publiclib.activity.IBaseView;
 import com.yuanshi.iotpro.publiclib.bean.Status;
 import com.yuanshi.iotpro.publiclib.model.IHttpModelImpl;
 import com.yuanshi.iotpro.publiclib.model.http.ApiManager;
 import com.yuanshi.iotpro.publiclib.model.interfacepkg.IHttpModel;
 import com.yuanshi.iotpro.publiclib.utils.Constant;
+import com.yuanshi.iotpro.publiclib.utils.FileCallBack;
 import com.yuanshi.iotpro.publiclib.utils.YLog;
 
 import java.io.File;
@@ -17,6 +21,7 @@ import java.util.Map;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import rx.Observer;
 
 /**
@@ -329,7 +334,7 @@ public class IHttpPresenterIml implements IHttpPresenter {
     }
 
     @Override
-    public void joins(Map<String, Object> map, Observer observer) {
+    public void joins(Map<String, Object> map) {
         serverModel.joins(map,new Observer<Status>() {
             @Override
             public void onCompleted() {
@@ -370,8 +375,7 @@ public class IHttpPresenterIml implements IHttpPresenter {
             @Override
             public void onNext(Status status) {
                 if(status.getStatus() == Constant.HTTP_REQUEST_SUCCESS){
-                    view.onHttpSuccess("department",status.getInfo(),status.getData());
-                    YLog.e("department~~~onHttpSuccess:"+status.getInfo());
+                    view.onHttpSuccess("department",status.getInfo(),new Gson().toJson(status.getData()));
                 }else{
                     view.onHttpFaild("department",status.getInfo(),null);
                     YLog.e("department~~~onHttpFaild:"+status.getInfo());
@@ -538,6 +542,35 @@ public class IHttpPresenterIml implements IHttpPresenter {
                     view.onHttpFaild("notice:doAdd",status.getInfo(),null);
                     YLog.e("notice:doAdd ~~~onHttpFaild:"+status.getInfo());
                 }
+            }
+        });
+    }
+
+    @Override
+    public void download(String url,String desDir, final String destFileName,final View convertView) {
+        serverModel.download(url, new FileCallBack<ResponseBody>(desDir,destFileName) {
+            @Override
+            public void onSuccess(ResponseBody responseBody) {
+                view.onDownloadComplete(convertView,destFileName);
+            }
+            @Override
+            public void progress(long progress, long total) {
+                view.onDownloadProgress(convertView, progress, total);
+            }
+
+            @Override
+            public void onStart() {
+
+            }
+
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                view.onDownloadError(convertView, e,destFileName);
             }
         });
     }

@@ -1,6 +1,7 @@
 package com.yuanshi.maisong.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -64,13 +65,14 @@ public class DailyCallActivity extends BaseActivity {
         iHttpPresenter.index(Constant.HTTP_REQUEST_NOTICE,crewId);
         adapter = new MyCallsAdapter(this);
         dailyCallListView.setAdapter(adapter);
+
     }
 
     public void initData(Object obj) {
+        YLog.e("备忘列表获取成功");
         Gson gson = new Gson();
         String json = gson.toJson(obj);
-        dailyCallList = (List<DailyCallBean>) Utils.jsonToList(json, DailyCallBean[].class);
-        YLog.e("通告单个数--》"+dailyCallList.size());
+        dailyCallList = Utils.jsonToList2(json, DailyCallBean.class);
         adapter.notifyDataSetChanged();
     }
 
@@ -158,8 +160,12 @@ public class DailyCallActivity extends BaseActivity {
             holder.checkLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(getApplicationContext(),"选择查看第"+i+"条通知",Toast.LENGTH_SHORT).show();
-                    iHttpPresenter.details(Constant.HTTP_REQUEST_NOTICE,dailyCallBean.getId());
+//                    iHttpPresenter.details(Constant.HTTP_REQUEST_NOTICE,dailyCallBean.getId());
+                    Intent intent = new Intent(DailyCallActivity.this, ShowTextImageActivity.class);
+                    intent.putExtra("id",dailyCallBean.getId());
+                    intent.putExtra("title",getString(R.string.call_sheet));
+                    intent.putExtra("requestType",Constant.HTTP_REQUEST_NOTICE);
+                    startActivity(intent);
                 }
             });
 

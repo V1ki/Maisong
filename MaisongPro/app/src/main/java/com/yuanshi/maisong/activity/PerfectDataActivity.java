@@ -88,6 +88,7 @@ public class PerfectDataActivity extends BaseActivity {
 
     @Override
     public void onHttpFaild(String msgType, String msg, Object obj) {
+        super.onHttpFaild(msgType,msg,obj);
         switch (msgType){
             case "edituser":
                 if(!TextUtils.isEmpty(msg)){

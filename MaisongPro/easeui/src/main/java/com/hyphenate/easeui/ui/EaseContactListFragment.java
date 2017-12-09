@@ -29,9 +29,11 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.hyphenate.EMConnectionListener;
 import com.hyphenate.EMError;
 import com.hyphenate.chat.EMClient;
@@ -40,6 +42,11 @@ import com.hyphenate.easeui.domain.EaseUser;
 import com.hyphenate.easeui.utils.EaseCommonUtils;
 import com.hyphenate.easeui.widget.EaseContactList;
 import com.hyphenate.exceptions.HyphenateException;
+import com.yuanshi.iotpro.daoutils.UserBeanDaoUtil;
+import com.yuanshi.iotpro.publiclib.activity.IBaseView;
+import com.yuanshi.iotpro.publiclib.bean.UserInfoBean;
+import com.yuanshi.iotpro.publiclib.presenter.IHttpPresenter;
+import com.yuanshi.iotpro.publiclib.presenter.IHttpPresenterIml;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -53,7 +60,7 @@ import java.util.Map.Entry;
  * contact list
  * 
  */
-public class EaseContactListFragment extends EaseBaseFragment {
+public class EaseContactListFragment extends EaseBaseFragment implements IBaseView{
     private static final String TAG = "EaseContactListFragment";
     protected List<EaseUser> contactList;
     protected ListView listView;
@@ -66,15 +73,20 @@ public class EaseContactListFragment extends EaseBaseFragment {
     protected EaseContactList contactListLayout;
     protected boolean isConflict;
     protected FrameLayout contentContainer;
-    
     private Map<String, EaseUser> contactsMap;
+    private UserBeanDaoUtil userBeanDaoUtil;
+    private IHttpPresenter iHttpPresenter;
+    private LinearLayout add_frd_layout;
+    public static final int OPEN_TYPE_MOREFRAGMENT = 0;//从morefragment进来
+    public static final int OPEN_TYPE_CONTACTLIST = 1;//从好友列表进来
 
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        userBeanDaoUtil = new UserBeanDaoUtil(getActivity());
+        iHttpPresenter = new IHttpPresenterIml(this,getActivity());
         return inflater.inflate(R.layout.ease_fragment_contact_list, container, false);
     }
-
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
     	//to avoid crash when open app after long time stay in background after user logged into another device
@@ -86,14 +98,24 @@ public class EaseContactListFragment extends EaseBaseFragment {
     @Override
     protected void initView() {
         contentContainer = (FrameLayout) getView().findViewById(R.id.content_container);
-        
+        add_frd_layout = getView().findViewById(R.id.add_frd_layout);
         contactListLayout = (EaseContactList) getView().findViewById(R.id.contact_list);        
         listView = contactListLayout.getListView();
         
         //search
         query = (EditText) getView().findViewById(R.id.query);
         clearSearch = (ImageButton) getView().findViewById(R.id.search_clear);
+        int openType = getActivity().getIntent().getIntExtra("openType",0);
+        switch (openType){
+            case OPEN_TYPE_MOREFRAGMENT:
+                add_frd_layout.setVisibility(View.VISIBLE);
+                break;
+            case OPEN_TYPE_CONTACTLIST:
+                add_frd_layout.setVisibility(View.GONE);
+                break;
+        }
     }
+
 
     @Override
     protected void setUpView() {
@@ -114,7 +136,15 @@ public class EaseContactListFragment extends EaseBaseFragment {
                 }
             });
         }
-        
+        add_frd_layout.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(friendAddListener != null){
+                    friendAddListener.onFriendAddListnerClick(view);
+                }
+            }
+        });
+
         query.addTextChangedListener(new TextWatcher() {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 contactListLayout.filter(s);
@@ -245,6 +275,20 @@ public class EaseContactListFragment extends EaseBaseFragment {
                         //filter out users in blacklist
                         EaseUser user = entry.getValue();
                         EaseCommonUtils.setUserInitialLetter(user);
+                        try{
+                            UserInfoBean userInfoBean = userBeanDaoUtil.qeuryUserInfo(Long.parseLong(user.getUsername()));
+                            if(userInfoBean != null){
+                                user.setUsername(userInfoBean.getPhone());
+                                user.setAvatar(userInfoBean.getAvatar());
+                                user.setNickname(userInfoBean.getNickname());
+                            }else{
+                                iHttpPresenter.phonegetuser(user.getUsername(),"");
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
+
+                        }
+
                         contactList.add(user);
                     }
                 }
@@ -301,8 +345,14 @@ public class EaseContactListFragment extends EaseBaseFragment {
         }
     };
     private EaseContactListItemClickListener listItemClickListener;
-    
-    
+    private FriendAddListener friendAddListener;
+    public interface FriendAddListener{
+        void onFriendAddListnerClick(View v);
+    }
+
+    public void setFriedAddListener(FriendAddListener friendAddListener){
+        this.friendAddListener = friendAddListener;
+    }
     protected void onConnectionDisconnected() {
         
     }
@@ -318,7 +368,59 @@ public class EaseContactListFragment extends EaseBaseFragment {
     public void setContactsMap(Map<String, EaseUser> contactsMap){
         this.contactsMap = contactsMap;
     }
-    
+
+    @Override
+    public void onGetPushMessage(String msg) {
+
+    }
+
+    @Override
+    public void onHttpSuccess(String msgType, String msg, Object obj) {
+        switch (msgType){
+            case "phonegetuser":
+                Gson gson = new Gson();
+                String json = gson.toJson(obj);
+                UserInfoBean userInfoBean = gson.fromJson(json, UserInfoBean.class);
+                if(userInfoBean != null){
+                    UserInfoBean localBean = userBeanDaoUtil.qeuryUserInfo(Long.parseLong(userInfoBean.getPhone()));
+                    if(localBean != null){
+                        userInfoBean.set_id(localBean.get_id());
+                        userBeanDaoUtil.updateUserInfo(userInfoBean);
+                    }else{
+                        userInfoBean.set_id(Long.parseLong(userInfoBean.getPhone()));
+                        userBeanDaoUtil.insertUserInfo(userInfoBean);
+                    }
+                }
+                refresh();
+                break;
+        }
+    }
+
+    @Override
+    public void onHttpFaild(String msgType, String msg, Object obj) {
+        Toast.makeText(getActivity().getApplicationContext(),msg, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onError(String msgType, String msg, Object obj) {
+
+    }
+
+    @Override
+    public void onDownloadProgress(View view, long progress, long total) {
+
+    }
+
+    @Override
+    public void onDownloadError(View view, Throwable e,String fileName) {
+
+    }
+
+    @Override
+    public void onDownloadComplete(View view,String fileName) {
+
+    }
+
     public interface EaseContactListItemClickListener {
         /**
          * on click event for item in contact list 

@@ -109,10 +109,12 @@ public class EaseConversationAdapter extends ArrayAdapter<EMConversation> {
         EMConversation conversation = getItem(position);
         // get username or group id
         String username = conversation.conversationId();
+        String avatar = "";
         UserInfoBean userInfoBean = userBeanDaoUtil.qeuryUserInfo(Long.parseLong(conversation.conversationId()));
         YLog.e("phonegetuser getUserInfo-->"+new Gson().toJson(userInfoBean));
         if(userInfoBean != null){
             username = userInfoBean.getNickname();
+            avatar = userInfoBean.getAvatar();
         }
         if (conversation.getType() == EMConversationType.GroupChat) {
             String groupId = conversation.conversationId();
@@ -131,7 +133,10 @@ public class EaseConversationAdapter extends ArrayAdapter<EMConversation> {
             holder.name.setText(room != null && !TextUtils.isEmpty(room.getName()) ? room.getName() : username);
             holder.motioned.setVisibility(View.GONE);
         }else {
-            EaseUserUtils.setUserAvatar(getContext(), username, holder.avatar);
+            if(!TextUtils.isEmpty(avatar)){
+                EaseUserUtils.setUserAvatar1(getContext(), avatar, holder.avatar);
+            }
+//            EaseUserUtils.setUserAvatar(getContext(), username, holder.avatar);
             EaseUserUtils.setUserNick(username, holder.name);
             holder.motioned.setVisibility(View.GONE);
         }

@@ -3,6 +3,7 @@ package com.yuanshi.maisong.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,9 +18,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.yuanshi.iotpro.publiclib.activity.BaseActivity;
+import com.yuanshi.iotpro.publiclib.utils.Constant;
+import com.yuanshi.iotpro.publiclib.utils.YLog;
 import com.yuanshi.maisong.R;
+import com.yuanshi.maisong.bean.DailyCallBean;
 import com.yuanshi.maisong.bean.MemoireInfoBean;
+import com.yuanshi.maisong.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -47,9 +53,8 @@ public class SearchMemoireActivity extends BaseActivity {
     @BindView(R.id.searchResultListView)
     ListView searchResultListView;
     private MyMemoireListAdapter adapter;
-
-    private ArrayList<MemoireInfoBean> infoList = new ArrayList<>();
-
+    private String crewId;
+    private ArrayList<DailyCallBean> memorandumList = new ArrayList<>();
     @Override
     protected int getContentViewId() {
         return R.layout.search_memoire_layout;
@@ -57,16 +62,21 @@ public class SearchMemoireActivity extends BaseActivity {
 
     @Override
     protected void init(Bundle savedInstanceState) {
+        crewId = getIntent().getStringExtra("crewId");
+        if(TextUtils.isEmpty(crewId)){
+            Toast.makeText(getApplicationContext(),R.string.crew_id_null,Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+        iHttpPresenter.index(Constant.HTTP_REQUEST_MEMORANDUM,crewId);
         adapter = new MyMemoireListAdapter(this);
         searchResultListView.setAdapter(adapter);
         edSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    Toast.makeText(getApplicationContext(), "点击了搜索", Toast.LENGTH_SHORT).show();
-                    infoList.clear();
+                    memorandumList.clear();
                     adapter.notifyDataSetChanged();
-                    initData();
                 }
                 return false;
             }
@@ -76,22 +86,22 @@ public class SearchMemoireActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(SearchMemoireActivity.this, ShowTextImageActivity.class);
+                intent.putExtra("id",memorandumList.get(i).getId());
+                intent.putExtra("title",getString(R.string.memoire));
+                intent.putExtra("requestType",Constant.HTTP_REQUEST_MEMORANDUM);
                 startActivity(intent);
             }
         });
     }
 
-    public void initData() {
-        MemoireInfoBean memoireInfoBean = new MemoireInfoBean();
-        memoireInfoBean.setTitle("这是一个神奇的标题，多打几个字就更神奇了！");
-        memoireInfoBean.setCreateDate("2017-11-11");
-        memoireInfoBean.setSynopsis("这里是内容概要，也没有什么好提要的");
-        infoList.add(memoireInfoBean);
-        infoList.add(memoireInfoBean);
-        infoList.add(memoireInfoBean);
-        infoList.add(memoireInfoBean);
+    public void initData(Object obj) {
+        YLog.e("备忘列表获取成功");
+        Gson gson = new Gson();
+        String json = gson.toJson(obj);
+        memorandumList = (ArrayList<DailyCallBean>) Utils.jsonToList2(json, DailyCallBean.class);
         adapter.notifyDataSetChanged();
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,7 +125,14 @@ public class SearchMemoireActivity extends BaseActivity {
                 break;
         }
     }
-
+    @Override
+    public void onHttpSuccess(String msgType, String msg, Object obj) {
+        switch (msgType) {
+            case Constant.HTTP_REQUEST_MEMORANDUM+":index":
+                initData(obj);
+                break;
+        }
+    }
     private class MyMemoireListAdapter extends BaseAdapter {
         private LayoutInflater inflater;
 
@@ -125,12 +142,12 @@ public class SearchMemoireActivity extends BaseActivity {
 
         @Override
         public int getCount() {
-            return infoList.size();
+            return memorandumList.size();
         }
 
         @Override
         public Object getItem(int i) {
-            return infoList.get(i);
+            return memorandumList.get(i);
         }
 
         @Override
@@ -148,10 +165,10 @@ public class SearchMemoireActivity extends BaseActivity {
             } else {
                 holder = (ViewHolder) view.getTag();
             }
-            MemoireInfoBean memoireInfoBean = infoList.get(i);
+            DailyCallBean memoireInfoBean = memorandumList.get(i);
             holder.titleText.setText(memoireInfoBean.getTitle());
-            holder.createDate.setText(memoireInfoBean.getCreateDate());
-            holder.synopsis.setText(memoireInfoBean.getSynopsis());
+            holder.createDate.setText(memoireInfoBean.getAddtime());
+            holder.synopsis.setText(memoireInfoBean.getContent());
             return view;
         }
     }

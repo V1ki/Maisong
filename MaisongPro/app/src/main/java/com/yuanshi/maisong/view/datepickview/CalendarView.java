@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,8 +32,11 @@ public class CalendarView extends LinearLayout {
 	private TextView checkTv;
 	private TextView addTxteTv;
 	private TextView dataText2;
+	private RelativeLayout add_btn_layout;
+	private RelativeLayout check_layout;
 	private OnCreateMemoClick onCreateMemoClick;
 	private OnCheckMemoClick onCheckMemoClick;
+	private OnItemClickListener onItemClickListener;
 	private List<DayAndPrice> listDayAndPrice = new ArrayList<DayAndPrice>();
 	private List<WorkOrRelax> listWorkOrRelax = new ArrayList<WorkOrRelax>();
 	private Calendar showingCarlender;
@@ -48,6 +52,8 @@ public class CalendarView extends LinearLayout {
 		tv_date = (TextView) view.findViewById(R.id.date_text);
 		tv_week  =(TextView) view.findViewById(R.id.selectDate_text);
 		tv_today = (TextView) view.findViewById(R.id.tv_today);
+		add_btn_layout = view.findViewById(R.id.add_btn_layout);
+		check_layout = findViewById(R.id.check_layout);
 		showingCarlender = Calendar.getInstance();
 		showLouchDate(showingCarlender);
 		monthDateView.setTextView(tv_date,tv_week);
@@ -62,7 +68,9 @@ public class CalendarView extends LinearLayout {
 							monthDateView.getSelectDate().getDay() == dayAndPrice.day){//选中的日期被点击
 						dateViewClick.dateClick(dayAndPrice);
 					}
-
+				}
+				if(onItemClickListener != null){
+					onItemClickListener.onItemClick(dayAndPrice);
 				}
 			}
 		});
@@ -81,7 +89,6 @@ public class CalendarView extends LinearLayout {
 		LunarCalendar lunarCalendar = new LunarCalendar(calendar);
 		Date date = lunarCalendar.getDate();
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd   HH:mm:ss");
-		YLog.e(simpleDateFormat.format(date));
 //		CalendarUtil calendarUtil = new CalendarUtil(calendar);
 		dataText2.setText(lunarCalendar.toString());
 	}
@@ -109,7 +116,6 @@ public class CalendarView extends LinearLayout {
 			
 			@Override
 			public void onClick(View v) {
-				YLog.e("tv_today click~~");
 				monthDateView.setTodayToView();
 			}
 		});
@@ -139,7 +145,11 @@ public class CalendarView extends LinearLayout {
 			}
 		});
 	}
-	
+
+	public void hideMemerLayout(){
+		add_btn_layout.setVisibility(INVISIBLE);
+		check_layout.setVisibility(INVISIBLE);
+	}
 	
 	/**
 	 * 设置有事务的号码
@@ -181,6 +191,13 @@ public class CalendarView extends LinearLayout {
 	}
 	public interface DateViewClick{
 		public void dateClick(DayAndPrice dayAndPrice);
+	}
+
+	public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+		this.onItemClickListener = onItemClickListener;
+	}
+	public interface OnItemClickListener{
+		 void onItemClick(DayAndPrice dayAndPrice);
 	}
 
 	/**

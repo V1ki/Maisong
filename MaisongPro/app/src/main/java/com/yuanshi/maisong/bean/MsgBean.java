@@ -1,12 +1,11 @@
 package com.yuanshi.maisong.bean;
 
-import org.litepal.crud.DataSupport;
 
 /**
  * Created by Dengbocheng on 2017/10/23.
  */
 
-public class MsgBean extends DataSupport {
+public class MsgBean  {
     private String title;
     private String msg;
     private String dateTime;

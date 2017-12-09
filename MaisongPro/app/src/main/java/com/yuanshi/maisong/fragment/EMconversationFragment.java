@@ -1,11 +1,15 @@
 package com.yuanshi.maisong.fragment;
 
 import android.util.Pair;
+import android.view.View;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
+import com.hyphenate.easeui.domain.EaseUser;
 import com.hyphenate.easeui.ui.EaseConversationListFragment;
+import com.hyphenate.easeui.utils.EaseUserUtils;
 import com.yuanshi.iotpro.daoutils.UserBeanDaoUtil;
 import com.yuanshi.iotpro.publiclib.activity.IBaseView;
 import com.yuanshi.iotpro.publiclib.bean.UserInfoBean;
@@ -55,10 +59,10 @@ public class EMconversationFragment extends EaseConversationListFragment impleme
         }
         IHttpPresenter iHttpPresenter = new IHttpPresenterIml(this,getActivity());
         for(EMConversation emConversation:list){
-            if(emConversation.isGroup()){
-                iHttpPresenter.phonegetuser("",emConversation.conversationId());
-            }else{
+            if(!emConversation.isGroup()){
                 iHttpPresenter.phonegetuser(emConversation.conversationId(),"");
+            }else{
+
             }
         }
         return list;
@@ -105,13 +109,14 @@ public class EMconversationFragment extends EaseConversationListFragment impleme
                 Gson gson = new Gson();
                 String json = gson.toJson(obj);
                 UserInfoBean userInfoBean = gson.fromJson(json, UserInfoBean.class);
-                userInfoBean.set_id(Long.parseLong(userInfoBean.getPhone()));
                 //存入用户信息
                 UserBeanDaoUtil userBeanDaoUtil = new UserBeanDaoUtil(getActivity());
                 UserInfoBean localUserinfo = userBeanDaoUtil.qeuryUserInfo(Long.parseLong(userInfoBean.getPhone()));
                 if(localUserinfo != null){
+                    userInfoBean.set_id(localUserinfo.get_id());
                     userBeanDaoUtil.updateUserInfo(userInfoBean);
                 }else{
+                    userInfoBean.set_id(Long.parseLong(userInfoBean.getPhone()));
                     userBeanDaoUtil.insertUserInfo(userInfoBean);
                 }
                 break;
@@ -120,11 +125,27 @@ public class EMconversationFragment extends EaseConversationListFragment impleme
 
     @Override
     public void onHttpFaild(String msgType, String msg, Object obj) {
+        Toast.makeText(getActivity().getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+    }
+
+
+    @Override
+    public void onError(String msgType, String msg, Object obj) {
 
     }
 
     @Override
-    public void onError(String msgType, String msg, Object obj) {
+    public void onDownloadProgress(View view, long progress, long total) {
+
+    }
+
+    @Override
+    public void onDownloadError(View view, Throwable e,String fileName) {
+
+    }
+
+    @Override
+    public void onDownloadComplete(View view,String fileName) {
 
     }
 }

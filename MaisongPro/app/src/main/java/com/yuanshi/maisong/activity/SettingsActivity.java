@@ -18,7 +18,9 @@ import android.widget.TextView;
 
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
+import com.yuanshi.iotpro.daoutils.LoginBeanDaoUtil;
 import com.yuanshi.iotpro.publiclib.activity.BaseActivity;
+import com.yuanshi.iotpro.publiclib.bean.LoginInfoBean;
 import com.yuanshi.iotpro.publiclib.utils.Constant;
 import com.yuanshi.iotpro.publiclib.utils.YLog;
 import com.yuanshi.maisong.R;
@@ -45,6 +47,7 @@ public class SettingsActivity extends BaseActivity {
     @BindView(R.id.cache_size_tv)
     TextView cacheSizeTv;
 
+    private LoginBeanDaoUtil loginBeanDaoUtil;
     @Override
     protected int getContentViewId() {
         return R.layout.settings_layout;
@@ -52,6 +55,7 @@ public class SettingsActivity extends BaseActivity {
 
     @Override
     protected void init(Bundle savedInstanceState) {
+        loginBeanDaoUtil = new LoginBeanDaoUtil(this);
         getCacheSize();
         checkNewVersion();
 
@@ -87,7 +91,7 @@ public class SettingsActivity extends BaseActivity {
                 checkNewVersion();
                 break;
             case R.id.clear_cache_layout:
-                clearCache();
+                showClearCacheDialog();
                 break;
             case R.id.logout_btn:
                 showLogoutDialog();
@@ -138,6 +142,49 @@ public class SettingsActivity extends BaseActivity {
     }
 
     /**
+     * 弹出退出登录确认框
+     */
+    public void showClearCacheDialog(){
+        final Dialog mCameraDialog = new Dialog(this, R.style.datePickerStyle);
+        LinearLayout root = (LinearLayout) LayoutInflater.from(this).inflate(
+                R.layout.logout_dialog_layout, null);
+        TextView contentTv = root.findViewById(R.id.dialog_content);
+        contentTv.setText("确定要清除缓存？");
+        root.findViewById(R.id.commit_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clearCache();
+                mCameraDialog.dismiss();
+            }
+        });
+        root.findViewById(R.id.cancel_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mCameraDialog.dismiss();
+            }
+        });
+        mCameraDialog.setContentView(root);
+        Window dialogWindow = mCameraDialog.getWindow();
+        dialogWindow.setGravity(Gravity.CENTER);
+        WindowManager.LayoutParams lp = dialogWindow.getAttributes(); // 获取对话框当前的参数值
+        lp.x = 0; // 新位置X坐标
+        lp.y = 0; // 新位置Y坐标
+
+        WindowManager wm = (WindowManager)this
+                .getSystemService(Context.WINDOW_SERVICE);
+
+        int width = wm.getDefaultDisplay().getWidth();
+        int height = wm.getDefaultDisplay().getHeight();
+        lp.width = width-80; // 宽度
+        root.measure(0, 0);
+        lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        lp.alpha = 2f; // 透明度
+        dialogWindow.setAttributes(lp);
+        mCameraDialog.show();
+    }
+
+
+    /**
      * 检查最新版本
      */
     public void checkNewVersion() {
@@ -158,9 +205,11 @@ public class SettingsActivity extends BaseActivity {
 
     @Override
     public void onHttpFaild(String msgType, String msg, Object obj) {
+        super.onHttpFaild(msgType,msg,obj);
         switch (msgType){
             case "logout":
                 YLog.e("logout~~~~onHttpFaild"+msg);
+
                 break;
         }
     }
@@ -172,7 +221,8 @@ public class SettingsActivity extends BaseActivity {
                 YLog.e("logout~~~~onHttpSuccess"+msg);
                 String loginPhone = getSharedPreferences(Constant.MAIN_SH_NAME,MODE_PRIVATE).getString(Constant.USER_PHONE_KEY,"");
                 if(!TextUtils.isEmpty(loginPhone)){
-                    iLoginInfoDBPresenter.deleteLoginInfo(loginPhone);//删除登录信息
+                    LoginInfoBean localBean = loginBeanDaoUtil.qeuryUserInfo(Long.parseLong(loginPhone));
+                    loginBeanDaoUtil.deleteUserInfo(localBean);
                 }
                 //个人资料完善改为false
                 getSharedPreferences(Constant.MAIN_SH_NAME,MODE_PRIVATE).edit().putBoolean(Constant.HAS_PUT_USER_INFO_KEY,false).commit();

@@ -15,6 +15,7 @@ import com.google.gson.Gson;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.exceptions.HyphenateException;
+import com.yuanshi.iotpro.daoutils.LoginBeanDaoUtil;
 import com.yuanshi.iotpro.publiclib.activity.BaseActivity;
 import com.yuanshi.iotpro.publiclib.bean.LoginInfoBean;
 import com.yuanshi.iotpro.publiclib.utils.Constant;
@@ -46,6 +47,7 @@ public class LoginAcitvity extends BaseActivity {
     @BindView(R.id.ed_password)
     EditText edPassword;
     private String phoneRegex = "[1][3,4,5,7,8][0-9]{9}";
+    private LoginBeanDaoUtil loginBeanDaoUtil ;
 
     @Override
     protected int getContentViewId() {
@@ -55,6 +57,7 @@ public class LoginAcitvity extends BaseActivity {
     @Override
     protected void init(Bundle savedInstanceState) {
         fullScreen();
+        loginBeanDaoUtil = new LoginBeanDaoUtil(this);
     }
 
     @Override
@@ -173,6 +176,7 @@ public class LoginAcitvity extends BaseActivity {
 
     @Override
     public void onHttpFaild(String msgType, String msg, Object obj) {
+        super.onHttpFaild(msgType,msg,obj);
         switch (msgType){
             case "login":
                 YLog.e("login onHttpFaild~~~~~"+msg);
@@ -200,7 +204,16 @@ public class LoginAcitvity extends BaseActivity {
      */
     public void saveLoginInfo(LoginInfoBean loginInfoBean){
         YLog.e("保存用户信息到数据库");
-        iLoginInfoDBPresenter.insertLoginInfo(loginInfoBean);
+        LoginInfoBean localBean = loginBeanDaoUtil.qeuryUserInfo(Long.parseLong(loginInfoBean.getPhone()));
+        if(localBean != null){
+            YLog.e("本地有该用户数据");
+            loginInfoBean.set_id(localBean.get_id());
+            loginBeanDaoUtil.updateUserInfo(loginInfoBean);
+        }else{
+            YLog.e("本地没有该用户数据");
+            loginInfoBean.set_id(Long.parseLong(loginInfoBean.getPhone()));
+            loginBeanDaoUtil.insertLoginInfo(loginInfoBean);
+        }
         getSharedPreferences(Constant.MAIN_SH_NAME,MODE_PRIVATE).edit().putString(Constant.USER_PHONE_KEY,loginInfoBean.getPhone()).commit();
     }
 

@@ -40,5 +40,6 @@ dependencies {
     compile project(':album')
     compile files('libs/pinyin4j-2.5.0.jar')
     compile project(':okhttp3-persistent-cookiejar')
+    compile 'com.joanzapata.pdfview:android-pdfview:1.0.4@aar'
 }
 

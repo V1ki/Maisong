@@ -94,6 +94,7 @@
         <activity android:name=".activity.AccountSettingActivity"
             android:windowSoftInputMode="adjustPan"
             />
+        <activity android:name=".activity.ShowFileActivity"/>
 
         <activity android:name=".activity.FriendDetailActivity"/>
         
@@ -103,7 +104,10 @@
 
         <!-- 环信sdk相关activity-->
         <activity android:name="com.hyphenate.easeui.ui.EaseShowBigImageActivity"/>
-        <activity android:name="com.yuanshi.maisong.activity.ESContactsActivity"/>
+        <activity android:name="com.yuanshi.maisong.activity.ESContactsActivity"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            />
+        <activity android:name=".activity.FriendApplyDetailActivity"/>
 
         <!-- 设置环信应用的AppKey -->
         <meta-data android:name="EASEMOB_APPKEY"  android:value="1152170929115344#vkdemo" />

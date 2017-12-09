@@ -20,7 +20,6 @@ import android.widget.TextView;
 
 import com.yuanshi.maisong.R;
 import com.yuanshi.maisong.bean.DateBean;
-import com.yuanshi.iotpro.publiclib.utils.YLog;
 
 
 public class MonthDateView extends View {
@@ -118,7 +117,6 @@ public class MonthDateView extends View {
 				RectF rectF = new RectF(startRecX+10.0f, startRecY+5.0f, endRecX-10.0f, endRecY-5.0f);
 				canvas.drawRoundRect(rectF, 5.0f, 5.0f, mPaint);
 				if(onDateSelectListener != null){//触发日期选中回调
-					YLog.e("选中了--》"+mSelYear+mSelMonth+daysString[row][column]);
 					onDateSelectListener.onSelect(new DayAndPrice("",mSelYear,mSelMonth,mSelDay));
 				}
 				//记录第几行，即第几周
@@ -295,7 +293,6 @@ public class MonthDateView extends View {
 	private void doClickAction(int x,int y){
 		int row = (int) (y / mRowSize);
 		int column = (int) (x / mColumnSize);
-		YLog.e("点击了--》"+mSelYear+mSelMonth+daysString[row][column]);
 		if(dateClick != null){
 			DayAndPrice dayAndPrice = new DayAndPrice("",mSelYear,mSelMonth+1,daysString[row][column]);
 			dateClick.onClickOnDate(dayAndPrice);

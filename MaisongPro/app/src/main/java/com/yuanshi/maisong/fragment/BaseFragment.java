@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.yuanshi.iotpro.publiclib.activity.IBaseView;
 import com.yuanshi.iotpro.publiclib.presenter.IHttpPresenter;
@@ -32,7 +33,7 @@ public abstract class BaseFragment extends Fragment implements IBaseView{
 
     @Override
     public void onHttpFaild(String msgType, String msg, Object obj) {
-
+        Toast.makeText(getActivity().getApplicationContext(),msg, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -44,4 +45,20 @@ public abstract class BaseFragment extends Fragment implements IBaseView{
     public void onGetPushMessage(String msg) {
 
     }
+
+    @Override
+    public void onDownloadProgress(View view, long progress, long total) {
+
+    }
+
+    @Override
+    public void onDownloadComplete(View view,String fileName) {
+
+    }
+
+    @Override
+    public void onDownloadError(View view, Throwable e,String fileName) {
+
+    }
+
 }

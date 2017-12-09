@@ -14,13 +14,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.yuanshi.iotpro.publiclib.activity.IBaseView;
+import com.hyphenate.easeui.ui.EaseContactListFragment;
+import com.yuanshi.iotpro.daoutils.LoginBeanDaoUtil;
 import com.yuanshi.iotpro.publiclib.bean.LoginInfoBean;
-import com.yuanshi.iotpro.publiclib.presenter.ILoginInfoDBPresenter;
-import com.yuanshi.iotpro.publiclib.presenter.ILoginInfoDBPresenterIml;
 import com.yuanshi.iotpro.publiclib.utils.Constant;
 import com.yuanshi.maisong.R;
 import com.yuanshi.maisong.activity.AccountSettingActivity;
+import com.yuanshi.maisong.activity.ESContactsActivity;
+import com.yuanshi.maisong.activity.MainActivity;
 import com.yuanshi.maisong.activity.SettingsActivity;
 import com.yuanshi.maisong.view.CircleImageView;
 
@@ -64,7 +65,7 @@ public class MoreFragment extends BaseFragment{
     private View m_View;
     public static MoreFragment moreFragment;
     private String userPhone;
-
+    private LoginBeanDaoUtil loginBeanDaoUtil;
     @Override
     protected View getMainView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (m_View == null) {
@@ -74,6 +75,7 @@ public class MoreFragment extends BaseFragment{
         if (parent != null) {
             parent.removeView(m_View);
         }
+        loginBeanDaoUtil = new LoginBeanDaoUtil(getActivity());
         moreFragment = this;
         unbinder = ButterKnife.bind(this, m_View);
         initView();
@@ -96,7 +98,7 @@ public class MoreFragment extends BaseFragment{
     }
 
     public LoginInfoBean getLoginInfoBean(String userPhone){
-        return  new ILoginInfoDBPresenterIml(this).selectLoginInfo(userPhone);
+        return  loginBeanDaoUtil.qeuryUserInfo(Long.parseLong(userPhone));
     }
 
     @Override
@@ -114,6 +116,9 @@ public class MoreFragment extends BaseFragment{
                 startActivity(intent);
                 break;
             case R.id.my_friends_layout:
+                intent.setClass(getActivity(),ESContactsActivity.class);
+                intent.putExtra("openType", EaseContactListFragment.OPEN_TYPE_MOREFRAGMENT);
+                startActivity(intent);
                 break;
             case R.id.help_layout:
                 break;

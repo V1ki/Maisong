@@ -197,6 +197,7 @@ public class CrewSelectActivity extends BaseActivity {
                     Toast.makeText(getApplicationContext(),"选择加入"+crewInfoList.get(i).getTitle()+"剧组",Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(CrewSelectActivity.this, JoinCrewActivity.class);
                     intent.putExtra("crewId",crewInfoList.get(i).getId());
+                    intent.putExtra("crewName",crewInfoList.get(i).getTitle());
                     startActivity(intent);
 
                 }

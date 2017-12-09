@@ -6,22 +6,17 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.FrameLayout;
+import android.widget.Toast;
 
-import com.yuanshi.iotpro.publiclib.R;
 import com.yuanshi.iotpro.publiclib.presenter.IHttpPresenter;
 import com.yuanshi.iotpro.publiclib.presenter.IHttpPresenterIml;
-import com.yuanshi.iotpro.publiclib.presenter.ILoginInfoDBPresenter;
-import com.yuanshi.iotpro.publiclib.presenter.ILoginInfoDBPresenterIml;
 import com.yuanshi.iotpro.publiclib.utils.NativeReadBroadcast;
-import com.yuanshi.iotpro.publiclib.utils.SystemBarTintManager;
 import com.yuanshi.iotpro.publiclib.utils.YLog;
 
 import java.util.ArrayList;
@@ -36,7 +31,6 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
     public static ArrayList<Activity> activities = new ArrayList<>();
     protected abstract int getContentViewId();
     protected IHttpPresenter iHttpPresenter;
-    protected ILoginInfoDBPresenter iLoginInfoDBPresenter;
     protected abstract void init(Bundle savedInstanceState);
 
     protected Context mContext;
@@ -48,7 +42,6 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
         setTranslucentStatus(this);
         mContext = this;
         iHttpPresenter = new IHttpPresenterIml(this,mContext);
-        iLoginInfoDBPresenter = new ILoginInfoDBPresenterIml(this);
         ButterKnife.bind(this);
         activities.add(this);
         init(savedInstanceState);
@@ -59,8 +52,30 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
     protected void onResume() {
         super.onResume();
         setOnWiFiStateChangeListener();
+        setOnReceiveMsgListener();
     }
 
+    public void setOnReceiveMsgListener(){
+        NativeReadBroadcast.setOnReviceMsgListener(new NativeReadBroadcast.OnReviceMsgListener() {
+            @Override
+            public void onReceiveFrdApplyInfo(String phone, String reason) {
+                onReceiveApplyInfo(phone,reason);
+            }
+
+            @Override
+            public void onFriendAddSuccess(String phone) {
+                onFrdAddSuccess(phone);
+            }
+        });
+    }
+
+    protected void onReceiveApplyInfo(String phone,String reason){
+
+    }
+
+    protected void onFrdAddSuccess(String phone){
+
+    }
     /**
      * 设置wifi状态监听listener
      */
@@ -159,7 +174,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
 
     @Override
     public void onHttpFaild(String msgType, String msg, Object obj) {
-
+        Toast.makeText(this.getApplicationContext(),msg, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -232,5 +247,19 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
             result = context.getResources().getDimensionPixelSize(resourceId);
         }
         return result;
+    }
+
+    @Override
+    public void onDownloadComplete(View view,String fileName) {
+    }
+
+    @Override
+    public void onDownloadError(View view, Throwable e,String fileName) {
+
+    }
+
+    @Override
+    public void onDownloadProgress(View view, long progress, long total) {
+
     }
 }

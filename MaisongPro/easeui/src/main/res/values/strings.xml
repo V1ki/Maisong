@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="my_friends">我的好友</string>
+    <string name="friend_apply">好友验证消息</string>
+</resources>

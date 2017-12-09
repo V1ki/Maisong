@@ -11,6 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.EMError;
 import com.hyphenate.chat.EMClient;
@@ -25,7 +26,10 @@ import com.hyphenate.easeui.utils.EaseUserUtils;
 import com.hyphenate.easeui.widget.EaseChatMessageList;
 import com.hyphenate.easeui.widget.EaseChatMessageList.MessageListItemClickListener;
 import com.hyphenate.easeui.widget.EaseImageView;
+import com.hyphenate.exceptions.HyphenateException;
 import com.hyphenate.util.DateUtils;
+import com.yuanshi.iotpro.daoutils.LoginBeanDaoUtil;
+import com.yuanshi.iotpro.publiclib.bean.LoginInfoBean;
 
 import java.util.Date;
 
@@ -125,9 +129,21 @@ public abstract class EaseChatRow extends LinearLayout {
             //set nickname and avatar
             if (message.direct() == Direct.SEND) {
                 EaseUserUtils.setUserAvatar(context, EMClient.getInstance().getCurrentUser(), userAvatarView);
+                String avatar  = new LoginBeanDaoUtil(getContext()).qeuryUserInfo(13590461973L).getAvatar();
+                Glide.with(context).load(avatar).error(R.drawable.ease_default_avatar).into(userAvatarView);
             } else {
-                EaseUserUtils.setUserAvatar(context, message.getFrom(), userAvatarView);
-                EaseUserUtils.setUserNick(message.getFrom(), usernickView);
+                try {
+                    String avatar = message.getStringAttribute("chatUserHead");
+                    String nikeName = message.getStringAttribute("chatUserName");
+                    Glide.with(context).load(avatar).error(R.drawable.ease_default_avatar).into(userAvatarView);
+                    usernickView.setText(nikeName);
+                } catch (HyphenateException e) {
+                    e.printStackTrace();
+                    EaseUserUtils.setUserAvatar(context, message.getFrom(), userAvatarView);
+                    EaseUserUtils.setUserNick(message.getFrom(), usernickView);
+
+                }
+
             }
         }
         if(deliveredView != null){

@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.widget.ImageView;
 
 import com.google.gson.Gson;
+import com.yuanshi.iotpro.daoutils.LoginBeanDaoUtil;
 import com.yuanshi.iotpro.publiclib.activity.BaseActivity;
 import com.yuanshi.iotpro.publiclib.bean.LoginInfoBean;
 import com.yuanshi.iotpro.publiclib.utils.Constant;
@@ -34,6 +35,7 @@ public class WelcomActivity extends BaseActivity {
     private Timer timer = new Timer();
     private boolean hasLoginInfo  = false;
     private LoginInfoBean loginInfoBean;
+    private LoginBeanDaoUtil loginBeanDaoUtil;
 
     @Override
     protected int getContentViewId() {
@@ -42,6 +44,7 @@ public class WelcomActivity extends BaseActivity {
 
     @Override
     protected void init(Bundle savedInstanceState) {
+        loginBeanDaoUtil = new LoginBeanDaoUtil(this);
         fullScreen();
         checkLoginInfo();
         timer.schedule(new TimerTask() {
@@ -75,7 +78,9 @@ public class WelcomActivity extends BaseActivity {
             case "login2":
                 Gson gson = new Gson();
                 LoginInfoBean responseBean = gson.fromJson(gson.toJson(obj),LoginInfoBean.class);
-                iLoginInfoDBPresenter.updateLastLoginTime(responseBean.getLast_login_time(),responseBean.getPhone());
+                LoginInfoBean localBean = loginBeanDaoUtil.qeuryUserInfo(Long.parseLong(responseBean.getPhone()));
+                localBean.setLast_login_time(responseBean.getLast_login_time());
+                loginBeanDaoUtil.updateUserInfo(localBean);
                 getSharedPreferences(Constant.MAIN_SH_NAME, MODE_PRIVATE).edit().putString(Constant.USER_PHONE_KEY,responseBean.getPhone()).commit();
                 Intent intent = new Intent();
                 if(getSharedPreferences(Constant.MAIN_SH_NAME, MODE_PRIVATE).getBoolean(Constant.HAS_PUT_USER_INFO_KEY,false)){
@@ -91,6 +96,7 @@ public class WelcomActivity extends BaseActivity {
 
     @Override
     public void onHttpFaild(String msgType, String msg, Object obj) {
+        super.onHttpFaild(msgType,msg,obj);
        switch (msgType){
            case "login2":
                Intent intent = new Intent(WelcomActivity.this,LoginAcitvity.class);
@@ -139,7 +145,7 @@ public class WelcomActivity extends BaseActivity {
      * 查询数据库登录信息
      */
     public void checkLoginInfo(){
-        List<LoginInfoBean> logininfos= iLoginInfoDBPresenter.selectAllLoginInfo();
+        List<LoginInfoBean> logininfos= loginBeanDaoUtil.queryAllUserInfo();
         if(logininfos!= null && logininfos.size()>0){
             hasLoginInfo = true;
             LoginComparator loginComparator = new LoginComparator();

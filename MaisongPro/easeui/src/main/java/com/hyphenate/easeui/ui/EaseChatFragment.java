@@ -55,6 +55,10 @@ import com.hyphenate.easeui.widget.chatrow.EaseCustomChatRowProvider;
 import com.hyphenate.exceptions.HyphenateException;
 import com.hyphenate.util.EMLog;
 import com.hyphenate.util.PathUtil;
+import com.yuanshi.iotpro.daoutils.LoginBeanDaoUtil;
+import com.yuanshi.iotpro.publiclib.bean.LoginInfoBean;
+import com.yuanshi.iotpro.publiclib.utils.Constant;
+import com.yuanshi.iotpro.publiclib.utils.YLog;
 
 import java.io.File;
 import java.util.List;
@@ -75,6 +79,7 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
     protected static final int REQUEST_CODE_CAMERA = 2;
     protected static final int REQUEST_CODE_LOCAL = 3;
     private String title;
+    private LoginBeanDaoUtil loginBeanDaoUtil;
 
     /**
      * params to fragment
@@ -118,6 +123,7 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        loginBeanDaoUtil = new LoginBeanDaoUtil(getActivity());
         return inflater.inflate(R.layout.ease_fragment_chat, container, false);
     }
 
@@ -725,6 +731,7 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
             message.setAttribute(EaseConstant.MESSAGE_ATTR_AT_MSG,
                     EaseAtMessageHelper.get().atListToJsonArray(EaseAtMessageHelper.get().getAtMessageUsernames(content)));
         }
+
         sendMessage(message);
         
     }
@@ -775,13 +782,22 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
             message.setChatType(ChatType.ChatRoom);
         }
         //send message
+        setAttribute(message);
+        YLog.e("send msg~~~~~~~");
         EMClient.getInstance().chatManager().sendMessage(message);
         //refresh ui
         if(isMessageListInited) {
             messageList.refreshSelectLast();
         }
     }
-    
+
+    public void setAttribute(EMMessage message){
+        String phone = getActivity().getSharedPreferences(Constant.MAIN_SH_NAME,Context.MODE_PRIVATE).getString(Constant.USER_PHONE_KEY,"");
+        LoginInfoBean loginInfoBean = loginBeanDaoUtil.qeuryUserInfo(Long.parseLong(phone));
+        message.setAttribute("chatUserId",loginInfoBean.getPhone());
+        message.setAttribute("chatUserHead",loginInfoBean.getAvatar());
+        message.setAttribute("chatUserName",loginInfoBean.getNickname());
+    }
     
     public void resendMessage(EMMessage message){
         message.setStatus(EMMessage.Status.CREATE);

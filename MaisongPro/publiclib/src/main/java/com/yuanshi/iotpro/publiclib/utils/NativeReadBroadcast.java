@@ -20,6 +20,11 @@ public class NativeReadBroadcast extends BroadcastReceiver {
         onWifiStateChangeListener = wifiStateChangeListener;
     }
 
+    private static OnReviceMsgListener onReviceMsgListener;
+    public static void setOnReviceMsgListener(OnReviceMsgListener onReviceMsgListener1){
+        onReviceMsgListener = onReviceMsgListener1;
+    }
+
     public interface OnWifiStateChange{
         void onMobileNetWork();
         void onWiFiConnected(String SSID);
@@ -29,10 +34,15 @@ public class NativeReadBroadcast extends BroadcastReceiver {
         void onWiFiOpened();
         void onWiFiClosed();
     }
+
+    public interface OnReviceMsgListener{
+        void onReceiveFrdApplyInfo(String phone, String reason);
+        void onFriendAddSuccess(String phone);
+    }
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
-        if (intent.getAction().equals(WifiManager.WIFI_STATE_CHANGED_ACTION)) {
+        if (WifiManager.WIFI_STATE_CHANGED_ACTION.equals(intent.getAction())) {
             int wifistate = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_DISABLED);
 
             if (wifistate == WifiManager.WIFI_STATE_DISABLED) {
@@ -81,6 +91,21 @@ public class NativeReadBroadcast extends BroadcastReceiver {
                     }
                     break;
             }
+        }
+
+        if(Constant.RECEIVED_FRDAPPLY_INFO.equals(intent.getAction())){
+            if(onReviceMsgListener != null){
+                String name = intent.getStringExtra("username");
+                String reason = intent.getStringExtra("reason");
+                onReviceMsgListener.onReceiveFrdApplyInfo(name,reason);
+            }
+        }
+        if(Constant.ADDED_FRIEBND_SUCCESS.equals(intent.getAction())){
+            if(onReviceMsgListener != null){
+                String name = intent.getStringExtra("username");
+                onReviceMsgListener.onFriendAddSuccess(name);
+            }
+
         }
 
     }

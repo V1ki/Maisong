@@ -75,9 +75,6 @@ public class EditNotifyActivity extends BaseActivity {
     TextView titleText;
     private String crewId;
     private String editType ;//编辑内容类型；
-    public static final int EDIT_TYPE_CREW_NOTITY = 0;//编辑剧组通知
-    public static final int EDIT_TYPE_SCRIPT_UPDATE = 1;//编辑剧本扉页
-    public static final int EDIT_TYPE_MEMOIRE = 2;//编辑备忘录
     public ConcurrentHashMap<String, String> picPath = new ConcurrentHashMap();//图片是否已上传
 
 

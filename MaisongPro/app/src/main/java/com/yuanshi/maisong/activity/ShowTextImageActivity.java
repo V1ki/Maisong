@@ -1,21 +1,35 @@
 package com.yuanshi.maisong.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.baidu.mapapi.map.Text;
 import com.google.gson.Gson;
 import com.yuanshi.iotpro.publiclib.activity.BaseActivity;
 import com.yuanshi.iotpro.publiclib.utils.Constant;
+import com.yuanshi.iotpro.publiclib.utils.YLog;
 import com.yuanshi.maisong.R;
 import com.yuanshi.maisong.bean.NoticeDetailBean;
+import com.yuanshi.maisong.utils.Utils;
 import com.yuanshi.maisong.view.MixedTextImageLayout;
+import com.yuanshi.maisong.view.RoundProgressBar;
+
+import java.io.File;
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,10 +57,14 @@ public class ShowTextImageActivity extends BaseActivity {
     TextView subline;
     @BindView(R.id.scroll_view)
     ScrollView scrollView;
+    @BindView(R.id.fileLisetView)
+    ListView fileLisetView;
 
     private String id;
     private String title;
     private String requestType;
+    private ArrayList<String> fileList = new ArrayList<>();
+    private FileListAdapter adapter;
 
     @Override
     protected int getContentViewId() {
@@ -58,76 +76,101 @@ public class ShowTextImageActivity extends BaseActivity {
         id = getIntent().getStringExtra("id");
         title = getIntent().getStringExtra("title");
         requestType = getIntent().getStringExtra("requestType");
-        if(TextUtils.isEmpty(id)){
-            Toast.makeText(getApplicationContext(),  R.string.crew_id_null, Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(id)) {
+            Toast.makeText(getApplicationContext(), R.string.crew_id_null, Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
+        adapter = new FileListAdapter(this);
+        fileLisetView.setAdapter(adapter);
         titleText.setText(title);
-        iHttpPresenter.details(requestType,id);
-//        String content = "" +
-//                "<img>http://img4.imgtn.bdimg.com/it/u=2321120463,723813631&fm=27&gp=0.jpg</img>" +
-//                "    秋风送爽，清菊飘香，微露的晨曦里，有一抹霞染的云在旭日上轻舞。秋日的早晨，空气格外的清新，深深地吸上一口，有雨后草的清幽和花的馨香。几只麻雀在枝头欢快的鸣叫着，树叶上的露珠儿纷纷滑落……\n" +
-//                "　　\n" +
-//                "　　远山笼罩在一层轻似薄纱的白雾中，微风吹来，园子里花枝摇曳。一切都是那么宁静而安详。在安详中迎接美好的一天。我多想人生就像这秋晨一样，透着清新，溢着花香，沐着阳光……\n" +
-//                "　　\n<img>http://img4.imgtn.bdimg.com/it/u=2321120463,723813631&fm=27&gp=0.jpg</img>" +
-//                "　　盛开的花儿在晨曦里清新，在午夜里迷人。无论是哪一种花，都是大自然馈赠给我们的礼物。就像人生的际遇，或早或迟都是一种美好。生活中有风雨也有晴空，有得到也会有失去，心若简单，活着就简单。不管遇到多大的困难，都要微笑面对，相信，幸福就在不远处。\n" +
-//                "　　\n<img>http://img3.imgtn.bdimg.com/it/u=1354592590,1762022981&fm=11&gp=0.jpg</img>" +
-//                "　　生命需要沉淀才更加安稳，生活需要梳理才能看清脉络。静静的品读心音，倾听，时光留下的絮语……真诚的感谢那些曾经帮助过我们的人，感恩生活的惠赠，原谅那些伤害与错过。收藏源自心灵的体会和感悟，宠辱不惊，你会发现，生命因爱而博大，因芬芳而美丽，因给予而厚重。\n" +
-//                "　　\n" +
-//                "　　人生就是一种修行，在修行的过程中，我们要不断反思，取长补短，循序渐进。懂得知足，知福，知恩。春有百花秋望月，夏有凉风冬听雪。花开花落都是情，月缺月圆都是景。只要我们心存希望，以一颗慈悲之心善待一切，我们心灵的天空就会是晴朗的，我们的生活就会充满阳光。\n" +
-//                "　　\n" +
-//                "　　岁月如歌，声起声落。我们从懵懂无知，到成熟从容，慢慢沉淀出一颗纯净的心灵；时光如织，风雨中前行，阳光中奔跑，渐渐历练成一个坚强的灵魂。书上说，每一个不曾起舞的日子，都是对生命的辜负。每一处花香，每一个明媚的日子，都是生活给予我们最好的礼物。\n" +
-//                "　　\n<img>https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1510212221&di=4d5c7398270d061d0c3f430cc76724cd&imgtype=jpg&er=1&src=http%3A%2F%2Fimg16.3lian.com%2Fgif2016%2Fq19%2F52%2F108.jpg</img>" +
-//                "　　在最美的年华里，拥有最好的人生。即便繁华落幕，也不留遗憾，你不用关心失去多少，只要知道自己还拥有什么就好。不管生活曾经给过你多少，放下即是心安，失去便是收获。\n" +
-//                "　　\n" +
-//                "　　其实，这个世上随处都有可见的美，只是我们少了发现美的心。春的明媚和冬的洁白，夏的绚丽和秋的静美，都是这个世界赋予我们的色彩。随着对生活愈来愈深的理解与体验，深深的懂得，拥有一份善良平常的心态，以及一份真实满足的心境，便是人生最美。\n" +
-//                "　　\n" +
-//                "　　清晨的花朵，因着昨夜的雨，谢了晚妆，枝上的叶子，因着多情的风，戚戚然去了远方。一夜之间，树上的叶子变了颜色，红色的秋叶，在阳光下显得格外迷人，把张扬的个性表现得淋漓尽致。小溪，依旧潺潺流淌着，那些不知名的野草，生命力极强，依然吮吸着它那生命之水，努力蓬勃着，生长着……";
-//        mixedTextImageLayout.setContent(content);
-
-
+        iHttpPresenter.details(requestType, id);
+        fileLisetView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                ViewHolder holder = (ViewHolder) view.getTag();
+                String url = fileList.get(i);
+                String fileName = url.substring(url.lastIndexOf("/") + 1, url.length());
+                if(!Utils.isFileExist(fileName)){
+                    holder.progressLayout.setVisibility(View.VISIBLE);
+                    iHttpPresenter.download(fileList.get(i), Utils.getFileDownloadTempPath(), fileName, view);
+                }else{
+                    Intent intent = new Intent(ShowTextImageActivity.this, ShowFileActivity.class);
+                    intent.putExtra("fileName", fileName);
+                    startActivity(intent);
+                }
+            }
+        });
     }
 
-    private void initData(Object obj){
+    @Override
+    public void onDownloadProgress(View view, long progress, long total) {
+        super.onDownloadProgress(view, progress, total);
+        ViewHolder viewHolder = (ViewHolder) view.getTag();
+        viewHolder.progressBar.setProgress((int) (100 * progress / total));
+    }
+
+    @Override
+    public void onDownloadComplete(View view,String fileName) {
+        super.onDownloadComplete(view,fileName);
+        ViewHolder viewHolder = (ViewHolder) view.getTag();
+        viewHolder.progressLayout.setVisibility(View.GONE);
+        Utils.moveFile(fileName);//下载完成，将文件移动到正式目录
+        viewHolder.downloadStateTv.setText(R.string.has_downloaded);
+        viewHolder.downloadStateTv.setTextColor(getResources().getColor(R.color.btn_green_noraml));
+    }
+
+    @Override
+    public void onDownloadError(View view, Throwable e,String fileName) {
+        ViewHolder viewHolder = (ViewHolder) view.getTag();
+        viewHolder.progressLayout.setVisibility(View.GONE);
+        Toast.makeText(getApplicationContext(),R.string.download_faild,Toast.LENGTH_SHORT).show();
+        Utils.deleteFile(new File(Utils.getFileDownloadTempPath()+"/"+fileName));//下载失败，删除文件
+        viewHolder.downloadStateTv.setText(R.string.not_downloaded);
+        viewHolder.downloadStateTv.setTextColor(getResources().getColor(R.color.gray_normal));
+    }
+
+    private void initData(Object obj) {
         Gson gson = new Gson();
         String json = gson.toJson(obj);
-        NoticeDetailBean notice = gson.fromJson(json,NoticeDetailBean.class);
-        if(!TextUtils.isEmpty(notice.getTitle())){
+        NoticeDetailBean notice = gson.fromJson(json, NoticeDetailBean.class);
+        fileList = notice.getFile();
+        adapter.notifyDataSetChanged();
+        if (!TextUtils.isEmpty(notice.getTitle())) {
             textTitle.setText(notice.getTitle());
         }
-        if(!TextUtils.isEmpty(notice.getAuthor())){
-            autherName.setText("@"+notice.getAuthor());
+        if (!TextUtils.isEmpty(notice.getAuthor())) {
+            autherName.setText("@" + notice.getAuthor());
         }
-        if(!TextUtils.isEmpty(notice.getAddtime())){
+        if (!TextUtils.isEmpty(notice.getAddtime())) {
             createDate.setText(notice.getAddtime());
         }
         buildContent(notice);
     }
 
-    private void buildContent(NoticeDetailBean notice){
+    private void buildContent(NoticeDetailBean notice) {
         StringBuilder content = new StringBuilder();
 
-        if(!TextUtils.isEmpty(notice.getContent()) && notice.getPics() != null && notice.getPics().length > 0){
+        if (!TextUtils.isEmpty(notice.getContent()) && notice.getPics() != null && notice.getPics().length > 0) {
             String[] contents = notice.getContent().split("\n");
-            if(contents.length <= notice.getPics().length){
-                for (int i = 0; i < contents.length; i ++){
+            if (contents.length <= notice.getPics().length) {
+                for (int i = 0; i < contents.length; i++) {
                     content.append("<img>").append(notice.getPics()[i]).append("</img>");
                     content.append(contents[i]);
                 }
-                for(int i = contents.length; i < notice.getPics().length; i ++ ){
+                for (int i = contents.length; i < notice.getPics().length; i++) {
                     content.append(contents[i]);
                 }
-            }else{
-                for (int i = 0; i < notice.getPics().length; i ++){
+            } else {
+                for (int i = 0; i < notice.getPics().length; i++) {
                     content.append("<img>").append(notice.getPics()[i]).append("</img>");
                     content.append(contents[i]);
                 }
-                for(int i = notice.getPics().length; i < contents.length; i ++ ){
+                for (int i = notice.getPics().length; i < contents.length; i++) {
                     content.append(contents[i]);
                 }
             }
-        }else if(notice.getPics() == null|| notice.getPics().length == 0){
+        } else if (notice.getPics() == null || notice.getPics().length == 0) {
             content.append(notice.getContent());
         }
 
@@ -137,14 +180,17 @@ public class ShowTextImageActivity extends BaseActivity {
             public void run() {
                 scrollView.fullScroll(ScrollView.FOCUS_UP);
             }
-        },200);
+        }, 200);
     }
 
     @Override
     public void onHttpSuccess(String msgType, String msg, Object obj) {
-        switch (msgType){
-            case Constant.HTTP_REQUEST_REMIND+":details":
-            case Constant.HTTP_REQUEST_SCRIPTPAGE+":details":
+        switch (msgType) {
+            case Constant.HTTP_REQUEST_REMIND + ":details":
+            case Constant.HTTP_REQUEST_SCRIPTPAGE + ":details":
+            case Constant.HTTP_REQUEST_MEMORANDUM + ":details":
+            case Constant.HTTP_REQUEST_BIGPLAN + ":details":
+            case Constant.HTTP_REQUEST_NOTICE + ":details":
                 initData(obj);
                 break;
         }
@@ -161,4 +207,76 @@ public class ShowTextImageActivity extends BaseActivity {
     public void onViewClicked() {
         finish();
     }
+
+    private class FileListAdapter extends BaseAdapter {
+        private LayoutInflater inflater;
+
+        public FileListAdapter(Context context) {
+            inflater = LayoutInflater.from(context);
+        }
+
+        @Override
+        public int getCount() {
+            return fileList.size();
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return fileList.get(i);
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        @Override
+        public View getView(final int i, View view, ViewGroup viewGroup) {
+            ViewHolder holder;
+            if (view == null) {
+                view = inflater.inflate(R.layout.file_item, null);
+                holder = new ViewHolder(view);
+                view.setTag(holder);
+            } else {
+                holder = (ViewHolder) view.getTag();
+            }
+            String url = fileList.get(i);
+            if (url.endsWith("pdf")) {
+                holder.fileIcon.setImageResource(R.mipmap.pdf_icon);
+            } else if (url.endsWith("txt")) {
+                holder.fileIcon.setImageResource(R.mipmap.txt_icon);
+            }
+            YLog.e("PDF地址" + url);
+            String fileName = url.substring(url.lastIndexOf("/") + 1, url.length());
+            if(Utils.isFileExist(fileName)){
+                holder.downloadStateTv.setTextColor(getResources().getColor(R.color.btn_green_noraml));
+                holder.downloadStateTv.setText(R.string.has_downloaded);
+            }else{
+                holder.downloadStateTv.setTextColor(getResources().getColor(R.color.gray_normal));
+                holder.downloadStateTv.setText(R.string.not_downloaded);
+            }
+            holder.fileName.setText(fileName);
+            holder.progressLayout.setVisibility(View.GONE);
+            return view;
+        }
+    }
+    static class ViewHolder {
+        @BindView(R.id.progress_bar)
+        RoundProgressBar progressBar;
+        @BindView(R.id.progress_layout)
+        RelativeLayout progressLayout;
+        @BindView(R.id.fileIcon)
+        ImageView fileIcon;
+        @BindView(R.id.fileName)
+        TextView fileName;
+        @BindView(R.id.downloadStateTv)
+        TextView downloadStateTv;
+        @BindView(R.id.title_layout)
+        RelativeLayout titleLayout;
+
+        ViewHolder(View view) {
+            ButterKnife.bind(this, view);
+        }
+    }
+
 }

@@ -14,17 +14,25 @@ import android.widget.Toast;
 
 import com.baidu.mapapi.map.Text;
 import com.google.gson.Gson;
+import com.hyphenate.EMContactListener;
 import com.hyphenate.chat.EMChatRoom;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMGroup;
 import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.model.EaseAtMessageHelper;
+import com.hyphenate.easeui.ui.EaseContactListFragment;
 import com.hyphenate.easeui.ui.EaseConversationListFragment;
 import com.hyphenate.easeui.utils.EaseUserUtils;
 import com.hyphenate.exceptions.HyphenateException;
+import com.yuanshi.iotpro.daoutils.FriendApplyBeanDaoUtil;
+import com.yuanshi.iotpro.daoutils.LoginBeanDaoUtil;
 import com.yuanshi.iotpro.daoutils.UserBeanDaoUtil;
+import com.yuanshi.iotpro.publiclib.bean.FriendsApplyBean;
+import com.yuanshi.iotpro.publiclib.bean.LoginInfoBean;
 import com.yuanshi.iotpro.publiclib.bean.UserInfoBean;
+import com.yuanshi.iotpro.publiclib.utils.Constant;
+import com.yuanshi.iotpro.publiclib.utils.NativeReadBroadcast;
 import com.yuanshi.iotpro.publiclib.utils.YLog;
 import com.yuanshi.maisong.R;
 import com.yuanshi.maisong.bean.CrewHttpBean;
@@ -68,6 +76,7 @@ public class MainActivity extends BaseActivity {
 
     public static final int SHOW_HOMEPAGE = 0;
     public static MainActivity instance;
+    public FriendApplyBeanDaoUtil friendApplyBeanDaoUtil;
 
     @Override
     protected int getContentViewId() {
@@ -76,20 +85,78 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void init(Bundle savedInstanceState) {
+        friendApplyBeanDaoUtil = new FriendApplyBeanDaoUtil(this);
+        setOnContactFriendListener();
         initBottomLayout();
         initFragmentPager();
         ((BottomTabItem) bottomLayout.getChildAt(SHOW_HOMEPAGE))
                 .setItemChecked(true);// 设置默认选中第一个Tab
         instance = this;
+        LoginBeanDaoUtil util = new LoginBeanDaoUtil(this);
+        List<LoginInfoBean> list = util.queryAllUserInfo();
+        for(LoginInfoBean loginInfoBean: list){
+            YLog.e("db 登录对象"+new Gson().toJson(loginInfoBean));
+        }
     }
 
+    public void setOnContactFriendListener(){
+        EMClient.getInstance().contactManager().setContactListener(new EMContactListener() {
+            @Override
+            public void onContactInvited(String username, String reason) {
+                //收到好友邀请
+                YLog.e("好友添加成功---》"+username+":"+reason);
+                FriendsApplyBean bean = new FriendsApplyBean();
+                bean.setReason(reason);
+                bean.setState(Constant.FRD_APPLY_STATE_NORMAL);
+                bean.setPhone(username);
+                bean.set_id(Long.parseLong(bean.getPhone()));
+                 FriendsApplyBean localBean = friendApplyBeanDaoUtil.qeuryFrdApplyInfo(bean.get_id());
+                 if(localBean == null){
+                     friendApplyBeanDaoUtil.insertFrdApplyInfo(bean);
+                 }else{
+                     localBean.setReason(bean.getReason());
+                     localBean.setState(Constant.FRD_APPLY_STATE_NORMAL);
+                     friendApplyBeanDaoUtil.updateFrdApplyInfo(localBean);
+                 }
+                Intent intent = new Intent(MainActivity.this, NativeReadBroadcast.class);
+                intent.setAction(Constant.RECEIVED_FRDAPPLY_INFO);
+                intent.putExtra("username",username);
+                intent.putExtra("reason",reason);
+                sendBroadcast(intent);
+            }
+            @Override
+            public void onFriendRequestAccepted(String s) {
+                //好友请求被同意
+            }
+
+            @Override
+            public void onFriendRequestDeclined(String s) {
+                //好友请求被拒绝
+            }
+            @Override
+            public void onContactDeleted(String username) {
+                //被删除时回调此方法
+            }
+            @Override
+            public void onContactAdded(String username) {
+                //增加了联系人时回调此方法
+                YLog.e("好友添加成功---》"+username);
+                Intent intent = new Intent(MainActivity.this, NativeReadBroadcast.class);
+                intent.setAction(Constant.ADDED_FRIEBND_SUCCESS);
+                intent.putExtra("username",username);
+                sendBroadcast(intent);
+            }
+        });
+    }
 
     public void initFragmentPager(){
         final EMconversationFragment conversationListFragment = new EMconversationFragment();
         conversationListFragment.setOnAddBtnClickListener(new EaseConversationListFragment.OnAddBtnClickLister() {
             @Override
             public void onAddbtnClick(View view) {
-                startActivity(new Intent(MainActivity.this,ESContactsActivity.class));
+                Intent intent = new Intent(MainActivity.this,ESContactsActivity.class);
+                intent.putExtra("openType", EaseContactListFragment.OPEN_TYPE_CONTACTLIST);
+                startActivity(intent);
             }
         });
         conversationListFragment.setConversationListItemClickListener(new EaseConversationListFragment.EaseConversationListItemClickListener() {
@@ -147,7 +214,6 @@ public class MainActivity extends BaseActivity {
                     }
                 }
             }
-
             @Override
             public void onPageScrollStateChanged(int state) {
 
@@ -223,7 +289,6 @@ public class MainActivity extends BaseActivity {
      */
     public void reloadCrewListData(){
         List<String> groupidList = new ArrayList<>();
-
         ((EMconversationFragment)fragments[0]).reloadCrewListData();
         ((CrewFragment)fragments[1]).reloadCrewListData();
 

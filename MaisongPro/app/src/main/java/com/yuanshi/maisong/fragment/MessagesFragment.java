@@ -112,9 +112,9 @@ public class MessagesFragment extends Fragment {
 
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
-            view = (LinearLayout) layoutInflater.inflate(R.layout.msg_list_item, null);
-            ViewHolder viewHolder = null;
-            if(viewHolder == null){
+            ViewHolder viewHolder ;
+            if(view == null){
+                view = (LinearLayout) layoutInflater.inflate(R.layout.msg_list_item, null);
                 viewHolder = new ViewHolder(view);
                 view.setTag(viewHolder);
             }else{

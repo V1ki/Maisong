@@ -1,10 +1,13 @@
 package com.yuanshi.iotpro.publiclib.model.interfacepkg;
 
+import com.yuanshi.iotpro.publiclib.utils.FileCallBack;
+
 import java.io.File;
 import java.util.Map;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import rx.Observer;
 
 
@@ -50,4 +53,6 @@ public interface IHttpModel {
     void del(String requestType, String id,Observer observer);
 
     void doAdd( String requestType, String id, Map<String, Object> map,Observer observer);
+
+    void download( String url,FileCallBack<ResponseBody> callBack);
 }

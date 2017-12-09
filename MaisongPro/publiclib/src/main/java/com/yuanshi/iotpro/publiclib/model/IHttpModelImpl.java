@@ -8,6 +8,8 @@ import com.yuanshi.iotpro.publiclib.application.MyApplication;
 import com.yuanshi.iotpro.publiclib.model.http.ApiManager;
 import com.yuanshi.iotpro.publiclib.model.http.HttpServer;
 import com.yuanshi.iotpro.publiclib.model.interfacepkg.IHttpModel;
+import com.yuanshi.iotpro.publiclib.utils.FileCallBack;
+import com.yuanshi.iotpro.publiclib.utils.FileSubscriber;
 
 import java.io.File;
 import java.util.HashMap;
@@ -16,9 +18,11 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Retrofit;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -194,6 +198,20 @@ public class IHttpModelImpl implements IHttpModel {
                 .observeOn(AndroidSchedulers.mainThread())
                 . timeout(5, TimeUnit.SECONDS)
                 .subscribe(observer);
+    }
+
+    @Override
+    public void download(String url,final FileCallBack<ResponseBody> callBack) {
+        server.download(url).subscribeOn(Schedulers.io())//请求网络 在调度者的io线程
+                .observeOn(Schedulers.io()) //指定线程保存文件
+                .doOnNext(new Action1<ResponseBody>() {
+                    @Override
+                    public void call(ResponseBody body) {
+                        callBack.saveFile(body);
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread()) //在主线程中更新ui
+                .subscribe(new FileSubscriber<ResponseBody>(callBack));
     }
 
 }

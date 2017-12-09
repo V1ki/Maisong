@@ -1,9 +1,16 @@
 package com.yuanshi.maisong.activity;
 
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -15,6 +22,7 @@ import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.easeui.EaseConstant;
+import com.hyphenate.exceptions.HyphenateException;
 import com.yuanshi.iotpro.publiclib.activity.BaseActivity;
 import com.yuanshi.iotpro.publiclib.application.MyApplication;
 import com.yuanshi.iotpro.publiclib.utils.YLog;
@@ -172,6 +180,7 @@ public class FriendDetailActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.add_friend_btn:
+                showAddReasonDialog();
                 break;
             case R.id.send_msg_btn:
                 Intent intent = new Intent(this, ChatActivity.class);
@@ -202,6 +211,56 @@ public class FriendDetailActivity extends BaseActivity {
         } catch (ExecutionException e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+
+    /**
+     * 好友添加验证消息弹出框
+     */
+    public void showAddReasonDialog(){
+        final Dialog dialog = new Dialog(this, R.style.datePickerStyle);
+        LinearLayout root = (LinearLayout) LayoutInflater.from(this).inflate(
+                R.layout.input_reason_dialog, null);
+        final TextView input_content = root.findViewById(R.id.input_content);
+        root.findViewById(R.id.commit_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addFrdApply(input_content.getText().toString().trim());
+                dialog.dismiss();
+            }
+        });
+        root.findViewById(R.id.cancel_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        dialog.setContentView(root);
+        Window dialogWindow = dialog.getWindow();
+        dialogWindow.setGravity(Gravity.CENTER);
+        WindowManager.LayoutParams lp = dialogWindow.getAttributes(); // 获取对话框当前的参数值
+        lp.x = 0; // 新位置X坐标
+        lp.y = 0; // 新位置Y坐标
+
+        WindowManager wm = (WindowManager)this
+                .getSystemService(Context.WINDOW_SERVICE);
+
+        int width = wm.getDefaultDisplay().getWidth();
+        int height = wm.getDefaultDisplay().getHeight();
+        lp.width = width-80; // 宽度
+        root.measure(0, 0);
+        lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        lp.alpha = 2f; // 透明度
+        dialogWindow.setAttributes(lp);
+        dialog.show();
+    }
+
+    public void addFrdApply(String reason){
+        try {
+            EMClient.getInstance().contactManager().addContact(userInfo.getPhone(), reason);
+        } catch (HyphenateException e) {
+            e.printStackTrace();
         }
     }
 }

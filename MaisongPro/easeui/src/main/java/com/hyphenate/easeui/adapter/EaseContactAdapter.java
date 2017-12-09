@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.hyphenate.easeui.EaseUI;
 import com.hyphenate.easeui.R;
 import com.hyphenate.easeui.domain.EaseAvatarOptions;
@@ -51,6 +52,7 @@ public class EaseContactAdapter extends ArrayAdapter<EaseUser> implements Sectio
         ImageView avatar;
         TextView nameView;
         TextView headerView;
+        TextView phoneView;
     }
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -64,6 +66,7 @@ public class EaseContactAdapter extends ArrayAdapter<EaseUser> implements Sectio
             holder.avatar = (ImageView) convertView.findViewById(R.id.avatar);
             holder.nameView = (TextView) convertView.findViewById(R.id.name);
             holder.headerView = (TextView) convertView.findViewById(R.id.header);
+            holder.phoneView = convertView.findViewById(R.id.signature);
             convertView.setTag(holder);
         }else{
             holder = (ViewHolder) convertView.getTag();
@@ -99,9 +102,10 @@ public class EaseContactAdapter extends ArrayAdapter<EaseUser> implements Sectio
                 avatarView.setRadius(avatarOptions.getAvatarRadius());
         }
 
-        EaseUserUtils.setUserNick(username, holder.nameView);
-        EaseUserUtils.setUserAvatar(getContext(), username, holder.avatar);
-        
+        EaseUserUtils.setUserNick(user.getNickname(), holder.nameView);
+        Glide.with(getContext()).load(user.getAvatar()).error(R.drawable.ease_default_avatar).into(holder.avatar);
+//        EaseUserUtils.setUserAvatar(getContext(), user.getAvatar(), holder.avatar);
+        holder.phoneView.setText(username);
        
         if(primaryColor != 0)
             holder.nameView.setTextColor(primaryColor);

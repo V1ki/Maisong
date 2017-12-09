@@ -47,6 +47,7 @@ public class EaseUser extends EMContact {
         return avatar;
     }
 
+
     public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
@@ -67,5 +68,23 @@ public class EaseUser extends EMContact {
 	@Override
 	public String toString() {
 		return nick == null ? username : nick;
+	}
+
+	@Override
+	public void setNickname(String s) {
+		super.setNickname(s);
+	}
+
+	@Override
+	public String getNickname() {
+		return super.getNickname();
+	}
+
+	public void setUsername(String userName){
+		this.username = userName;
+	}
+
+	public String getUsername(){
+		return this.username;
 	}
 }

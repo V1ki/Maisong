@@ -1,41 +1,26 @@
 package com.yuanshi.iotpro.publiclib.bean;
 
-import org.litepal.crud.DataSupport;
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.NotNull;
+import org.greenrobot.greendao.annotation.Unique;
+import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * Created by Dengbocheng on 2017/11/7.
  * 登录信息类
  */
-
-/**
- *     "uid": "51",
- "nickname": null,
- "truename": null,
- "sex": "0",
- "birthday": "0",
- "qq": "",
- "phone": "13590461973",
- "weixin": null,
- "email": "",
- "avatar": null,
- "score": "0",
- "login": "0",
- "reg_ip": "11630",
- "reg_time": "1509962600",
- "last_login_ip": "0",
- "last_login_time": "0",
- "status": "1",
- "lang": null,
- "attribution": null,
- "note": null
- */
-public class LoginInfoBean extends DataSupport {
+@Entity
+public class LoginInfoBean{
+    @Id
+    private Long _id;
     private String uid;
     private String nickname;
     private String truename;
     private String sex;
     private String birthday;
     private String qq;
+    @Unique @NotNull
     private String phone;
     private String weixin;
     private String email;
@@ -50,164 +35,163 @@ public class LoginInfoBean extends DataSupport {
     private String lang;
     private String attribution;
     private String note;
-
-    public String getUid() {
-        return uid;
+    @Generated(hash = 1177350970)
+    public LoginInfoBean(Long _id, String uid, String nickname, String truename,
+            String sex, String birthday, String qq, @NotNull String phone,
+            String weixin, String email, String avatar, String score, String login,
+            String reg_ip, String reg_time, String last_login_ip,
+            String last_login_time, String status, String lang, String attribution,
+            String note) {
+        this._id = _id;
+        this.uid = uid;
+        this.nickname = nickname;
+        this.truename = truename;
+        this.sex = sex;
+        this.birthday = birthday;
+        this.qq = qq;
+        this.phone = phone;
+        this.weixin = weixin;
+        this.email = email;
+        this.avatar = avatar;
+        this.score = score;
+        this.login = login;
+        this.reg_ip = reg_ip;
+        this.reg_time = reg_time;
+        this.last_login_ip = last_login_ip;
+        this.last_login_time = last_login_time;
+        this.status = status;
+        this.lang = lang;
+        this.attribution = attribution;
+        this.note = note;
     }
-
+    @Generated(hash = 410655696)
+    public LoginInfoBean() {
+    }
+    public Long get_id() {
+        return this._id;
+    }
+    public void set_id(Long _id) {
+        this._id = _id;
+    }
+    public String getUid() {
+        return this.uid;
+    }
     public void setUid(String uid) {
         this.uid = uid;
     }
-
     public String getNickname() {
-        return nickname;
+        return this.nickname;
     }
-
     public void setNickname(String nickname) {
         this.nickname = nickname;
     }
-
     public String getTruename() {
-        return truename;
+        return this.truename;
     }
-
     public void setTruename(String truename) {
         this.truename = truename;
     }
-
     public String getSex() {
-        return sex;
+        return this.sex;
     }
-
     public void setSex(String sex) {
         this.sex = sex;
     }
-
     public String getBirthday() {
-        return birthday;
+        return this.birthday;
     }
-
     public void setBirthday(String birthday) {
         this.birthday = birthday;
     }
-
     public String getQq() {
-        return qq;
+        return this.qq;
     }
-
     public void setQq(String qq) {
         this.qq = qq;
     }
-
     public String getPhone() {
-        return phone;
+        return this.phone;
     }
-
     public void setPhone(String phone) {
         this.phone = phone;
     }
-
     public String getWeixin() {
-        return weixin;
+        return this.weixin;
     }
-
     public void setWeixin(String weixin) {
         this.weixin = weixin;
     }
-
     public String getEmail() {
-        return email;
+        return this.email;
     }
-
     public void setEmail(String email) {
         this.email = email;
     }
-
     public String getAvatar() {
-        return avatar;
+        return this.avatar;
     }
-
     public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
-
     public String getScore() {
-        return score;
+        return this.score;
     }
-
     public void setScore(String score) {
         this.score = score;
     }
-
     public String getLogin() {
-        return login;
+        return this.login;
     }
-
     public void setLogin(String login) {
         this.login = login;
     }
-
     public String getReg_ip() {
-        return reg_ip;
+        return this.reg_ip;
     }
-
     public void setReg_ip(String reg_ip) {
         this.reg_ip = reg_ip;
     }
-
     public String getReg_time() {
-        return reg_time;
+        return this.reg_time;
     }
-
     public void setReg_time(String reg_time) {
         this.reg_time = reg_time;
     }
-
     public String getLast_login_ip() {
-        return last_login_ip;
+        return this.last_login_ip;
     }
-
     public void setLast_login_ip(String last_login_ip) {
         this.last_login_ip = last_login_ip;
     }
-
     public String getLast_login_time() {
-        return last_login_time;
+        return this.last_login_time;
     }
-
     public void setLast_login_time(String last_login_time) {
         this.last_login_time = last_login_time;
     }
-
     public String getStatus() {
-        return status;
+        return this.status;
     }
-
     public void setStatus(String status) {
         this.status = status;
     }
-
     public String getLang() {
-        return lang;
+        return this.lang;
     }
-
     public void setLang(String lang) {
         this.lang = lang;
     }
-
     public String getAttribution() {
-        return attribution;
+        return this.attribution;
     }
-
     public void setAttribution(String attribution) {
         this.attribution = attribution;
     }
-
     public String getNote() {
-        return note;
+        return this.note;
     }
-
     public void setNote(String note) {
         this.note = note;
     }
+
 }

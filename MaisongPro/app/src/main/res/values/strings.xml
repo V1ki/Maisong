@@ -125,5 +125,19 @@
     <string name="user_phone_null">用户账号信息获取失败！</string>
     <string name="crew_id_null">剧组信息获取失败！</string>
     <string name="apply_notice_success">发布成功！</string>
+    <string name="pls_select_date">请选择日期</string>
+    <string name="startdate_before_enddate">结束日期不能早于或等于开始日期！</string>
+    <string name="frd_apply_info">好友验证消息</string>
+    <string name="accept">同意</string>
+    <string name="declined">拒绝</string>
+    <string name="accepted">已同意</string>
+    <string name="declineded">已拒绝</string>
+    <string name="say_something">说点什么吧</string>
+    <string name="we_ware_friend">我们已经是好友了</string>
+    <string name="not_downloaded">未下载</string>
+    <string name="has_downloaded">已下载</string>
+    <string name="download_faild">下载失败</string>
+    <string name="file_not_found">文件未找到</string>
+    <string name="not_support_file_format">不支持的文件格式！</string>
 
 </resources>
