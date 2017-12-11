@@ -1,6 +1,7 @@
 package com.yuanshi.maisong.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
@@ -75,6 +76,18 @@ public class Utils {
      */
     public static String getFileDownloadTempPath(){
         File file = new File(Environment.getExternalStorageDirectory()+"/MySong/TempFiles/");
+        if(!file.exists()){
+            file.mkdirs();
+        }
+        return file.getAbsolutePath();
+    }
+
+    /**
+     * 崩溃日志保存路径
+     * @return
+     */
+    public static String getAppLogPath(){
+        File file = new File(Environment.getExternalStorageDirectory()+"/MySong/Logs/");
         if(!file.exists()){
             file.mkdirs();
         }
@@ -424,5 +437,15 @@ public class Utils {
             }
             file.delete();
         }
+    }
+
+    /**
+     * 重启程序
+     * @param conext
+     */
+    public static void  reloadApp(Context conext,Class clazz){
+        final Intent intent = conext.getPackageManager().getLaunchIntentForPackage(conext.getPackageName());
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        conext.startActivity(intent);
     }
 }

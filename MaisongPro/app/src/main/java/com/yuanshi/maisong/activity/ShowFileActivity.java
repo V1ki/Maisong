@@ -17,16 +17,9 @@ import com.joanzapata.pdfview.listener.OnPageChangeListener;
 import com.yuanshi.iotpro.publiclib.activity.BaseActivity;
 import com.yuanshi.maisong.R;
 import com.yuanshi.maisong.utils.Utils;
+import com.yuanshi.maisong.utils.txtread_utils.FileHelper;
 
-import org.apache.http.util.EncodingUtils;
-
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -75,7 +68,7 @@ public class ShowFileActivity extends BaseActivity implements OnPageChangeListen
             } else if (fileName.endsWith("txt")) {
                 txtLayout.setVisibility(View.VISIBLE);
                 pdfView.setVisibility(View.GONE);
-                showTxtFile(file);
+                showTxtFile(fileName);
             } else {
                 Toast.makeText(getApplicationContext(), R.string.not_support_file_format, Toast.LENGTH_SHORT).show();
                 finish();
@@ -113,22 +106,25 @@ public class ShowFileActivity extends BaseActivity implements OnPageChangeListen
                 .load();
     }
 
-    public void showTxtFile(File file) {
-        StringBuffer sb = new StringBuffer();
-        BufferedReader br = null;
-        try {
-            br = new BufferedReader(new InputStreamReader(new FileInputStream(file),"UTF-8"));
-            String line = "";
-            while ((line = br.readLine()) != null) {
-                sb.append(EncodingUtils.getString(line.getBytes(),"UTF-8"));
-            }
-            br.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        txtTv.setText(sb.toString());
+    public void showTxtFile(String fileName) {
+//        StringBuffer sb = new StringBuffer();
+//        BufferedReader br = null;
+//        try {
+//            br = new BufferedReader(new InputStreamReader(new FileInputStream(file),"utf-8"));
+//            String line = "";
+//            while ((line = br.readLine()) != null) {
+//                String temp2 = EncodingUtils.getString(line.getBytes("utf-8"),"utf-8");
+//                sb.append(temp2);
+//            }
+//            br.close();
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+        FileHelper helper = new FileHelper(this);
+        String text = helper.readSDFile(fileName);
+        txtTv.setText(text);
     }
 
     @Override

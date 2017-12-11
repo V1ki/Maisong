@@ -91,13 +91,17 @@ public class ShowTextImageActivity extends BaseActivity {
                 ViewHolder holder = (ViewHolder) view.getTag();
                 String url = fileList.get(i);
                 String fileName = url.substring(url.lastIndexOf("/") + 1, url.length());
-                if(!Utils.isFileExist(fileName)){
-                    holder.progressLayout.setVisibility(View.VISIBLE);
-                    iHttpPresenter.download(fileList.get(i), Utils.getFileDownloadTempPath(), fileName, view);
+                if( holder.progressLayout.getVisibility() == View.VISIBLE){//正在下载中，点击不处理
+                    return ;
                 }else{
-                    Intent intent = new Intent(ShowTextImageActivity.this, ShowFileActivity.class);
-                    intent.putExtra("fileName", fileName);
-                    startActivity(intent);
+                    if(!Utils.isFileExist(fileName)){//未下载，点击开始下载
+                        holder.progressLayout.setVisibility(View.VISIBLE);
+                        iHttpPresenter.download(fileList.get(i), Utils.getFileDownloadTempPath(), fileName, view);
+                    }else{//已下载，点击打开文件
+                        Intent intent = new Intent(ShowTextImageActivity.this, ShowFileActivity.class);
+                        intent.putExtra("fileName", fileName);
+                        startActivity(intent);
+                    }
                 }
             }
         });

@@ -237,6 +237,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
                 activity.finish();
 //            }
         }
+        android.os.Process.killProcess(android.os.Process.myPid());
     }
 
     public int getStatusBarHeight(Context context) {
