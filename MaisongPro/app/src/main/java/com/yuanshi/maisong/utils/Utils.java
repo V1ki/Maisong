@@ -22,6 +22,8 @@ import com.hyphenate.chat.EMMessage;
 import com.yuanshi.iotpro.publiclib.application.MyApplication;
 import com.yuanshi.iotpro.publiclib.bean.LoginInfoBean;
 import com.yuanshi.iotpro.publiclib.bean.UserInfoBean;
+import com.yuanshi.iotpro.publiclib.presenter.IHttpPresenter;
+import com.yuanshi.iotpro.publiclib.utils.Constant;
 import com.yuanshi.iotpro.publiclib.utils.YLog;
 
 import net.sourceforge.pinyin4j.PinyinHelper;
@@ -43,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 /**
@@ -447,5 +450,12 @@ public class Utils {
         final Intent intent = conext.getPackageManager().getLaunchIntentForPackage(conext.getPackageName());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         conext.startActivity(intent);
+    }
+
+    public static void withdrawNotice(String cid,String id, IHttpPresenter iHttpPresenter, String requestType){
+        Map<String, Object> map = new HashMap<>();
+        map.put("status",0);
+        map.put("cid",cid);
+        iHttpPresenter.doAdd(requestType,id, map);
     }
 }

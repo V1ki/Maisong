@@ -29,5 +29,9 @@ public class Constant {
 
     public static final String RECEIVED_FRDAPPLY_INFO = "RECEIVED_FRDAPPLY_INFO";
     public static final String ADDED_FRIEBND_SUCCESS = "ADDED_FRIEBND_SUCCESS";
+    public static final String RECEIVED_MESSAGE = "RECEIVED_MESSAGE";//收取到好友或群组消息
+
+    public static final int NOTIFY_READED = 1;//通知单读取状态--已读
+    public static final int NOTIFY_NOT_READ = 0;//通知单读取状态--未读；
 
 }

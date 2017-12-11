@@ -66,6 +66,11 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
             public void onFriendAddSuccess(String phone) {
                 onFrdAddSuccess(phone);
             }
+
+            @Override
+            public void onReveiceMessage(int msgCount) {
+                onReceiveConvertionMsg(msgCount);
+            }
         });
     }
 
@@ -75,6 +80,9 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
 
     protected void onFrdAddSuccess(String phone){
 
+    }
+
+    protected void onReceiveConvertionMsg(int msgCount){
     }
     /**
      * 设置wifi状态监听listener

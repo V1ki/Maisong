@@ -144,4 +144,10 @@ public interface IHttpPresenter {
 
     //文件下载
     void download(String url,String desDir, String destFileName,View convertView);
+
+    /**
+     * 退出剧组
+     * @param crewId
+     */
+    void outs (String crewId);
 }

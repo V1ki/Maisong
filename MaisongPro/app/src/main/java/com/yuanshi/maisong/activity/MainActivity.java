@@ -15,10 +15,12 @@ import android.widget.Toast;
 import com.baidu.mapapi.map.Text;
 import com.google.gson.Gson;
 import com.hyphenate.EMContactListener;
+import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMChatRoom;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMGroup;
+import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.model.EaseAtMessageHelper;
 import com.hyphenate.easeui.ui.EaseContactListFragment;
@@ -94,9 +96,7 @@ public class MainActivity extends BaseActivity {
         instance = this;
         LoginBeanDaoUtil util = new LoginBeanDaoUtil(this);
         List<LoginInfoBean> list = util.queryAllUserInfo();
-        for(LoginInfoBean loginInfoBean: list){
-            YLog.e("db 登录对象"+new Gson().toJson(loginInfoBean));
-        }
+        EMClient.getInstance().chatManager().addMessageListener(msgListener);
     }
 
     public void setOnContactFriendListener(){
@@ -148,6 +148,8 @@ public class MainActivity extends BaseActivity {
             }
         });
     }
+
+
 
     public void initFragmentPager(){
         final EMconversationFragment conversationListFragment = new EMconversationFragment();
@@ -291,7 +293,12 @@ public class MainActivity extends BaseActivity {
         List<String> groupidList = new ArrayList<>();
         ((EMconversationFragment)fragments[0]).reloadCrewListData();
         ((CrewFragment)fragments[1]).reloadCrewListData();
+    }
 
+    @Override
+    protected void onReceiveConvertionMsg(int msgCount) {
+        super.onReceiveConvertionMsg(msgCount);
+        ((EMconversationFragment)fragments[0]).reloadCrewListData();
     }
 
     /**
@@ -321,6 +328,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        EMClient.getInstance().chatManager().removeMessageListener(msgListener);
     }
 
     @Override
@@ -352,5 +360,46 @@ public class MainActivity extends BaseActivity {
             finishAll();
         }
     }
+
+
+    /**
+     * 环信信息接收监听器
+     */
+    EMMessageListener msgListener = new EMMessageListener() {
+
+        @Override
+        public void onMessageReceived(List<EMMessage> messages) {
+            //收到消息
+            Intent intent = new Intent(MainActivity.this, NativeReadBroadcast.class);
+            intent.setAction(Constant.RECEIVED_MESSAGE);
+            intent.putExtra("messageCount",messages.size());
+            sendBroadcast(intent);
+        }
+
+        @Override
+        public void onCmdMessageReceived(List<EMMessage> messages) {
+            //收到透传消息
+        }
+
+        @Override
+        public void onMessageRead(List<EMMessage> messages) {
+            //收到已读回执
+        }
+
+        @Override
+        public void onMessageDelivered(List<EMMessage> message) {
+            //收到已送达回执
+        }
+        @Override
+        public void onMessageRecalled(List<EMMessage> messages) {
+            //消息被撤回
+        }
+
+        @Override
+        public void onMessageChanged(EMMessage message, Object change) {
+            //消息状态变动
+        }
+    };
+
 
 }

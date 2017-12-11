@@ -38,6 +38,7 @@ public class NativeReadBroadcast extends BroadcastReceiver {
     public interface OnReviceMsgListener{
         void onReceiveFrdApplyInfo(String phone, String reason);
         void onFriendAddSuccess(String phone);
+        void onReveiceMessage(int msgCount);
     }
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -105,8 +106,13 @@ public class NativeReadBroadcast extends BroadcastReceiver {
                 String name = intent.getStringExtra("username");
                 onReviceMsgListener.onFriendAddSuccess(name);
             }
-
         }
 
+        if(Constant.RECEIVED_MESSAGE.equals(intent.getAction())){
+            if(onReviceMsgListener != null){
+                int count = intent.getIntExtra("messageCount",1);
+                onReviceMsgListener.onReveiceMessage(count);
+            }
+        }
     }
 }

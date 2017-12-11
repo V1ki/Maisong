@@ -105,6 +105,12 @@ public interface HttpServer {
     @FormUrlEncoded
     @POST("index.php")
     Observable<Status> searchcrew (@Query("m") String m, @Query("c") String c, @Query("a") String a,@Field("keyword")String keyword);
+    /*
+    http://47.104.13.45/index.php?m=App&c=Crew&a=outs
+     */
+    @FormUrlEncoded
+    @POST("index.php")
+    Observable<Status> outs (@Query("m") String m, @Query("c") String c, @Query("a") String a,@Field("id")String crewId);
 
     @FormUrlEncoded
     @POST("index.php")

@@ -22,6 +22,7 @@
                 <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
                 <action android:name="RECEIVED_FRDAPPLY_INFO"/>
                 <action android:name="ADDED_FRIEBND_SUCCESS"/>
+                <action android:name="RECEIVED_MESSAGE"/>
             </intent-filter>
         </receiver>
     </application>

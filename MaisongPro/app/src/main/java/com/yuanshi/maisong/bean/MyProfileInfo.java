@@ -107,8 +107,6 @@ public class MyProfileInfo {
 
     public Map<String, Object> getParamsMap(){
         Map<String, Object> map = new HashMap<>();
-        map.put("department",department);
-        map.put("position",position);
         map.put("username",username);
         map.put("phone",phone);
         map.put("phoneshow",phoneshow);

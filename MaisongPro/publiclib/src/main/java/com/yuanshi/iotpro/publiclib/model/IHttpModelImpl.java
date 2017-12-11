@@ -81,7 +81,7 @@ public class IHttpModelImpl implements IHttpModel {
     public void appupload(MultipartBody.Part body , Observer observer) {
         server.appupload("Home","File","appupload",body).subscribeOn(Schedulers.from(MyApplication.THREAD_EXCUTER))
                 .observeOn(AndroidSchedulers.mainThread())
-                . timeout(5, TimeUnit.SECONDS)
+                . timeout(20, TimeUnit.SECONDS)
                 .subscribe(observer);
     }
 
@@ -212,6 +212,14 @@ public class IHttpModelImpl implements IHttpModel {
                 })
                 .observeOn(AndroidSchedulers.mainThread()) //在主线程中更新ui
                 .subscribe(new FileSubscriber<ResponseBody>(callBack));
+    }
+
+    @Override
+    public void outs(String crewId, Observer observer) {
+        server.outs("App","Crew","outs",crewId).subscribeOn(Schedulers.from(MyApplication.THREAD_EXCUTER))
+                .observeOn(AndroidSchedulers.mainThread())
+                . timeout(5, TimeUnit.SECONDS)
+                .subscribe(observer);
     }
 
 }

@@ -531,15 +531,15 @@ public class IHttpPresenterIml implements IHttpPresenter {
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                view.onError("notice:doAdd",e.getMessage(),null);
+                view.onError(requestType+":doAdd",e.getMessage(),null);
             }
             @Override
             public void onNext(Status status) {
                 if(status.getStatus() == Constant.HTTP_REQUEST_SUCCESS){
-                    view.onHttpSuccess("notice:doAdd",status.getInfo(),status.getData());
+                    view.onHttpSuccess(requestType+":doAdd",status.getInfo(),status.getData());
                     YLog.e("notice:doAdd ~~~onHttpSuccess:"+status.getInfo());
                 }else{
-                    view.onHttpFaild("notice:doAdd",status.getInfo(),null);
+                    view.onHttpFaild(requestType+":doAdd",status.getInfo(),null);
                     YLog.e("notice:doAdd ~~~onHttpFaild:"+status.getInfo());
                 }
             }
@@ -571,6 +571,31 @@ public class IHttpPresenterIml implements IHttpPresenter {
             @Override
             public void onError(Throwable e) {
                 view.onDownloadError(convertView, e,destFileName);
+            }
+        });
+    }
+
+    @Override
+    public void outs(String crewId) {
+        serverModel.outs(crewId,new Observer<Status>() {
+            @Override
+            public void onCompleted() {
+
+            }
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                view.onError("outs",e.getMessage(),null);
+            }
+            @Override
+            public void onNext(Status status) {
+                if(status.getStatus() == Constant.HTTP_REQUEST_SUCCESS){
+                    view.onHttpSuccess("outs",status.getInfo(),status.getData());
+                    YLog.e("outs ~~~onHttpSuccess:"+status.getInfo());
+                }else{
+                    view.onHttpFaild("outs",status.getInfo(),null);
+                    YLog.e("outs ~~~onHttpFaild:"+status.getInfo());
+                }
             }
         });
     }

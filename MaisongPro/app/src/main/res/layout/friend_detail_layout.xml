@@ -81,7 +81,6 @@
                         android:gravity="center"
                         android:textSize="20sp"
                         android:textStyle="bold"
-                        android:text="nicheng"
                         android:layout_centerHorizontal="true"
                         android:layout_gravity="center_horizontal"
                         />

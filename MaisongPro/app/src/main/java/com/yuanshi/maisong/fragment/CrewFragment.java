@@ -455,20 +455,20 @@ public class CrewFragment extends BaseFragment implements PagingScrollHelper.onP
     public void onHttpSuccess(String msgType, String msg, Object obj) {
         switch (msgType) {
             case Constant.HTTP_REQUEST_MEMORANDUM+":index":
-                initData(obj);
+                if(obj != null){
+                    initData(obj);
+                }
                 break;
         }
     }
 
     public void initData(Object obj) {
-        YLog.e("备忘列表获取成功");
         Gson gson = new Gson();
         String json = gson.toJson(obj);
-        memorandumList = (ArrayList<DailyCallBean>) Utils.jsonToList2(json, DailyCallBean.class);
-        for(DailyCallBean dailyCallBean: memorandumList){
-            YLog.e("备忘创建时间："+dailyCallBean.getAddtime());
+        if(!TextUtils.isEmpty(json)){
+            memorandumList = (ArrayList<DailyCallBean>) Utils.jsonToList2(json, DailyCallBean.class);
+            setMorandunDate(memorandumList);
         }
-        setMorandunDate(memorandumList);
     }
 
     public void setMorandunDate(ArrayList<DailyCallBean> list){

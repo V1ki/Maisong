@@ -1,12 +1,16 @@
 package com.yuanshi.maisong.activity;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -61,15 +65,24 @@ public class CrewNotifycationActivity extends BaseActivity {
             finish();
             return;
         }
-        iHttpPresenter.index(Constant.HTTP_REQUEST_REMIND,crewId);
         adapter = new MyCallsAdapter(this);
         crewNotifyListView.setAdapter(adapter);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        iHttpPresenter.index(Constant.HTTP_REQUEST_REMIND,crewId);
+    }
+
     public void initData(Object obj) {
         Gson gson = new Gson();
-        String json = gson.toJson(obj);
-        dailyCallList = (List<DailyCallBean>) Utils.jsonToList(json, DailyCallBean[].class);
+        if(obj != null){
+            String json = gson.toJson(obj);
+            dailyCallList = Utils.jsonToList2(json, DailyCallBean.class);
+        }else{
+            dailyCallList = new ArrayList<>();
+        }
         YLog.e("通告单个数--》"+dailyCallList.size());
         adapter.notifyDataSetChanged();
     }
@@ -79,6 +92,9 @@ public class CrewNotifycationActivity extends BaseActivity {
         switch (msgType){
             case Constant.HTTP_REQUEST_REMIND+":index":
                 initData(obj);
+                break;
+            case Constant.HTTP_REQUEST_REMIND+":doAdd":
+                iHttpPresenter.index(Constant.HTTP_REQUEST_REMIND,crewId);
                 break;
         }
     }
@@ -154,7 +170,7 @@ public class CrewNotifycationActivity extends BaseActivity {
                 holder.imageView.setVisibility(View.VISIBLE);
             }
 
-            if (dailyCallBean.isHasRead()) {//阅读状态
+            if (dailyCallBean.getReaded() == Constant.NOTIFY_READED) {//阅读状态
                 holder.readState.setBackgroundResource(R.drawable.half_corner_grey);
                 holder.readState.setText(R.string.has_readed);
             }else{
@@ -166,34 +182,76 @@ public class CrewNotifycationActivity extends BaseActivity {
             holder.releaseDate.setText(releaseDateTxt);
             String noReadCountTxt = String.format(getString(R.string.no_read_count), dailyCallBean.getNoreadcount());
             holder.noReadCount.setText(noReadCountTxt);
-            Glide.with(CrewNotifycationActivity.this).
-                    load(dailyCallBean.getPics()[0]).
-                    placeholder(R.mipmap.ic_launcher).
-                    error(R.mipmap.delete_icon).
-                    thumbnail(0.1f).centerCrop().
-                    into(holder.imageView);
+            if(dailyCallBean!= null && dailyCallBean.getPics().length > 0){
+                Glide.with(CrewNotifycationActivity.this).
+                        load(dailyCallBean.getPics()[0]).
+                        error(R.mipmap.delete_icon).
+                        thumbnail(0.1f).centerCrop().
+                        into(holder.imageView);
+            }else{
+                holder.imageView.setVisibility(View.GONE);
+            }
             holder.checkLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(getApplicationContext(), "选择查看第" + i + "条通知", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(CrewNotifycationActivity.this, ShowTextImageActivity.class);
                     intent.putExtra("title",getString(R.string.notifycation_of_crew));
                     intent.putExtra("id",dailyCallBean.getId());
+                    intent.putExtra("requestType",Constant.HTTP_REQUEST_REMIND);
                     startActivity(intent);
-
                 }
             });
 
             holder.withdrawLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(getApplicationContext(), "选择撤回第" + i + "条通知", Toast.LENGTH_SHORT).show();
+                    showWithdrawDialog(dailyCallBean);
                 }
             });
             return view;
         }
     }
+    /**
+     * 弹出撤回确认框
+     */
+    public void showWithdrawDialog(final DailyCallBean dailyCallBean){
+        final Dialog mCameraDialog = new Dialog(this, R.style.datePickerStyle);
+        LinearLayout root = (LinearLayout) LayoutInflater.from(this).inflate(
+                R.layout.logout_dialog_layout, null);
+        TextView contentTv = root.findViewById(R.id.dialog_content);
+        contentTv.setText("确定撤回这条剧组通知？");
+        root.findViewById(R.id.commit_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Utils.withdrawNotice(dailyCallBean.getCid(),dailyCallBean.getId(),iHttpPresenter,Constant.HTTP_REQUEST_REMIND);
+                mCameraDialog.dismiss();
+            }
+        });
+        root.findViewById(R.id.cancel_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mCameraDialog.dismiss();
+            }
+        });
+        mCameraDialog.setContentView(root);
+        Window dialogWindow = mCameraDialog.getWindow();
+        dialogWindow.setGravity(Gravity.CENTER);
+        WindowManager.LayoutParams lp = dialogWindow.getAttributes(); // 获取对话框当前的参数值
+        lp.x = 0; // 新位置X坐标
+        lp.y = 0; // 新位置Y坐标
 
+        WindowManager wm = (WindowManager)this
+                .getSystemService(Context.WINDOW_SERVICE);
+
+        int width = wm.getDefaultDisplay().getWidth();
+        int height = wm.getDefaultDisplay().getHeight();
+        lp.width = width-80; // 宽度
+        root.measure(0, 0);
+        lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        lp.alpha = 2f; // 透明度
+        dialogWindow.setAttributes(lp);
+        mCameraDialog.show();
+    }
     static class ViewHolder {
         @BindView(R.id.title)
         TextView title;

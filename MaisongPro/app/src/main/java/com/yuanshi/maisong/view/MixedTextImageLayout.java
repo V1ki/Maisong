@@ -100,9 +100,8 @@ public class MixedTextImageLayout extends LinearLayout {
 //        Glide.with(context).load(imageUrl).into(imageView);
         Glide.with(context).
                 load(imageUrl).
-                placeholder(R.mipmap.ic_launcher).
                 error(R.mipmap.delete_icon).
-                fitCenter().
+                thumbnail(0.1f).centerCrop().
                 into(imageView);
 //        ImageLoader.getInstance().displayImage(imageUrl, imageView);
         addView(imageView);

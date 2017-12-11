@@ -24,7 +24,6 @@ import com.yuanshi.iotpro.publiclib.utils.Constant;
 import com.yuanshi.iotpro.publiclib.utils.YLog;
 import com.yuanshi.maisong.R;
 import com.yuanshi.maisong.bean.DailyCallBean;
-import com.yuanshi.maisong.bean.MemoireInfoBean;
 import com.yuanshi.maisong.utils.Utils;
 
 import java.util.ArrayList;
@@ -135,7 +134,6 @@ public class SearchMemoireActivity extends BaseActivity {
     }
     private class MyMemoireListAdapter extends BaseAdapter {
         private LayoutInflater inflater;
-
         public MyMemoireListAdapter(Context context) {
             inflater = LayoutInflater.from(context);
         }

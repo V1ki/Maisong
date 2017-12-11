@@ -55,4 +55,6 @@ public interface IHttpModel {
     void doAdd( String requestType, String id, Map<String, Object> map,Observer observer);
 
     void download( String url,FileCallBack<ResponseBody> callBack);
+
+    void outs (String crewId,Observer observer);
 }

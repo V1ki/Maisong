@@ -142,7 +142,7 @@ public class SettingsActivity extends BaseActivity {
     }
 
     /**
-     * 弹出退出登录确认框
+     * 弹出清除缓存确认框
      */
     public void showClearCacheDialog(){
         final Dialog mCameraDialog = new Dialog(this, R.style.datePickerStyle);

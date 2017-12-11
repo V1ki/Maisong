@@ -1,10 +1,14 @@
 package com.yuanshi.maisong.application;
 
 
+import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMOptions;
 import com.hyphenate.easeui.EaseUI;
 import com.yuanshi.iotpro.publiclib.application.MyApplication;
+
+import java.util.List;
 
 
 /**
@@ -22,5 +26,6 @@ public class MSongAppliacation extends MyApplication {
         EMClient.getInstance().setDebugMode(true);
         CrashHandler crashHandler = CrashHandler.getInstance();//记录崩溃日志、崩溃重启
         crashHandler.init(this);
+
     }
 }

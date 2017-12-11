@@ -107,21 +107,6 @@ public class ShowFileActivity extends BaseActivity implements OnPageChangeListen
     }
 
     public void showTxtFile(String fileName) {
-//        StringBuffer sb = new StringBuffer();
-//        BufferedReader br = null;
-//        try {
-//            br = new BufferedReader(new InputStreamReader(new FileInputStream(file),"utf-8"));
-//            String line = "";
-//            while ((line = br.readLine()) != null) {
-//                String temp2 = EncodingUtils.getString(line.getBytes("utf-8"),"utf-8");
-//                sb.append(temp2);
-//            }
-//            br.close();
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
         FileHelper helper = new FileHelper(this);
         String text = helper.readSDFile(fileName);
         txtTv.setText(text);

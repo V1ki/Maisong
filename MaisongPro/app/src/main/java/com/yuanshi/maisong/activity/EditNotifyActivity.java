@@ -208,7 +208,11 @@ public class EditNotifyActivity extends BaseActivity {
                     YLog.e("图片上传成功"+msg);
                 }
                 break;
-            case "notice:doAdd":
+            case Constant.HTTP_REQUEST_BIGPLAN+":doAdd":
+            case Constant.HTTP_REQUEST_NOTICE+":doAdd":
+            case Constant.HTTP_REQUEST_MEMORANDUM+":doAdd":
+            case Constant.HTTP_REQUEST_REMIND+":doAdd":
+            case Constant.HTTP_REQUEST_SCRIPTPAGE+":doAdd":
                 Toast.makeText(getApplicationContext(), R.string.apply_notice_success,Toast.LENGTH_SHORT).show();
                 finish();
                 break;

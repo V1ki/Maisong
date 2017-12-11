@@ -1,5 +1,6 @@
 package com.yuanshi.maisong.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -127,7 +128,9 @@ public class LoginAcitvity extends BaseActivity {
     }
 
     private static final int WAIT_RESEND_CHECK_CODE = 0x0010;
+    @SuppressLint("HandlerLeak")
     private Handler handler = new Handler(){
+        @SuppressLint("ResourceType")
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what){

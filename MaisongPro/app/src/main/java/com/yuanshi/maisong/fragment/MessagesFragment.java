@@ -14,7 +14,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yuanshi.maisong.R;
-import com.yuanshi.maisong.bean.MsgBean;
 
 import java.util.ArrayList;
 
@@ -32,7 +31,7 @@ public class MessagesFragment extends Fragment {
     Unbinder unbinder;
     private View m_View;
     public static MessagesFragment messagesFragment;
-    public ArrayList<MsgBean> msgList = new ArrayList<>();
+//    public ArrayList<MsgBean> msgList = new ArrayList<>();
     private MyMsgListViewAdapter adapter;
 
     @Nullable
@@ -97,12 +96,12 @@ public class MessagesFragment extends Fragment {
 
         @Override
         public int getCount() {
-            return msgList.size();
+            return 0;
         }
 
         @Override
         public Object getItem(int i) {
-            return msgList.get(i);
+            return null;
         }
 
         @Override

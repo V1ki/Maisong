@@ -94,6 +94,7 @@ public class MoreFragment extends BaseFragment{
         LoginInfoBean loginInfoBean = getLoginInfoBean(userPhone);
         if(loginInfoBean!= null && !TextUtils.isEmpty(loginInfoBean.getAvatar())){
             Glide.with(getActivity()).load(loginInfoBean.getAvatar()).error(R.mipmap.ic_launcher).into(headIcon);
+            userName.setText(loginInfoBean.getNickname());
         }
     }
 
@@ -107,7 +108,7 @@ public class MoreFragment extends BaseFragment{
         unbinder.unbind();
     }
 
-    @OnClick({R.id.account_setting_layout, R.id.my_friends_layout, R.id.help_layout, R.id.settings_layout})
+    @OnClick({R.id.account_setting_layout, R.id.my_friends_layout, R.id.help_layout, R.id.settings_layout,R.id.headIcon})
     public void onViewClicked(View view) {
         Intent intent = new Intent();
         switch (view.getId()) {
@@ -124,6 +125,10 @@ public class MoreFragment extends BaseFragment{
                 break;
             case R.id.settings_layout:
                 intent.setClass(getActivity(),SettingsActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.headIcon:
+                intent.setClass(getActivity(),AccountSettingActivity.class);
                 startActivity(intent);
                 break;
         }
