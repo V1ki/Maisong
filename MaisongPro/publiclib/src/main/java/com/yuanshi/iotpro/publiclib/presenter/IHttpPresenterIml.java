@@ -522,8 +522,8 @@ public class IHttpPresenterIml implements IHttpPresenter {
     }
 
     @Override
-    public void doAdd(final String requestType, String id, Map<String, Object> map) {
-        serverModel.doAdd(requestType,id,map,new Observer<Status>() {
+    public void doAdd(final String requestType, String id, Map<String, Object> map,String addtime) {
+        serverModel.doAdd(requestType,id,map,addtime,new Observer<Status>() {
             @Override
             public void onCompleted() {
 
@@ -595,6 +595,31 @@ public class IHttpPresenterIml implements IHttpPresenter {
                 }else{
                     view.onHttpFaild("outs",status.getInfo(),null);
                     YLog.e("outs ~~~onHttpFaild:"+status.getInfo());
+                }
+            }
+        });
+    }
+
+    @Override
+    public void searchMemorandum(String cid, String keyword) {
+        serverModel.searchMemorandum(cid,keyword,new Observer<Status>() {
+            @Override
+            public void onCompleted() {
+
+            }
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                view.onError("searchMemorandum",e.getMessage(),null);
+            }
+            @Override
+            public void onNext(Status status) {
+                if(status.getStatus() == Constant.HTTP_REQUEST_SUCCESS){
+                    view.onHttpSuccess("searchMemorandum",status.getInfo(),status.getData());
+                    YLog.e("searchMemorandum ~~~onHttpSuccess:"+status.getInfo());
+                }else{
+                    view.onHttpFaild("searchMemorandum",status.getInfo(),null);
+                    YLog.e("searchMemorandum ~~~onHttpFaild:"+status.getInfo());
                 }
             }
         });

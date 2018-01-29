@@ -140,7 +140,7 @@ public interface IHttpPresenter {
      * @param id id
      * @param map 参数map： title、 content、cid 剧组ID、pics 图组 ,号分割 例: 1.jpg,2.jpg,3.jpg,、status [选填，默认1 ]
      */
-    void doAdd( String requestType, String id, Map<String, Object> map);
+    void doAdd( String requestType, String id, Map<String, Object> map,String addtime);
 
     //文件下载
     void download(String url,String desDir, String destFileName,View convertView);
@@ -150,4 +150,11 @@ public interface IHttpPresenter {
      * @param crewId
      */
     void outs (String crewId);
+
+    /**
+     * 搜索备忘录
+     * @param cid 剧组Id
+     * @param keyword 搜索关键字
+     */
+    void searchMemorandum(String cid,String keyword);
 }

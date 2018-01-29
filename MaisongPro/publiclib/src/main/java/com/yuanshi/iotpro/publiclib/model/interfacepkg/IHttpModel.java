@@ -52,9 +52,11 @@ public interface IHttpModel {
 
     void del(String requestType, String id,Observer observer);
 
-    void doAdd( String requestType, String id, Map<String, Object> map,Observer observer);
+    void doAdd( String requestType, String id, Map<String, Object> map,String addtime,Observer observer);
 
     void download( String url,FileCallBack<ResponseBody> callBack);
 
     void outs (String crewId,Observer observer);
+
+    void searchMemorandum(String cid,String keyword, Observer observer);
 }

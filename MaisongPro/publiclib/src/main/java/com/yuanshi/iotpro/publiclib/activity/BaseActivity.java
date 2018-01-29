@@ -1,19 +1,19 @@
 package com.yuanshi.iotpro.publiclib.activity;
 
-import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import com.readystatesoftware.systembartint.SystemBarTintManager;
+import com.yuanshi.iotpro.publiclib.R;
 import com.yuanshi.iotpro.publiclib.presenter.IHttpPresenter;
 import com.yuanshi.iotpro.publiclib.presenter.IHttpPresenterIml;
 import com.yuanshi.iotpro.publiclib.utils.NativeReadBroadcast;
@@ -39,12 +39,30 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getContentViewId());
-        setTranslucentStatus(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            setTranslucentStatus(true);
+        }
+        SystemBarTintManager tintManager = new SystemBarTintManager(this);
+        tintManager.setStatusBarTintEnabled(true);
+        tintManager.setStatusBarTintResource(R.color.transparent);//通知栏所需颜
         mContext = this;
         iHttpPresenter = new IHttpPresenterIml(this,mContext);
         ButterKnife.bind(this);
         activities.add(this);
         init(savedInstanceState);
+    }
+
+    @TargetApi(19)
+    public void setTranslucentStatus(boolean on) {
+        Window win = getWindow();
+        WindowManager.LayoutParams winParams = win.getAttributes();
+        final int bits = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
+        if (on) {
+            winParams.flags |= bits;
+        } else {
+            winParams.flags &= ~bits;
+        }
+        win.setAttributes(winParams);
     }
 
 
@@ -198,46 +216,46 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
     /**
      * 设置状态栏背景状态
      */
-    @SuppressLint("ResourceAsColor")
-    public  void setTranslucentStatus(Activity activity) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            YLog.e("Android version--->"+Build.VERSION.SDK_INT);
-            Window window = activity.getWindow();
-            //取消设置透明状态栏,使 ContentView 内容不再覆盖状态栏
-            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-//            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-//            //需要设置这个 flag 才能调用 setStatusBarColor 来设置状态栏颜色
-//            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-//            //设置状态栏颜色
-            window.setStatusBarColor(Color.parseColor("#00000000"));
+//    @SuppressLint("ResourceAsColor")
+//    public  void setTranslucentStatus(Activity activity) {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//            YLog.e("Android version--->"+Build.VERSION.SDK_INT);
+//            Window window = activity.getWindow();
+//            //取消设置透明状态栏,使 ContentView 内容不再覆盖状态栏
+//            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+////            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+////            //需要设置这个 flag 才能调用 setStatusBarColor 来设置状态栏颜色
+////            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+////            //设置状态栏颜色
+//            window.setStatusBarColor(Color.parseColor("#00000000"));
+////            ViewGroup mContentView = (ViewGroup) activity.findViewById(Window.ID_ANDROID_CONTENT);
+////            View mChildView = mContentView.getChildAt(0);
+////            if (mChildView != null) {
+////                //注意不是设置 ContentView 的 FitsSystemWindows, 而是设置 ContentView 的第一个子 View . 预留出系统 View 的空间.
+////                ViewCompat.setFitsSystemWindows(mChildView, true);
+////            }
+//        }else{
+//            Window window = activity.getWindow();
+//            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 //            ViewGroup mContentView = (ViewGroup) activity.findViewById(Window.ID_ANDROID_CONTENT);
-//            View mChildView = mContentView.getChildAt(0);
-//            if (mChildView != null) {
-//                //注意不是设置 ContentView 的 FitsSystemWindows, 而是设置 ContentView 的第一个子 View . 预留出系统 View 的空间.
-//                ViewCompat.setFitsSystemWindows(mChildView, true);
+//            int statusBarHeight = getStatusBarHeight(activity);
+//            View mTopView = mContentView.getChildAt(0);
+//            if (mTopView != null && mTopView.getLayoutParams() != null && mTopView.getLayoutParams().height == statusBarHeight) {
+//                //避免重复添加 View
+//                mTopView.setBackgroundColor(Color.parseColor("#00000000"));
+//                return;
 //            }
-        }else{
-            Window window = activity.getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            ViewGroup mContentView = (ViewGroup) activity.findViewById(Window.ID_ANDROID_CONTENT);
-            int statusBarHeight = getStatusBarHeight(activity);
-            View mTopView = mContentView.getChildAt(0);
-            if (mTopView != null && mTopView.getLayoutParams() != null && mTopView.getLayoutParams().height == statusBarHeight) {
-                //避免重复添加 View
-                mTopView.setBackgroundColor(Color.parseColor("#00000000"));
-                return;
-            }
-//            //使 ChildView 预留空间
-//            if (mTopView != null) {
-//                ViewCompat.setFitsSystemWindows(mTopView, true);
-//            }
-//            //添加假 View
-//            mTopView = new View(activity);
-//            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, statusBarHeight);
-//            mTopView.setBackgroundColor(R.color.colorPrimary);
-//            mContentView.addView(mTopView, 0, lp);
-        }
-    }
+////            //使 ChildView 预留空间
+////            if (mTopView != null) {
+////                ViewCompat.setFitsSystemWindows(mTopView, true);
+////            }
+////            //添加假 View
+////            mTopView = new View(activity);
+////            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, statusBarHeight);
+////            mTopView.setBackgroundColor(R.color.colorPrimary);
+////            mContentView.addView(mTopView, 0, lp);
+//        }
+//    }
 
     public static void finishAll(){
         for(Activity activity: activities){

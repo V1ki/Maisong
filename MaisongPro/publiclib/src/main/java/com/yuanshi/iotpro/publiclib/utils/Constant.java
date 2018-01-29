@@ -34,4 +34,11 @@ public class Constant {
     public static final int NOTIFY_READED = 1;//通知单读取状态--已读
     public static final int NOTIFY_NOT_READ = 0;//通知单读取状态--未读；
 
+    //文件类型
+    public static final int FILE_TYPE_UNKNOWN = 0;
+    public static final int FILE_TYPE_WORD = 1;
+    public static final int FILE_TYPE_EXCEL = 2;
+    public static final int FILE_TYPE_PPT = 3;
+    public static final int FILE_TYPE_PDF = 4;
+    public static final int FILE_TYPE_TXT = 5;
 }

@@ -193,8 +193,8 @@ public class IHttpModelImpl implements IHttpModel {
     }
 
     @Override
-    public void doAdd(String requestType, String id, Map<String, Object> map,Observer observer) {
-        server.doAdd("App",requestType,"doAdd",id,map).subscribeOn(Schedulers.from(MyApplication.THREAD_EXCUTER))
+    public void doAdd(String requestType, String id, Map<String, Object> map,String addtime,Observer observer) {
+        server.doAdd("App",requestType,"doAdd",id,map, addtime).subscribeOn(Schedulers.from(MyApplication.THREAD_EXCUTER))
                 .observeOn(AndroidSchedulers.mainThread())
                 . timeout(5, TimeUnit.SECONDS)
                 .subscribe(observer);
@@ -217,6 +217,15 @@ public class IHttpModelImpl implements IHttpModel {
     @Override
     public void outs(String crewId, Observer observer) {
         server.outs("App","Crew","outs",crewId).subscribeOn(Schedulers.from(MyApplication.THREAD_EXCUTER))
+                .observeOn(AndroidSchedulers.mainThread())
+                . timeout(5, TimeUnit.SECONDS)
+                .subscribe(observer);
+    }
+
+    //http://47.104.13.45/index.php?m=App&c=Memorandum&a=search
+    @Override
+    public void searchMemorandum(String cid, String keyword, Observer observer) {
+        server.search("App","Memorandum","search",cid,keyword).subscribeOn(Schedulers.from(MyApplication.THREAD_EXCUTER))
                 .observeOn(AndroidSchedulers.mainThread())
                 . timeout(5, TimeUnit.SECONDS)
                 .subscribe(observer);

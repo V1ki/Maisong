@@ -155,10 +155,14 @@ public interface HttpServer {
 
     @FormUrlEncoded
     @POST("index.php")
-    Observable<Status> doAdd(@Query("m") String m, @Query("c") String c, @Query("a") String a, @Field("id") String id,@FieldMap Map<String, Object> map);
+    Observable<Status> doAdd(@Query("m") String m, @Query("c") String c, @Query("a") String a, @Field("id") String id,@FieldMap Map<String, Object> map, @Field("addtime") String addtime);
 
     @Streaming
     @GET
     Observable<ResponseBody> download(@Url String url);
 
+    //http://47.104.13.45/index.php?m=App&c=Memorandum&a=search
+    @FormUrlEncoded
+    @POST("index.php")
+    Observable<Status> search(@Query("m") String m, @Query("c") String c, @Query("a") String a,@Field("cid")String cid, @Field("keyword")String keyword);
 }
