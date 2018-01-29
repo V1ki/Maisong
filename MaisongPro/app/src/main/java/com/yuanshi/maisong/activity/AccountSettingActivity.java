@@ -187,7 +187,6 @@ public class AccountSettingActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == REQUEST_CODE_CROP_PIC){//图片裁剪完成，返回裁剪后的图片地址
-
             Bundle extras = data.getExtras();
             head = extras.getParcelable("data");
             YLog.e("图片裁剪完成  head-->"+head);

@@ -1,5 +1,6 @@
 package com.yuanshi.maisong.activity;
 
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -15,6 +16,10 @@ import com.joanzapata.pdfview.listener.OnDrawListener;
 import com.joanzapata.pdfview.listener.OnLoadCompleteListener;
 import com.joanzapata.pdfview.listener.OnPageChangeListener;
 import com.yuanshi.iotpro.publiclib.activity.BaseActivity;
+import com.yuanshi.iotpro.publiclib.utils.Constant;
+import com.yuanshi.iotpro.publiclib.utils.YLog;
+import com.yuanshi.iotpro.publiclib.view.FileDisplayActivity;
+import com.yuanshi.iotpro.publiclib.view.SuperFileView2;
 import com.yuanshi.maisong.R;
 import com.yuanshi.maisong.utils.Utils;
 import com.yuanshi.maisong.utils.txtread_utils.FileHelper;
@@ -43,6 +48,8 @@ public class ShowFileActivity extends BaseActivity implements OnPageChangeListen
     TextView txtTv;
     @BindView(R.id.txt_layout)
     ScrollView txtLayout;
+    @BindView(R.id.mSuperFileView)
+    SuperFileView2 mSuperFileView;
     private String fileName;
 
     @Override
@@ -59,25 +66,39 @@ public class ShowFileActivity extends BaseActivity implements OnPageChangeListen
             return;
         }
         titleText.setText(fileName);
-        File file = new File(Utils.getFileDownloadRealPath() + "/" + fileName);
+        final File file = new File(Utils.getFileDownloadRealPath() + "/" + fileName);
         if (file.exists()) {
-            if (fileName.endsWith("pdf")) {
+            if (Utils.getFileType(fileName) == Constant.FILE_TYPE_PDF) {
                 txtLayout.setVisibility(View.GONE);
                 pdfView.setVisibility(View.VISIBLE);
+                mSuperFileView.setVisibility(View.GONE);
                 displayFromFile(file);
-            } else if (fileName.endsWith("txt")) {
+            } else if (Utils.getFileType(fileName) == Constant.FILE_TYPE_TXT) {
                 txtLayout.setVisibility(View.VISIBLE);
                 pdfView.setVisibility(View.GONE);
+                mSuperFileView.setVisibility(View.GONE);
                 showTxtFile(fileName);
-            } else {
+            } else if(Utils.getFileType(fileName) == Constant.FILE_TYPE_WORD || Utils.getFileType(fileName) == Constant.FILE_TYPE_EXCEL ||
+                    Utils.getFileType(fileName) == Constant.FILE_TYPE_PPT ){
+                txtLayout.setVisibility(View.GONE);
+                pdfView.setVisibility(View.GONE);
+                mSuperFileView.setVisibility(View.VISIBLE);
+//                FileDisplayActivity.show(this, file.getPath());
+                mSuperFileView.setOnGetFilePathListener(new SuperFileView2.OnGetFilePathListener() {
+                    @Override
+                    public void onGetFilePath(SuperFileView2 mSuperFileView2) {
+                        mSuperFileView2.displayFile(file);
+                    }
+                });
+                mSuperFileView.show();
+            }else{
                 Toast.makeText(getApplicationContext(), R.string.not_support_file_format, Toast.LENGTH_SHORT).show();
                 finish();
             }
-        }else {
+        } else {
             Toast.makeText(getApplicationContext(), R.string.file_not_found, Toast.LENGTH_SHORT).show();
             finish();
         }
-
     }
 
     private void displayFromAssets(String assetFileName) {
@@ -137,5 +158,13 @@ public class ShowFileActivity extends BaseActivity implements OnPageChangeListen
     @OnClick(R.id.back_icon)
     public void onViewClicked() {
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mSuperFileView != null) {
+            mSuperFileView.onStopDisplay();
+        }
     }
 }

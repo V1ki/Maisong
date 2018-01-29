@@ -123,15 +123,16 @@ public class CalendarView extends LinearLayout {
 		checkTv.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				if(onCheckMemoClick != null){
-					onCheckMemoClick.checkMemoClick(view);
-				}
+					if(onCheckMemoClick != null){
+						onCheckMemoClick.checkMemoClick(view);
+					}
 			}
 		});
 
 		addTxteTv.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
+				YLog.e(""+monthDateView.getSelectDate());
 				if(onCreateMemoClick != null){
 					if(monthDateView.getSelectDate()!= null &&
 							monthDateView.getSelectDate().getYear() != 0 &&
@@ -173,6 +174,10 @@ public class CalendarView extends LinearLayout {
 	 */
 	public int getSelectMonth(){
 		return monthDateView.getmSelMonth();
+	}
+
+	public boolean isdayAndPriceList(){
+		return monthDateView.isdayAndPriceList();
 	}
 	/**
 	 * 获取所选择的日期

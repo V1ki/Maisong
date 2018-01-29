@@ -2,6 +2,7 @@ package com.yuanshi.maisong.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ public class WeatherListAdapter extends RecyclerView.Adapter<WeatherListAdapter.
     private OnItemLongClickListener mOnItemLongClickListener = null;
     private List<WeatherBean> mData;
     private Context context;
+    private String localCity;
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.mOnItemClickListener = listener;
     }
@@ -34,14 +36,23 @@ public class WeatherListAdapter extends RecyclerView.Adapter<WeatherListAdapter.
         this.mOnItemLongClickListener = listener;
     }
 
-    public WeatherListAdapter(ArrayList<WeatherBean> data, Context context) {
+    public WeatherListAdapter(ArrayList<WeatherBean> data, Context context, String localCity) {
         this.context = context;
         this.mData = data;
+        this.localCity = localCity;
     }
 
     public void updateData(List<WeatherBean> data) {
         this.mData = data;
         notifyDataSetChanged();
+    }
+
+    public String getLocalCity() {
+        return localCity;
+    }
+
+    public void setLocalCity(String localCity) {
+        this.localCity = localCity;
     }
 
     @Override
@@ -58,7 +69,6 @@ public class WeatherListAdapter extends RecyclerView.Adapter<WeatherListAdapter.
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         // 绑定数据
-
         WeatherBean weatherBean = mData.get(position);
         YLog.e("adapter--->"+weatherBean.getSummary());
         holder.temperatureText.setText(String.format(context.getString(R.string.tempature_format), weatherBean.getTemperatureMax(), weatherBean.getTemperatureMin()).toString());
@@ -69,9 +79,15 @@ public class WeatherListAdapter extends RecyclerView.Adapter<WeatherListAdapter.
         if(position != 0){
             holder.weatherText.setText(Utils.getCurrentDate(weatherBean.getSunsetTime())+"    "+weatherBean.getSummary());
             holder.sunriseLayout.setVisibility(View.GONE);
+            holder.cityTv.setVisibility(View.GONE);
         }else{
             holder.weatherText.setText(Utils.getCurrentDate(weatherBean.getSunsetTime()));
             holder.sunriseLayout.setVisibility(View.VISIBLE);
+            YLog.e("adapter--->"+localCity);
+            if(!TextUtils.isEmpty(localCity)){
+                holder.cityTv.setText(localCity);
+                holder.cityTv.setVisibility(View.VISIBLE);
+            }
         }
         switch (weatherBean.getIcon()) {
             case "clear-day"://晴天
@@ -158,6 +174,7 @@ public class WeatherListAdapter extends RecyclerView.Adapter<WeatherListAdapter.
         TextView sunsetTime,weatherText;
         ImageView weatherIcon;
         LinearLayout sunriseLayout;
+        TextView cityTv;
         public ViewHolder(View itemView) {
             super(itemView);
             temperatureText = itemView.findViewById(R.id.temperature_text);
@@ -166,6 +183,7 @@ public class WeatherListAdapter extends RecyclerView.Adapter<WeatherListAdapter.
             weatherText = itemView.findViewById(R.id.weather_text);
             weatherIcon = itemView.findViewById(R.id.weather_icon);
             sunriseLayout = itemView.findViewById(R.id.sunriseLayout);
+            cityTv = itemView.findViewById(R.id.city_tv);
         }
     }
 }

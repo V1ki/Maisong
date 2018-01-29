@@ -1,5 +1,7 @@
 package com.yuanshi.maisong.fragment;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,13 +13,13 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-
 import com.yuanshi.maisong.R;
 
 import java.net.HttpURLConnection;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -29,7 +31,8 @@ public class ServiceFlatformFragment extends Fragment {
     Unbinder unbinder;
     private View m_View;
     public static ServiceFlatformFragment serviceFlatformFragment;
-    public String loadUrl = "http://m.jd.com/";//加载的链接地址
+    public String loadUrl = "http://47.104.13.45/index.php?m=Mobile";//加载的链接地址
+
     public String localFile = "";//本地备用html文件
 
     @Nullable
@@ -62,17 +65,8 @@ public class ServiceFlatformFragment extends Fragment {
 
     private void initWebView() {
         webView.loadUrl(loadUrl);
-        WebSettings settings = webView.getSettings();
-        webView.setVerticalScrollbarOverlay(true); //指定的垂直滚动条有叠加样式
-        settings.setUseWideViewPort(true);//设定支持viewport
-
-        settings.setLoadWithOverviewMode(true);
-
-        settings.setBuiltInZoomControls(true);
-
-        settings.setSupportZoom(true);//设定支持缩放
+        webViewSettings();
         webView.setWebViewClient(new WebViewClient() {
-
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 view.loadUrl(url);
@@ -96,7 +90,6 @@ public class ServiceFlatformFragment extends Fragment {
                 }
             }
         });
-
         webView.setWebChromeClient(new WebChromeClient() {
             /**
              * 获取加载进度
@@ -111,9 +104,52 @@ public class ServiceFlatformFragment extends Fragment {
         });
     }
 
+    public void webViewSettings() {
+        WebSettings webSettings = webView.getSettings();
+        //如果访问的页面中要与Javascript交互，则webview必须设置支持Javascript
+        webSettings.setJavaScriptEnabled(true);
+        //支持插件
+        //        webSettings.setPluginsEnabled(true);
+        //设置自适应屏幕，两者合用
+        webSettings.setUseWideViewPort(true); //将图片调整到适合webview的大小
+        webSettings.setLoadWithOverviewMode(true); // 缩放至屏幕的大小
+        //缩放操作
+        webSettings.setSupportZoom(true); //支持缩放，默认为true。是下面那个的前提。
+        webSettings.setBuiltInZoomControls(true); //设置内置的缩放控件。若为false，则该WebView不可缩放
+        webSettings.setDisplayZoomControls(false); //隐藏原生的缩放控件
+        //其他细节操作
+        webSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK); //关闭webview中缓存
+        webSettings.setAllowFileAccess(true); //设置可以访问文件
+        webSettings.setJavaScriptCanOpenWindowsAutomatically(true); //支持通过JS打开新窗口
+        webSettings.setLoadsImagesAutomatically(true); //支持自动加载图片
+        webSettings.setDefaultTextEncodingName("utf-8");//设置编码格式
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    /**
+     * 调用拨号功能
+     *
+     * @param phone 电话号码
+     */
+    public void call(String phone) {
+        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phone));
+        startActivity(intent);
+    }
+
+    public void sendEmail(String address) {
+        Intent i = new Intent(Intent.ACTION_SEND);
+        // i.setType("text/plain"); //模拟器请使用这行
+        i.setType("message/rfc822"); // 真机上使用这行
+        i.putExtra(Intent.EXTRA_EMAIL,
+                new String[] { address });
+        i.putExtra(Intent.EXTRA_SUBJECT, "主题");
+        i.putExtra(Intent.EXTRA_TEXT, "正文");
+        startActivity(Intent.createChooser(i,
+                getString(R.string.select_email_app)));
     }
 }

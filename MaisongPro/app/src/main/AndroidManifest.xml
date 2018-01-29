@@ -22,6 +22,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
 
     <uses-sdk tools:overrideLibrary="com.yanzhenjie.album"/>
 
@@ -53,19 +54,21 @@
             />
         <activity android:name="com.yuanshi.maisong.activity.LoginAcitvity"
             android:launchMode="singleTop"
-            android:windowSoftInputMode="adjustPan"
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden"
             />
         <activity android:name="com.yuanshi.maisong.activity.ChatActivity"
             android:launchMode="singleTop"
-            android:windowSoftInputMode="adjustPan"
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden"
             />
         <activity android:name="com.hyphenate.easeui.ui.EaseBaiduMapActivity"
             android:launchMode="singleTop"
             />
-        <activity android:name="com.yuanshi.maisong.activity.CrewSelectActivity"/>
+        <activity android:name="com.yuanshi.maisong.activity.CrewSelectActivity"
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden"
+            />
 
         <activity android:name=".activity.CreateCrewActivity"
-            android:windowSoftInputMode="adjustPan"
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden"
             />
 
         <activity android:name=".activity.DailyCallActivity"/>
@@ -83,12 +86,13 @@
         <activity android:name=".activity.PerfectDataActivity"/>
 
         <activity android:name=".activity.EditNotifyActivity"
-            android:windowSoftInputMode="adjustPan"
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden"
             />
 
         <activity android:name=".activity.ShowTextImageActivity"/>
 
-        <activity android:name=".activity.SearchMemoireActivity"/>
+        <activity android:name=".activity.SearchMemoireActivity"
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden"/>
 
         <activity android:name=".activity.SettingsActivity"/>
 
@@ -100,9 +104,13 @@
         <activity android:name=".activity.FriendDetailActivity"/>
         
         <activity android:name=".activity.JoinCrewActivity"
-            android:windowSoftInputMode="adjustPan"
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden"
+            />
+        <activity android:name=".activity.EditorTextActivity"
+            android:windowSoftInputMode="adjustResize|stateAlwaysVisible"
             />
 
+        <activity android:name="com.yuanshi.iotpro.publiclib.view.FileDisplayActivity"/>
         <!-- 环信sdk相关activity-->
         <activity android:name="com.hyphenate.easeui.ui.EaseShowBigImageActivity"/>
         <activity android:name="com.yuanshi.maisong.activity.ESContactsActivity"

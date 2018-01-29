@@ -74,17 +74,35 @@
                 android:layout_marginBottom="10dp"
                 android:background="#ffffff"
                 />
-            <TextView
-                android:id="@+id/memorandum"
-                android:layout_weight="1"
+            <LinearLayout
+                android:id="@+id/memorandum_layout"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:text="2017年10月24日 > \n今日暂无日历项"
-                android:textSize="14sp"
-                android:gravity="center"
-                android:textColor="@color/white"
+                android:layout_weight="1"
+                android:orientation="vertical"
                 android:background="@drawable/view_click_selector3"
-                />
+                >
+                <TextView
+                    android:id="@+id/memorandum"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:textSize="14sp"
+                    android:gravity="center_horizontal|bottom"
+                    android:textColor="@color/white"
+                    />
+                <TextView
+                    android:id="@+id/memorandum_title"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:text="@string/no_memoire_today"
+                    android:textSize="14sp"
+                    android:gravity="center_horizontal|top"
+                    android:textColor="@color/white"
+                    />
+            </LinearLayout>
+
         </LinearLayout>
 
         <android.support.v7.widget.RecyclerView

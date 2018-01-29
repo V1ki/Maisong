@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -109,6 +111,26 @@ public class Utils {
         return file.getAbsolutePath();
     }
 
+    public static int getFileType(String url){
+        if(url.endsWith("docx") || url.endsWith("doc") || url.endsWith("docm")||
+                url.endsWith("dotx") || url.endsWith("dotm")){
+            return Constant.FILE_TYPE_WORD;
+        }else if(url.endsWith("xls") || url.endsWith("xlsm") || url.endsWith("xltx") ||
+                url.endsWith("xltm") || url.endsWith("xlsb") || url.endsWith("xlam")){
+            return Constant.FILE_TYPE_EXCEL;
+        }else if(url.endsWith("ppt") || url.endsWith("pptx") || url.endsWith("pptm") ||
+                url.endsWith("ppsx") || url.endsWith("ppsx") || url.endsWith("potx") || url.endsWith("potm")
+                || url.endsWith("ppam")){
+            return Constant.FILE_TYPE_PPT;
+        }else if(url.endsWith("txt")){
+            return Constant.FILE_TYPE_TXT;
+        }else if(url.endsWith("pdf")){
+            return Constant.FILE_TYPE_PDF;
+        }else{
+            return Constant.FILE_TYPE_UNKNOWN;
+        }
+    }
+
     /**
      * 获取头像保存地址
      * @return
@@ -153,6 +175,9 @@ public class Utils {
         LocationManager locationManager = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
         if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
             Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if(location == null){
+                location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            }
 //            if(location != null){
 //                latitude = location.getLatitude();
 //                longitude = location.getLongitude();
@@ -198,6 +223,8 @@ public class Utils {
         }
     }
 
+
+
     /**
      * 根据秒数值获取指定格式的日期格式
      * @param millisecond
@@ -210,13 +237,41 @@ public class Utils {
         return dateStr;
     }
 
-    public static String getCurrentDate(Long millisecond){
+    public static String getCurrentDate(Long seconds){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String dateStr = sdf.format(millisecond*1000);
+        String dateStr = sdf.format(seconds*1000);
         YLog.e(dateStr);
         return dateStr;
     }
 
+    public static String getStringDateFromMillis(Long mills,String format){
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        String dateStr = sdf.format(mills);
+        YLog.e(dateStr);
+        return dateStr;
+    }
+
+    public static String getLocalCity(Context context,double lat, double longit) {
+        String localCity = "";
+//        TextView myLocationText;
+//        myLocationText = (TextView)findViewById(R.id.myLocationText);
+        List<Address> addList = null;
+        Geocoder ge = new Geocoder(context);
+        try {
+            addList = ge.getFromLocation(lat, longit, 1);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        if(addList!=null && addList.size()>0){
+            for(int i=0; i<addList.size(); i++){
+                Address ad = addList.get(i);
+                localCity =  ad.getLocality();
+            }
+        }
+        YLog.e("当前所在城市---》"+localCity);
+        return localCity;
+    }
     /**
      * 华氏度转摄氏度
      * @return
@@ -358,6 +413,7 @@ public class Utils {
         } catch (OutOfMemoryError exception) {
             exception.printStackTrace();
         }finally {
+            YLog.e("压缩后的图片大小"+bmp.getByteCount());
             return bmp;
         }
     }
@@ -367,7 +423,7 @@ public class Utils {
      * @param mBitmap
      */
     public static  String savePics(Bitmap mBitmap, String picName) {
-        File file = new File(getPicPath()+"/picName");
+        File file = new File(getPicPath()+"/"+picName);
         if(!file.exists()){
             try {
                 file.createNewFile();
@@ -456,6 +512,6 @@ public class Utils {
         Map<String, Object> map = new HashMap<>();
         map.put("status",0);
         map.put("cid",cid);
-        iHttpPresenter.doAdd(requestType,id, map);
+        iHttpPresenter.doAdd(requestType,id, map,"");
     }
 }

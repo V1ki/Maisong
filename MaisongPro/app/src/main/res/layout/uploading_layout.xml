@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:android_custom="http://schemas.android.com/apk/res/com.yuanshi.maisong"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="50dp"
+    android:layout_height="50dp"
+    tools:ignore="ResAuto"
+    android:gravity="center"
+    >
+    <com.yuanshi.maisong.view.RoundProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerInParent="true"
+        android_custom:roundColor="@color/subline"
+        android_custom:roundProgressColor="@color/white"
+        android_custom:textColor="@color/main_text"
+        android_custom:textIsDisplayable="false"
+        android_custom:roundWidth="5dip"
+        android_custom:textSize="14sp"
+        />
+
+</LinearLayout>

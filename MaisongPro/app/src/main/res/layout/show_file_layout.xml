@@ -42,7 +42,12 @@
         android:id="@+id/pdfView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
         />
+    <com.yuanshi.iotpro.publiclib.view.SuperFileView2
+        android:id="@+id/mSuperFileView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
     <ScrollView
         android:id="@+id/txt_layout"
         android:layout_width="match_parent"

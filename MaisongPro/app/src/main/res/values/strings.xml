@@ -140,5 +140,10 @@
     <string name="file_not_found">文件未找到</string>
     <string name="not_support_file_format">不支持的文件格式！</string>
     <string name="out_crew_success">退出剧组成功！</string>
+    <string name="upload_faild">图片上传失败！</string>
+    <string name="select_email_app">选择您的邮箱程序</string>
+    <string name="no_memoire_today">今日无备忘</string>
+    <string name="beking">北京</string>
+    <string name="weather_got_faild">天气信息获取失败</string>
 
 </resources>

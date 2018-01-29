@@ -11,12 +11,19 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
+        //X5兼容64位手机
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a", "x86", "mips"
+        }
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    repositories {
+        jcenter()
     }
 //    packagingOptions{
 //
@@ -33,6 +40,7 @@ dependencies {
     compile 'com.google.code.gson:gson:2.8.1'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
     compile project(':publiclib')
+    //noinspection GradleCompatible
     compile 'com.android.support:appcompat-v7:26.0.0-alpha1'
     compile project(':easeui')
     compile files('libs/ForecastIOLib-1.5.2-jar-with-dependencies_1025.jar')
@@ -41,5 +49,7 @@ dependencies {
     compile files('libs/pinyin4j-2.5.0.jar')
     compile project(':okhttp3-persistent-cookiejar')
     compile 'com.joanzapata.pdfview:android-pdfview:1.0.4@aar'
+    implementation project(':richeditor')
+    compile 'net.margaritov.preference.colorpicker.ColorPickerPreference:ColorPickerPreference:1.0.0'
 }
 

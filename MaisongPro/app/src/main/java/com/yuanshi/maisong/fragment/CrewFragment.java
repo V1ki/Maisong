@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -45,7 +44,6 @@ import com.yuanshi.maisong.activity.ProfileActivity;
 import com.yuanshi.maisong.activity.ScriptUpdateActivity;
 import com.yuanshi.maisong.activity.SearchMemoireActivity;
 import com.yuanshi.maisong.activity.ShootingScheduleActivity;
-import com.yuanshi.maisong.activity.ShowTextImageActivity;
 import com.yuanshi.maisong.adapter.WeatherListAdapter;
 import com.yuanshi.maisong.bean.CrewHttpBean;
 import com.yuanshi.maisong.bean.DailyCallBean;
@@ -54,13 +52,12 @@ import com.yuanshi.maisong.bean.WeatherBean;
 import com.yuanshi.maisong.utils.Constact;
 import com.yuanshi.maisong.utils.Utils;
 import com.yuanshi.maisong.utils.recycleviewutils.DividerItemDecoration;
-import com.yuanshi.maisong.utils.recycleviewutils.HorizontalPageLayoutManager;
-import com.yuanshi.maisong.utils.recycleviewutils.PagingItemDecoration;
 import com.yuanshi.maisong.utils.recycleviewutils.PagingScrollHelper;
 import com.yuanshi.maisong.view.WheelView;
 import com.yuanshi.maisong.view.datepickview.CalendarView;
 import com.yuanshi.maisong.view.datepickview.DayAndPrice;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -73,7 +70,7 @@ import butterknife.Unbinder;
 /**
  * Created by Administrator on 2016/9/12.
  */
-public class CrewFragment extends BaseFragment implements PagingScrollHelper.onPageChangeListener{
+public class CrewFragment extends BaseFragment implements PagingScrollHelper.onPageChangeListener {
     @BindView(R.id.join_crew_btn)
     TextView joinCrewBtn;
     @BindView(R.id.create_crew_btn)
@@ -104,6 +101,10 @@ public class CrewFragment extends BaseFragment implements PagingScrollHelper.onP
     @BindView(R.id.textView5)
     TextView textView5;
     Unbinder unbinder1;
+    @BindView(R.id.memorandum_title)
+    TextView memorandumTitle;
+    @BindView(R.id.memorandum_layout)
+    LinearLayout memorandumLayout;
     private View m_View;
     public static CrewFragment crewFragment;
     private IHttpPresenter iHttpPresenter;
@@ -113,6 +114,7 @@ public class CrewFragment extends BaseFragment implements PagingScrollHelper.onP
     PagingScrollHelper scrollHelper = new PagingScrollHelper();
     private ArrayList<DayAndPrice> memorandumDateList = new ArrayList<>();
     private ArrayList<DailyCallBean> memorandumList = new ArrayList<>();
+    private SimpleDateFormat spt = new SimpleDateFormat("yyyy-MM-dd");
 
     @Override
     protected View getMainView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -138,11 +140,12 @@ public class CrewFragment extends BaseFragment implements PagingScrollHelper.onP
     }
 
     private void initView() {
+        memorandum.setText(Utils.getStringDateFromMillis(System.currentTimeMillis(), "yyyy年MM月dd日") + ">");
         scrollHelper.setUpRecycleView(weatherListLayout);
         scrollHelper.setOnPageChangeListener(this);
         WeatherBean defaultweather = new WeatherBean();
         weatherList.add(defaultweather);
-        adapter = new WeatherListAdapter((ArrayList<WeatherBean>) weatherList,getActivity());
+        adapter = new WeatherListAdapter((ArrayList<WeatherBean>) weatherList, getActivity(),localCity);
         weatherListLayout.setAdapter(adapter);
         getWeatherInfo();//获取天气信息；
     }
@@ -162,9 +165,11 @@ public class CrewFragment extends BaseFragment implements PagingScrollHelper.onP
                 case GET_WEATHERINFO_SUCCESS:
                     List<WeatherBean> weatherBeanlist = (List<WeatherBean>) msg.obj;
                     loadWeather(weatherBeanlist);
+                    adapter.setLocalCity(localCity);
+                    adapter.notifyItemChanged(0);
                     break;
                 case GET_WERTHERINFO_FAILD:
-
+                    Toast.makeText(getActivity().getApplicationContext(),R.string.weather_got_faild,Toast.LENGTH_SHORT).show();
                     break;
             }
         }
@@ -185,11 +190,10 @@ public class CrewFragment extends BaseFragment implements PagingScrollHelper.onP
 
     /**
      * 加载天气信息
-     *
      */
     public void loadWeather(List<WeatherBean> weatherBeans) {
-        YLog.e("开始加载天气--->"+weatherBeans.size());
-        weatherList =  weatherBeans;
+        YLog.e("开始加载天气--->" + weatherBeans.size());
+        weatherList = weatherBeans;
         LinearLayoutManager hLinearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         DividerItemDecoration hDividerItemDecoration = new DividerItemDecoration(getActivity(), LinearLayoutManager.HORIZONTAL);
         weatherListLayout.setLayoutManager(hLinearLayoutManager);
@@ -198,6 +202,7 @@ public class CrewFragment extends BaseFragment implements PagingScrollHelper.onP
         adapter.updateData(weatherList);
     }
 
+    private String localCity;//当前所在城市
     public void getWeatherInfo() {
         MyApplication.THREAD_EXCUTER.execute(new Runnable() {
             @Override
@@ -208,34 +213,41 @@ public class CrewFragment extends BaseFragment implements PagingScrollHelper.onP
                 fio.setLang("zh");
                 fio.setExcludeURL("hourly,minutely");
                 //excluded the minutely and hourly reports from the reply
+                double lat;
+                double longit;
                 Location location = Utils.getLocation(getActivity());
-                if (location != null) {
-                    YLog.e(String.valueOf(location.getLatitude()) + "-----" + String.valueOf(location.getLongitude()));
-                    fio.getForecast(String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()));   //sets the latitude and longitude - not optional
-                    //it will fail to get forecast if it is not set
-                    //this method should be called after the options were set
-
-                    JsonObject jsonObject = fio.getDaily();
-                    JsonArray jsonArray = (JsonArray) jsonObject.get("data");
-                    if (jsonArray != null && jsonArray.size() > 0) {
-                        YLog.e("天气信息获取成功"+jsonArray.toString());
-                        List<WeatherBean> weatherBeanList = Utils.jsonToList(jsonArray.toString(), WeatherBean[].class);
-                        Message msg = new Message();
-                        msg.what = GET_WEATHERINFO_SUCCESS;
-                        msg.obj = weatherBeanList;
-                        handler.sendMessage(msg);
-                    } else {
-                        YLog.e("天气信息获取失败");
-                        Message msg = new Message();
-                        msg.what = GET_WERTHERINFO_FAILD;
-                        handler.sendMessage(msg);
-                    }
+                if (location == null) {
+                    YLog.e("GPS定位失败,默认定位北京");
+                    lat = 39.9046900000;
+                    longit = 116.4071700000;
+                    Message msg = new Message();
+                    msg.what = GET_WERTHERINFO_FAILD;
+                    handler.sendMessage(msg);
                 } else {
-                    YLog.e("GPS定位失败");
+                    lat = location.getLatitude();
+                    longit = location.getLongitude();
+                }
+                YLog.e("经纬度--》"+String.valueOf(lat) + "-----" + String.valueOf(longit));
+                fio.getForecast(String.valueOf(lat), String.valueOf(longit));   //sets the latitude and longitude - not optional
+                //it will fail to get forecast if it is not set
+                //this method should be called after the options were set
+                localCity = Utils.getLocalCity(CrewFragment.this.getActivity(), lat,longit);
+                JsonObject jsonObject = fio.getDaily();
+                JsonArray jsonArray = (JsonArray) jsonObject.get("data");
+                if (jsonArray != null && jsonArray.size() > 0) {
+                    YLog.e("天气信息获取成功" + jsonArray.toString());
+                    List<WeatherBean> weatherBeanList = Utils.jsonToList(jsonArray.toString(), WeatherBean[].class);
+                    Message msg = new Message();
+                    msg.what = GET_WEATHERINFO_SUCCESS;
+                    msg.obj = weatherBeanList;
+                    handler.sendMessage(msg);
+                } else {
+                    YLog.e("天气信息获取失败");
                     Message msg = new Message();
                     msg.what = GET_WERTHERINFO_FAILD;
                     handler.sendMessage(msg);
                 }
+
             }
         });
     }
@@ -249,7 +261,7 @@ public class CrewFragment extends BaseFragment implements PagingScrollHelper.onP
 
     @OnClick({R.id.call_sheet, R.id.notifycation_of_crew, R.id.script_update, R.id.shooting_schedule,
             R.id.crew_contacts, R.id.profile, R.id.join_crew_btn, R.id.create_crew_btn, R.id.crew_name,
-            R.id.memorandum})
+            R.id.memorandum_layout})
     public void onViewClicked(View view) {
         Intent intent = new Intent();
         switch (view.getId()) {
@@ -264,7 +276,7 @@ public class CrewFragment extends BaseFragment implements PagingScrollHelper.onP
             case R.id.crew_name://点击剧组名称，切换已添加剧组
                 showSelectCrewDialog();
                 break;
-            case R.id.memorandum://点击备忘录，弹出日历选项
+            case R.id.memorandum_layout://点击备忘录，弹出日历选项
                 showDatePickerLayout();
                 break;
             case R.id.call_sheet://点击每日通告单，查看每日通告
@@ -374,7 +386,14 @@ public class CrewFragment extends BaseFragment implements PagingScrollHelper.onP
      */
     public void saveToSharedPreference(String crewTitle) {
         getActivity().getSharedPreferences(Constant.MAIN_SH_NAME, Context.MODE_PRIVATE).edit().putString(Constant.CURRENT_CREW_NAME_KEY, crewTitle).commit();
-        iHttpPresenter.index(Constant.HTTP_REQUEST_MEMORANDUM,currentCrew.getId());
+        getMemorandum();
+    }
+
+    public void getMemorandum() {
+        YLog.e("重新请求备忘录");
+        memorandumTitle.setText(R.string.no_memoire_today);
+        memorandumDateList.clear();
+        iHttpPresenter.index(Constant.HTTP_REQUEST_MEMORANDUM, currentCrew.getId());
     }
 
     /**
@@ -414,9 +433,15 @@ public class CrewFragment extends BaseFragment implements PagingScrollHelper.onP
             @Override
             public void createMemoClick(View view) {//回调返回月份从0开始计数
                 DateBean dateBean = calendarView.getSelectDate();
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(dateBean.getYear(), dateBean.getMonth(), dateBean.getDay());
+                YLog.e("选中日期毫秒---》" + calendar.getTimeInMillis() + ":" + System.currentTimeMillis());
+                String addtime = Utils.getStringDateFromMillis(calendar.getTimeInMillis(), "yyyy-MM-dd");
+                YLog.e("选择了添加时间---》" + addtime);
                 Intent intent = new Intent(getActivity(), EditNotifyActivity.class);
                 intent.putExtra("editType", Constant.HTTP_REQUEST_MEMORANDUM);
                 intent.putExtra("crewId", currentCrew.getId());
+                intent.putExtra("addtime", addtime);
                 startActivity(intent);
                 mCameraDialog.dismiss();
             }
@@ -424,10 +449,14 @@ public class CrewFragment extends BaseFragment implements PagingScrollHelper.onP
         calendarView.setOnCheckMemoClick(new CalendarView.OnCheckMemoClick() {
             @Override
             public void checkMemoClick(View view) {//回调返回月份从0开始计数
+//                if(calendarView.isdayAndPriceList()){
                 Intent intent = new Intent(getActivity(), SearchMemoireActivity.class);
-                intent.putExtra("crewId",currentCrew.getId());
+                intent.putExtra("crewId", currentCrew.getId());
                 startActivity(intent);
                 mCameraDialog.dismiss();
+//                }else{
+//                    Toast.makeText(getActivity().getApplicationContext(), "本日无备忘！", Toast.LENGTH_SHORT).show();
+//                }
             }
         });
 
@@ -454,8 +483,8 @@ public class CrewFragment extends BaseFragment implements PagingScrollHelper.onP
     @Override
     public void onHttpSuccess(String msgType, String msg, Object obj) {
         switch (msgType) {
-            case Constant.HTTP_REQUEST_MEMORANDUM+":index":
-                if(obj != null){
+            case Constant.HTTP_REQUEST_MEMORANDUM + ":index":
+                if (obj != null) {
                     initData(obj);
                 }
                 break;
@@ -465,29 +494,38 @@ public class CrewFragment extends BaseFragment implements PagingScrollHelper.onP
     public void initData(Object obj) {
         Gson gson = new Gson();
         String json = gson.toJson(obj);
-        if(!TextUtils.isEmpty(json)){
+        if (!TextUtils.isEmpty(json)) {
             memorandumList = (ArrayList<DailyCallBean>) Utils.jsonToList2(json, DailyCallBean.class);
             setMorandunDate(memorandumList);
         }
     }
 
-    public void setMorandunDate(ArrayList<DailyCallBean> list){
+    public void setMorandunDate(ArrayList<DailyCallBean> list) {
         memorandumDateList.clear();
-        for(DailyCallBean dailyCallBean: list){
+        for (DailyCallBean dailyCallBean : list) {
             String dateTime = dailyCallBean.getAddtime();
-            try{
+
+            YLog.e("getAddTime::" + dateTime);
+            try {
                 String date = dateTime.split(" ")[0];
                 String[] dateStrs = date.split("-");
-                DayAndPrice dayAndPrice = new DayAndPrice("",Integer.parseInt(dateStrs[0]),Integer.parseInt(dateStrs[1]),Integer.parseInt(dateStrs[2]));
+                DayAndPrice dayAndPrice = new DayAndPrice("", Integer.parseInt(dateStrs[0]), Integer.parseInt(dateStrs[1]), Integer.parseInt(dateStrs[2]));
+                String today = Utils.getStringDateFromMillis(System.currentTimeMillis(), "yyyy-MM-dd");
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(Integer.parseInt(dateStrs[0]), (Integer.parseInt(dateStrs[1])) - 1, Integer.parseInt(dateStrs[2]));
+                if (today.equals(Utils.getStringDateFromMillis(calendar.getTimeInMillis(), "yyyy-MM-dd"))) {
+                    memorandumTitle.setText(dailyCallBean.getTitle());
+                }
                 memorandumDateList.add(dayAndPrice);
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
+
     @Override
     public void onHttpFaild(String msgType, String msg, Object obj) {
-        super.onHttpFaild(msgType,msg,obj);
+        super.onHttpFaild(msgType, msg, obj);
         switch (msgType) {
             case "index":
                 Toast.makeText(getActivity().getApplicationContext(), msg, Toast.LENGTH_SHORT).show();

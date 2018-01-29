@@ -153,6 +153,7 @@ public class LoginAcitvity extends BaseActivity {
     };
 
     private void startNextActivity(){
+
         Intent intent = new Intent(LoginAcitvity.this, PerfectDataActivity.class);
         startActivity(intent);
         finish();

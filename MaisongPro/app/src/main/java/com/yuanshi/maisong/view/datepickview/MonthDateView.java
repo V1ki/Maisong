@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.TextView;
 
+import com.yuanshi.iotpro.publiclib.utils.YLog;
 import com.yuanshi.maisong.R;
 import com.yuanshi.maisong.bean.DateBean;
 
@@ -159,6 +160,22 @@ public class MonthDateView extends View {
 		return false;
 	}
 
+	/**
+	 * 判断是否为事务天数,通过获取price来辨别
+	 * @return
+	 */
+	public boolean isdayAndPriceList(){
+		if(dayAndPriceList == null || dayAndPriceList.size() == 0)return false;
+		DayAndPrice dayAndPrice;
+		for(int index = 0;index < dayAndPriceList.size();index++){
+			dayAndPrice = dayAndPriceList.get(index);
+			if(dayAndPrice.day == mSelDay && dayAndPrice.month == mSelMonth + 1 && dayAndPrice.year == mSelYear){
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public boolean hasThings(DayAndPrice dayAndPrice){
 		if(dayAndPriceList == null || dayAndPriceList.size() == 0){
 			return false;
@@ -173,11 +190,12 @@ public class MonthDateView extends View {
 	}
 
 	public DateBean getSelectDate(){
-		if(mSelDay <= 0 || mSelMonth <=0 || mSelYear <= 0){
-			return null;
-		}else{
+//		if(mSelDay <= 0 || mSelMonth <=0 || mSelYear <= 0){
+//			return null;
+//		}else{
+		YLog.e("选中日期："+mSelYear+mSelMonth+mSelDay);
 			return new DateBean(mSelYear,mSelMonth,mSelDay);
-		}
+//		}
 	}
 	
 	/**

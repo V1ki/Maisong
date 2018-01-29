@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
@@ -22,10 +23,10 @@ import com.google.gson.Gson;
 import com.yuanshi.iotpro.publiclib.activity.BaseActivity;
 import com.yuanshi.iotpro.publiclib.utils.Constant;
 import com.yuanshi.iotpro.publiclib.utils.YLog;
+import com.yuanshi.iotpro.publiclib.view.SuperFileView2;
 import com.yuanshi.maisong.R;
 import com.yuanshi.maisong.bean.NoticeDetailBean;
 import com.yuanshi.maisong.utils.Utils;
-import com.yuanshi.maisong.view.MixedTextImageLayout;
 import com.yuanshi.maisong.view.RoundProgressBar;
 
 import java.io.File;
@@ -45,8 +46,6 @@ public class ShowTextImageActivity extends BaseActivity {
     TextView titleText;
     @BindView(R.id.title_layout)
     RelativeLayout titleLayout;
-    @BindView(R.id.mixed_text_image_layout)
-    MixedTextImageLayout mixedTextImageLayout;
     @BindView(R.id.text_title)
     TextView textTitle;
     @BindView(R.id.autherName)
@@ -59,6 +58,8 @@ public class ShowTextImageActivity extends BaseActivity {
     ScrollView scrollView;
     @BindView(R.id.fileLisetView)
     ListView fileLisetView;
+    @BindView(R.id.cotent_webView)
+    WebView cotentWebView;
 
     private String id;
     private String title;
@@ -73,6 +74,7 @@ public class ShowTextImageActivity extends BaseActivity {
 
     @Override
     protected void init(Bundle savedInstanceState) {
+        cotentWebView.getSettings().setDefaultTextEncodingName("UTF -8");//设置默认为utf-8
         id = getIntent().getStringExtra("id");
         title = getIntent().getStringExtra("title");
         requestType = getIntent().getStringExtra("requestType");
@@ -81,23 +83,23 @@ public class ShowTextImageActivity extends BaseActivity {
             finish();
             return;
         }
+        iHttpPresenter.details(requestType, id);
         adapter = new FileListAdapter(this);
         fileLisetView.setAdapter(adapter);
         titleText.setText(title);
-        iHttpPresenter.details(requestType, id);
         fileLisetView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 ViewHolder holder = (ViewHolder) view.getTag();
                 String url = fileList.get(i);
                 String fileName = url.substring(url.lastIndexOf("/") + 1, url.length());
-                if( holder.progressLayout.getVisibility() == View.VISIBLE){//正在下载中，点击不处理
-                    return ;
-                }else{
-                    if(!Utils.isFileExist(fileName)){//未下载，点击开始下载
+                if (holder.progressLayout.getVisibility() == View.VISIBLE) {//正在下载中，点击不处理
+                    return;
+                } else {
+                    if (!Utils.isFileExist(fileName)) {//未下载，点击开始下载
                         holder.progressLayout.setVisibility(View.VISIBLE);
                         iHttpPresenter.download(fileList.get(i), Utils.getFileDownloadTempPath(), fileName, view);
-                    }else{//已下载，点击打开文件
+                    } else {//已下载，点击打开文件
                         Intent intent = new Intent(ShowTextImageActivity.this, ShowFileActivity.class);
                         intent.putExtra("fileName", fileName);
                         startActivity(intent);
@@ -105,6 +107,15 @@ public class ShowTextImageActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+
+    private void getFilePathAndShowFile(SuperFileView2 mSuperFileView2, String filePath) {
+        if (filePath.contains("http")) {//网络地址要先下载
+//            downLoadFromNet(getFilePath(),mSuperFileView2);
+        } else {
+            mSuperFileView2.displayFile(new File(filePath));
+        }
     }
 
     @Override
@@ -115,8 +126,8 @@ public class ShowTextImageActivity extends BaseActivity {
     }
 
     @Override
-    public void onDownloadComplete(View view,String fileName) {
-        super.onDownloadComplete(view,fileName);
+    public void onDownloadComplete(View view, String fileName) {
+        super.onDownloadComplete(view, fileName);
         ViewHolder viewHolder = (ViewHolder) view.getTag();
         viewHolder.progressLayout.setVisibility(View.GONE);
         Utils.moveFile(fileName);//下载完成，将文件移动到正式目录
@@ -125,11 +136,11 @@ public class ShowTextImageActivity extends BaseActivity {
     }
 
     @Override
-    public void onDownloadError(View view, Throwable e,String fileName) {
+    public void onDownloadError(View view, Throwable e, String fileName) {
         ViewHolder viewHolder = (ViewHolder) view.getTag();
         viewHolder.progressLayout.setVisibility(View.GONE);
-        Toast.makeText(getApplicationContext(),R.string.download_faild,Toast.LENGTH_SHORT).show();
-        Utils.deleteFile(new File(Utils.getFileDownloadTempPath()+"/"+fileName));//下载失败，删除文件
+        Toast.makeText(getApplicationContext(), R.string.download_faild, Toast.LENGTH_SHORT).show();
+        Utils.deleteFile(new File(Utils.getFileDownloadTempPath() + "/" + fileName));//下载失败，删除文件
         viewHolder.downloadStateTv.setText(R.string.not_downloaded);
         viewHolder.downloadStateTv.setTextColor(getResources().getColor(R.color.gray_normal));
     }
@@ -138,8 +149,11 @@ public class ShowTextImageActivity extends BaseActivity {
         Gson gson = new Gson();
         String json = gson.toJson(obj);
         NoticeDetailBean notice = gson.fromJson(json, NoticeDetailBean.class);
-        fileList = notice.getFile();
+        if(notice.getFile() != null && notice.getFile().size() > 0){
+            fileList = notice.getFile();
+        }
         adapter.notifyDataSetChanged();
+        YLog.e("http-->"+notice.getAuthor());
         if (!TextUtils.isEmpty(notice.getTitle())) {
             textTitle.setText(notice.getTitle());
         }
@@ -153,32 +167,34 @@ public class ShowTextImageActivity extends BaseActivity {
     }
 
     private void buildContent(NoticeDetailBean notice) {
-        StringBuilder content = new StringBuilder();
-
-        if (!TextUtils.isEmpty(notice.getContent()) && notice.getPics() != null && notice.getPics().length > 0) {
-            String[] contents = notice.getContent().split("\n");
-            if (contents.length <= notice.getPics().length) {
-                for (int i = 0; i < contents.length; i++) {
-                    content.append("<img>").append(notice.getPics()[i]).append("</img>");
-                    content.append(contents[i]);
-                }
-                for (int i = contents.length; i < notice.getPics().length; i++) {
-                    content.append(contents[i]);
-                }
-            } else {
-                for (int i = 0; i < notice.getPics().length; i++) {
-                    content.append("<img>").append(notice.getPics()[i]).append("</img>");
-                    content.append(contents[i]);
-                }
-                for (int i = notice.getPics().length; i < contents.length; i++) {
-                    content.append(contents[i]);
-                }
-            }
-        } else if (notice.getPics() == null || notice.getPics().length == 0) {
-            content.append(notice.getContent());
+        YLog.e("okhttp--->" + notice.getContent());
+//        if (!TextUtils.isEmpty(notice.getContent()) && notice.getPics() != null && notice.getPics().length > 0) {
+//            String[] contents = notice.getContent().split("\n");
+//            if (contents.length <= notice.getPics().length) {
+//                for (int i = 0; i < contents.length; i++) {
+//                    content.append("<img>").append(notice.getPics()[i]).append("</img>");
+//                    content.append(contents[i]);
+//                }
+//                for (int i = contents.length; i < notice.getPics().length; i++) {
+//                    content.append(contents[i]);
+//                }
+//            } else {
+//                for (int i = 0; i < notice.getPics().length; i++) {
+//                    content.append("<img>").append(notice.getPics()[i]).append("</img>");
+//                    content.append(contents[i]);
+//                }
+//                for (int i = notice.getPics().length; i < contents.length; i++) {
+//                    content.append(contents[i]);
+//                }
+//            }
+//        } else if (notice.getPics() == null || notice.getPics().length == 0) {
+//            content.append(notice.getContent());
+//        }
+//
+//        mixedTextImageLayout.setContent(content.toString());
+        if(!TextUtils.isEmpty(notice.getContent())){
+            cotentWebView.loadData(notice.getContent(),"text/html; charset=UTF-8", null);
         }
-
-        mixedTextImageLayout.setContent(content.toString());
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -245,17 +261,25 @@ public class ShowTextImageActivity extends BaseActivity {
                 holder = (ViewHolder) view.getTag();
             }
             String url = fileList.get(i);
-            if (url.endsWith("pdf")) {
-                holder.fileIcon.setImageResource(R.mipmap.pdf_icon);
-            } else if (url.endsWith("txt")) {
-                holder.fileIcon.setImageResource(R.mipmap.txt_icon);
+            if (Utils.getFileType(url) == Constant.FILE_TYPE_PDF) {
+                holder.fileIcon.setImageResource(R.mipmap.file_pdf_icon);
+            } else if (Utils.getFileType(url) == Constant.FILE_TYPE_TXT) {
+                holder.fileIcon.setImageResource(R.mipmap.file_txt_icon);
+            }else if(Utils.getFileType(url) == Constant.FILE_TYPE_EXCEL){
+                holder.fileIcon.setImageResource(R.mipmap.file_excel_icon);
+            }else if(Utils.getFileType(url) == Constant.FILE_TYPE_WORD){
+                holder.fileIcon.setImageResource(R.mipmap.file_word_icon);
+            }else if(Utils.getFileType(url) == Constant.FILE_TYPE_PPT){
+                holder.fileIcon.setImageResource(R.mipmap.file_ppt_icon);
+            }else{
+                holder.fileIcon.setImageResource(R.mipmap.file_unknown_icon);
             }
             YLog.e("PDF地址" + url);
             String fileName = url.substring(url.lastIndexOf("/") + 1, url.length());
-            if(Utils.isFileExist(fileName)){
+            if (Utils.isFileExist(fileName)) {
                 holder.downloadStateTv.setTextColor(getResources().getColor(R.color.btn_green_noraml));
                 holder.downloadStateTv.setText(R.string.has_downloaded);
-            }else{
+            } else {
                 holder.downloadStateTv.setTextColor(getResources().getColor(R.color.gray_normal));
                 holder.downloadStateTv.setText(R.string.not_downloaded);
             }
@@ -264,6 +288,7 @@ public class ShowTextImageActivity extends BaseActivity {
             return view;
         }
     }
+
     static class ViewHolder {
         @BindView(R.id.progress_bar)
         RoundProgressBar progressBar;
@@ -283,4 +308,8 @@ public class ShowTextImageActivity extends BaseActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }

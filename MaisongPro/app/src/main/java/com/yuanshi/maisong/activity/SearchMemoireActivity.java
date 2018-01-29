@@ -76,6 +76,7 @@ public class SearchMemoireActivity extends BaseActivity {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     memorandumList.clear();
                     adapter.notifyDataSetChanged();
+                    iHttpPresenter.searchMemorandum(crewId,edSearch.getText().toString());
                 }
                 return false;
             }
@@ -120,6 +121,8 @@ public class SearchMemoireActivity extends BaseActivity {
                 break;
             case R.id.edit_btn:
                 Intent intent = new Intent(this, EditNotifyActivity.class);
+                intent.putExtra("editType", Constant.HTTP_REQUEST_MEMORANDUM);
+                intent.putExtra("crewId", crewId);
                 startActivity(intent);
                 break;
         }
@@ -128,6 +131,9 @@ public class SearchMemoireActivity extends BaseActivity {
     public void onHttpSuccess(String msgType, String msg, Object obj) {
         switch (msgType) {
             case Constant.HTTP_REQUEST_MEMORANDUM+":index":
+                initData(obj);
+                break;
+            case "searchMemorandum":
                 initData(obj);
                 break;
         }

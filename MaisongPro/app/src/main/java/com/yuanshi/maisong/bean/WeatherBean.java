@@ -14,6 +14,15 @@ public class WeatherBean {
     private Long sunsetTime;//日落时间
     private Double temperatureMin;//最低气温
     private Double temperatureMax;//最高气温
+    private String localCity;
+
+    public String getLocalCity() {
+        return localCity;
+    }
+
+    public void setLocalCity(String localCity) {
+        this.localCity = localCity;
+    }
 
     public String getIcon() {
         return icon;
