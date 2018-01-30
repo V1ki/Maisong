@@ -32,7 +32,7 @@
         android:name="com.yuanshi.maisong.application.MSongAppliacation"
         tools:replace="android:icon,android:theme"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/logo_icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         >
