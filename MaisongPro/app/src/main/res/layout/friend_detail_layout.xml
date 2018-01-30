@@ -68,6 +68,7 @@
                     android:layout_gravity="center_horizontal"
                     app:border_color="@color/transparent"
                     app:border_width="0dp"
+                    android:src="@mipmap/ease_default_avatar"
                     />
                 <RelativeLayout
                     android:layout_weight="1"

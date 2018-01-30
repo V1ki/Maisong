@@ -112,7 +112,7 @@ public class AccountSettingActivity extends BaseActivity {
                 selectSexTv.setText(R.string.sex_boy);
             }
             YLog.e("头像地址--》"+loginInfoBean.getAvatar());
-            Glide.with(this).load(loginInfoBean.getAvatar()).error(R.mipmap.ic_launcher).into(headIcon);
+            Glide.with(this).load(loginInfoBean.getAvatar()).error(R.mipmap.ease_default_avatar).into(headIcon);
         }
     }
 
@@ -215,7 +215,7 @@ public class AccountSettingActivity extends BaseActivity {
     public void uploadHeadIcon(){
         if (head != null) {
 //            setPicToView(head);
-            File file = new File(path+"/head.jpg");
+            File file = new File(headIconPath);
             RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
             MultipartBody.Part body =
                     MultipartBody.Part.createFormData("file", file.getName(), requestFile);
@@ -256,12 +256,14 @@ public class AccountSettingActivity extends BaseActivity {
         loginBeanDaoUtil.updateUserInfo(loginInfoBean);
     }
 
+    public String headIconPath;
     /**
      * 保存图片到sd卡
      * @param mBitmap
      */
     private void setPicToView(Bitmap mBitmap) {
-        File file = new File(path+"/head.jpg");
+        headIconPath = path+"/"+System.currentTimeMillis()+"head.jpg";
+        File file = new File(headIconPath);
         if(!file.exists()){
             try {
                 file.createNewFile();

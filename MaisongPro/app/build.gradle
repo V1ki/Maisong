@@ -16,10 +16,26 @@ android {
             abiFilters "armeabi", "armeabi-v7a", "x86", "mips"
         }
     }
+    signingConfigs {
+        debug {
+            storeFile file("F:/Android_app_codes/android_key_stores/mysong_keystore.jks")
+            storePassword "android"
+            keyAlias "key0"
+            keyPassword "android"
+        }
+        release {
+            storeFile file("F:/Android_app_codes/android_key_stores/mysong_keystore.jks")
+            storePassword "android"
+            keyAlias "key0"
+            keyPassword "android"
+            v2SigningEnabled false
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfigs.release
         }
     }
     repositories {

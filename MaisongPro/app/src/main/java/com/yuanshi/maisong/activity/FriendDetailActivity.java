@@ -131,7 +131,7 @@ public class FriendDetailActivity extends BaseActivity {
                 nickName.setText(userInfo.getNickname());
             }
             if (!TextUtils.isEmpty(userInfo.getAvatar())) {
-                Glide.with(this).load(userInfo.getAvatar()).error(R.mipmap.ic_launcher).into(headIcon);
+                Glide.with(this).load(userInfo.getAvatar()).error(R.mipmap.ease_default_avatar).into(headIcon);
             }
             if (!TextUtils.isEmpty(userInfo.getPhone())) {
                 account.setText(userInfo.getPhone());

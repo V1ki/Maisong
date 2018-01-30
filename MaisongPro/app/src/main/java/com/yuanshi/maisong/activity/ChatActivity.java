@@ -50,7 +50,6 @@ public class ChatActivity extends BaseActivity {
                         startActivity(intent);
                         finish();
                     }else{
-                        Toast.makeText(getApplicationContext(),"点击了"+username+"的头像", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(ChatActivity.this, FriendDetailActivity.class);
                         intent.putExtra("phone", username);
                         startActivity(intent);

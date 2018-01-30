@@ -31,7 +31,7 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true" />
     </RelativeLayout>
-    <com.yuanshi.maisong.view.WheelView
+    <com.yuanshi.maisong.view.WheelView2
         android:id="@+id/wheelView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

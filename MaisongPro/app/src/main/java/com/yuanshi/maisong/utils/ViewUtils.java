@@ -10,7 +10,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.yuanshi.maisong.R;
-import com.yuanshi.maisong.view.WheelView;
+import com.yuanshi.maisong.view.WheelView2;
 
 import java.util.List;
 
@@ -33,10 +33,10 @@ public class ViewUtils {
         popupWindow.setAnimationStyle(R.style.BottomDialog);
         popupWindow.setOutsideTouchable(true);
         popupWindow.setFocusable(false);
-        WheelView wheelView = (WheelView) contentView.findViewById(R.id.wheelView);
+        WheelView2 wheelView = (WheelView2) contentView.findViewById(R.id.wheelView);
         wheelView.setItems(list);
         wheelView.setSeletion(list.indexOf(view.getText().toString()));
-        wheelView.setOnItemClickListener(new WheelView.OnItemClickListner() {
+        wheelView.setOnItemClickListener(new WheelView2.OnItemClickListner() {
             @Override
             public void onItemClick(String item) {
                 if(popupWindow.isShowing()){
@@ -50,7 +50,7 @@ public class ViewUtils {
                 }
             }
         });
-        wheelView.setOnWheelViewListener(new WheelView.OnWheelViewListener(){
+        wheelView.setOnWheelViewListener(new WheelView2.OnWheelViewListener(){
             @Override
             public void onSelected(int selectedIndex, String item) {
                 view.setText(item);

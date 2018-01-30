@@ -24,8 +24,7 @@ public class MSongAppliacation extends MyApplication {
         options.setAcceptInvitationAlways(false);
         EaseUI.getInstance().init(this,options);
         EMClient.getInstance().setDebugMode(true);
-//        CrashHandler crashHandler = CrashHandler.getInstance();//记录崩溃日志、崩溃重启
-//        crashHandler.init(this);
-
+        CrashHandler crashHandler = CrashHandler.getInstance();//记录崩溃日志、崩溃重启
+        crashHandler.init(this);
     }
 }

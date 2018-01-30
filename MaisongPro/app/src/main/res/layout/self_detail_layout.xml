@@ -29,12 +29,13 @@
                 android:id="@+id/headIcon"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:src="@mipmap/ic_launcher"
+                android:src="@mipmap/ease_default_avatar"
                 android:layout_centerHorizontal="true"
                 app:border_width="0dp"
                 app:border_color="@color/transparent"
                 />
             <TextView
+                android:layout_marginTop="5dp"
                 android:id="@+id/userName"
                 android:layout_below="@id/headIcon"
                 android:layout_width="wrap_content"

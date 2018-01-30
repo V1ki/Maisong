@@ -29,9 +29,14 @@
 			android:layout_centerVertical="true"
 			/>
 	</RelativeLayout>
-
+<TextView
+	android:layout_width="match_parent"
+	android:background="@color/grid_state_focused"
+	android:layout_height="1px" />
     
-    <include layout="@layout/ease_search_bar" />
+    <include layout="@layout/ease_search_bar"
+		android:visibility="gone"
+		/>
     
     <FrameLayout
         android:layout_width="match_parent"

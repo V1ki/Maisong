@@ -18,6 +18,7 @@ import com.hyphenate.easeui.ui.EaseContactListFragment;
 import com.yuanshi.iotpro.daoutils.LoginBeanDaoUtil;
 import com.yuanshi.iotpro.publiclib.bean.LoginInfoBean;
 import com.yuanshi.iotpro.publiclib.utils.Constant;
+import com.yuanshi.iotpro.publiclib.utils.YLog;
 import com.yuanshi.maisong.R;
 import com.yuanshi.maisong.activity.AccountSettingActivity;
 import com.yuanshi.maisong.activity.ESContactsActivity;
@@ -90,14 +91,25 @@ public class MoreFragment extends BaseFragment{
     }
 
     private void initView() {
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setUerInfo();
+    }
+
+    public void setUerInfo(){
         userPhone = getActivity().getSharedPreferences(Constant.MAIN_SH_NAME, Context.MODE_PRIVATE).getString(Constant.USER_PHONE_KEY,"");
         LoginInfoBean loginInfoBean = getLoginInfoBean(userPhone);
+        YLog.e("setUserInfo--->"+loginInfoBean);
         if(loginInfoBean!= null && !TextUtils.isEmpty(loginInfoBean.getAvatar())){
-            Glide.with(getActivity()).load(loginInfoBean.getAvatar()).error(R.mipmap.ic_launcher).into(headIcon);
+            YLog.e("setUserInfo--->"+loginInfoBean.getAvatar());
+            Glide.with(getActivity()).load(loginInfoBean.getAvatar()).error(R.mipmap.ease_default_avatar).into(headIcon);
             userName.setText(loginInfoBean.getNickname());
         }
     }
-
     public LoginInfoBean getLoginInfoBean(String userPhone){
         return  loginBeanDaoUtil.qeuryUserInfo(Long.parseLong(userPhone));
     }

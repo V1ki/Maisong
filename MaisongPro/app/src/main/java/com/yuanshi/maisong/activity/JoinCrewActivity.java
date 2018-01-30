@@ -28,7 +28,7 @@ import com.yuanshi.maisong.R;
 import com.yuanshi.maisong.bean.AuthBean;
 import com.yuanshi.maisong.bean.HttpDepartmentBean;
 import com.yuanshi.maisong.utils.Utils;
-import com.yuanshi.maisong.view.WheelView;
+import com.yuanshi.maisong.view.WheelView2;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -189,7 +189,7 @@ public class JoinCrewActivity extends BaseActivity {
         mCameraDialog.setContentView(root);
         Window dialogWindow = mCameraDialog.getWindow();
         dialogWindow.setGravity(Gravity.BOTTOM);
-        final WheelView wheelView = (WheelView) root.findViewById(R.id.wheelView);
+        final WheelView2 wheelView = (WheelView2) root.findViewById(R.id.wheelView);
         ArrayList nameList = new ArrayList();
         switch (showType) {
             case SHOW_DEPARTMENT:

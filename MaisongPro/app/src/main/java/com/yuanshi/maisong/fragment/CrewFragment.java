@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -31,6 +32,7 @@ import com.yuanshi.iotpro.publiclib.application.MyApplication;
 import com.yuanshi.iotpro.publiclib.presenter.IHttpPresenter;
 import com.yuanshi.iotpro.publiclib.presenter.IHttpPresenterIml;
 import com.yuanshi.iotpro.publiclib.utils.Constant;
+import com.yuanshi.iotpro.publiclib.utils.ImageViewUtil;
 import com.yuanshi.iotpro.publiclib.utils.YLog;
 import com.yuanshi.maisong.R;
 import com.yuanshi.maisong.activity.CreateCrewActivity;
@@ -53,7 +55,7 @@ import com.yuanshi.maisong.utils.Constact;
 import com.yuanshi.maisong.utils.Utils;
 import com.yuanshi.maisong.utils.recycleviewutils.DividerItemDecoration;
 import com.yuanshi.maisong.utils.recycleviewutils.PagingScrollHelper;
-import com.yuanshi.maisong.view.WheelView;
+import com.yuanshi.maisong.view.WheelView2;
 import com.yuanshi.maisong.view.datepickview.CalendarView;
 import com.yuanshi.maisong.view.datepickview.DayAndPrice;
 
@@ -105,6 +107,22 @@ public class CrewFragment extends BaseFragment implements PagingScrollHelper.onP
     TextView memorandumTitle;
     @BindView(R.id.memorandum_layout)
     LinearLayout memorandumLayout;
+    @BindView(R.id.crew_name_img)
+    ImageView crewNameImg;
+    @BindView(R.id.call_sheet_img)
+    ImageView callSheetImg;
+    @BindView(R.id.notifycation_img)
+    ImageView notifycationImg;
+    @BindView(R.id.script_update_img)
+    ImageView scriptUpdateImg;
+    @BindView(R.id.shooting_schedule_img)
+    ImageView shootingScheduleImg;
+    @BindView(R.id.contact_list_img)
+    ImageView contactListImg;
+    @BindView(R.id.profile_img)
+    ImageView profileImg;
+    @BindView(R.id.end_img)
+    ImageView endImg;
     private View m_View;
     public static CrewFragment crewFragment;
     private IHttpPresenter iHttpPresenter;
@@ -128,8 +146,17 @@ public class CrewFragment extends BaseFragment implements PagingScrollHelper.onP
         }
         crewFragment = this;
         unbinder = ButterKnife.bind(this, m_View);
+        scaleImageView();
         initView();
         return m_View;
+    }
+
+    /**
+     * 等比例拉伸IamgeView图片
+     */
+    public void scaleImageView() {
+        ImageViewUtil.matchAll(this.getActivity(), crewNameImg);
+        ImageViewUtil.matchAll(this.getActivity(), callSheetImg);
     }
 
     public static CrewFragment getInstance() {
@@ -145,7 +172,7 @@ public class CrewFragment extends BaseFragment implements PagingScrollHelper.onP
         scrollHelper.setOnPageChangeListener(this);
         WeatherBean defaultweather = new WeatherBean();
         weatherList.add(defaultweather);
-        adapter = new WeatherListAdapter((ArrayList<WeatherBean>) weatherList, getActivity(),localCity);
+        adapter = new WeatherListAdapter((ArrayList<WeatherBean>) weatherList, getActivity(), localCity);
         weatherListLayout.setAdapter(adapter);
         getWeatherInfo();//获取天气信息；
     }
@@ -169,7 +196,7 @@ public class CrewFragment extends BaseFragment implements PagingScrollHelper.onP
                     adapter.notifyItemChanged(0);
                     break;
                 case GET_WERTHERINFO_FAILD:
-                    Toast.makeText(getActivity().getApplicationContext(),R.string.weather_got_faild,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity().getApplicationContext(), R.string.weather_got_faild, Toast.LENGTH_SHORT).show();
                     break;
             }
         }
@@ -203,6 +230,7 @@ public class CrewFragment extends BaseFragment implements PagingScrollHelper.onP
     }
 
     private String localCity;//当前所在城市
+
     public void getWeatherInfo() {
         MyApplication.THREAD_EXCUTER.execute(new Runnable() {
             @Override
@@ -227,11 +255,11 @@ public class CrewFragment extends BaseFragment implements PagingScrollHelper.onP
                     lat = location.getLatitude();
                     longit = location.getLongitude();
                 }
-                YLog.e("经纬度--》"+String.valueOf(lat) + "-----" + String.valueOf(longit));
+                YLog.e("经纬度--》" + String.valueOf(lat) + "-----" + String.valueOf(longit));
                 fio.getForecast(String.valueOf(lat), String.valueOf(longit));   //sets the latitude and longitude - not optional
                 //it will fail to get forecast if it is not set
                 //this method should be called after the options were set
-                localCity = Utils.getLocalCity(CrewFragment.this.getActivity(), lat,longit);
+                localCity = Utils.getLocalCity(CrewFragment.this.getActivity(), lat, longit);
                 JsonObject jsonObject = fio.getDaily();
                 JsonArray jsonArray = (JsonArray) jsonObject.get("data");
                 if (jsonArray != null && jsonArray.size() > 0) {
@@ -334,7 +362,7 @@ public class CrewFragment extends BaseFragment implements PagingScrollHelper.onP
         mCameraDialog.setContentView(root);
         Window dialogWindow = mCameraDialog.getWindow();
         dialogWindow.setGravity(Gravity.BOTTOM);
-        final WheelView wheelView = (WheelView) root.findViewById(R.id.wheelView);
+        final WheelView2 wheelView = (WheelView2) root.findViewById(R.id.wheelView);
         ArrayList nameList = new ArrayList();
         for (CrewHttpBean bean : ((MainActivity) getActivity()).crewList) {
             nameList.add(bean.getTitle());

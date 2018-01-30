@@ -1,12 +1,11 @@
 package com.yuanshi.maisong.view;
 
-/**
- * Created by Dengbocheng on 2017/6/21.
- */
-
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -20,7 +19,6 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-
 import com.yuanshi.maisong.R;
 
 import java.util.ArrayList;
@@ -31,8 +29,8 @@ import java.util.List;
  * Email: tiantian.china.2@gmail.com
  * Date: 7/1/14.
  */
-public class WheelView extends ScrollView {
-    public static final String TAG = WheelView.class.getSimpleName();
+public class WheelView2 extends ScrollView {
+    public static final String TAG = WheelView2.class.getSimpleName();
 
     public static class OnWheelViewListener {
         public void onSelected(int selectedIndex, String item) {
@@ -45,17 +43,17 @@ public class WheelView extends ScrollView {
 
     private LinearLayout views;
 
-    public WheelView(Context context) {
+    public WheelView2(Context context) {
         super(context);
         init(context);
     }
 
-    public WheelView(Context context, AttributeSet attrs) {
+    public WheelView2(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public WheelView(Context context, AttributeSet attrs, int defStyle) {
+    public WheelView2(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(context);
     }
@@ -114,8 +112,6 @@ public class WheelView extends ScrollView {
         views.setOrientation(LinearLayout.VERTICAL);
         this.addView(views);
 
-
-
         scrollerTask = new Runnable() {
 
             public void run() {
@@ -132,28 +128,32 @@ public class WheelView extends ScrollView {
                         onSeletedCallBack();
                     } else {
                         if (remainder > itemHeight / 2) {
-                            WheelView.this.post(new Runnable() {
+                            WheelView2.this.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    WheelView.this.smoothScrollTo(0, initialY - remainder + itemHeight);
+                                    WheelView2.this.smoothScrollTo(0, initialY - remainder + itemHeight);
                                     selectedIndex = divided + offset + 1;
                                     onSeletedCallBack();
                                 }
                             });
                         } else {
-                            WheelView.this.post(new Runnable() {
+                            WheelView2.this.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    WheelView.this.smoothScrollTo(0, initialY - remainder);
+                                    WheelView2.this.smoothScrollTo(0, initialY - remainder);
                                     selectedIndex = divided + offset;
                                     onSeletedCallBack();
                                 }
                             });
                         }
+
+
                     }
+
+
                 } else {
                     initialY = getScrollY();
-                    WheelView.this.postDelayed(scrollerTask, newCheck);
+                    WheelView2.this.postDelayed(scrollerTask, newCheck);
                 }
             }
         };
@@ -186,14 +186,13 @@ public class WheelView extends ScrollView {
 
     private TextView createView(final String item) {
         TextView tv = new TextView(context);
-        tv.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dip2px(65)));
+        tv.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         tv.setSingleLine(true);
-        tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22);
+        tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
         tv.setText(item);
-        tv.setTextColor(getResources().getColor(R.color.gray_normal));
         tv.setGravity(Gravity.CENTER);
-        int padding = dip2px(18);
-        tv.setPadding(0, padding, padding, padding);
+        int padding = dip2px(15);
+        tv.setPadding(padding, padding, padding, padding);
         if (0 == itemHeight) {
             itemHeight = getViewMeasuredHeight(tv);
             Log.d(TAG, "itemHeight: " + itemHeight);
@@ -201,7 +200,6 @@ public class WheelView extends ScrollView {
             LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) this.getLayoutParams();
             this.setLayoutParams(new LinearLayout.LayoutParams(lp.width, itemHeight * displayItemCount));
         }
-
         tv.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -212,14 +210,11 @@ public class WheelView extends ScrollView {
         });
         return tv;
     }
-
     private OnItemClickListner listner;
     public interface OnItemClickListner {
         void onItemClick(String item);
     }
-
-
-    public void setOnItemClickListener(OnItemClickListner listener){
+    public void setOnItemClickListener(WheelView2.OnItemClickListner listener){
         this.listner = listener;
     }
 
@@ -303,11 +298,11 @@ public class WheelView extends ScrollView {
                 return;
             }
             if (position == i) {
+//                itemView.setTextColor(Color.parseColor("#0288ce"));
                 itemView.setTextColor(getResources().getColor(R.color.main_text));
-                itemView.setTextSize(25);
             } else {
+//                itemView.setTextColor(Color.parseColor("#bbbbbb"));
                 itemView.setTextColor(getResources().getColor(R.color.tab_unselected));
-                itemView.setTextSize(22);
             }
         }
     }
@@ -348,31 +343,32 @@ public class WheelView extends ScrollView {
             paint.setStrokeWidth(dip2px(1f));
         }
 
-//        background = new Drawable() {
-//            @Override
-//            public void draw(Canvas canvas) {
+        background = new Drawable() {
+            @Override
+            public void draw(Canvas canvas) {
 //                canvas.drawLine(viewWidth * 1 / 6, obtainSelectedAreaBorder()[0], viewWidth * 5 / 6, obtainSelectedAreaBorder()[0], paint);
 //                canvas.drawLine(viewWidth * 1 / 6, obtainSelectedAreaBorder()[1], viewWidth * 5 / 6, obtainSelectedAreaBorder()[1], paint);
-//            }
-//
-//            @Override
-//            public void setAlpha(int alpha) {
-//
-//            }
-//
-//            @Override
-//            public void setColorFilter(ColorFilter cf) {
-//
-//            }
-//
-//            @Override
-//            public int getOpacity() {
-//                return 0;
-//            }
-//        };
+            }
+
+            @Override
+            public void setAlpha(int alpha) {
+
+            }
+
+            @Override
+            public void setColorFilter(ColorFilter cf) {
+
+            }
+
+            @SuppressLint("WrongConstant")
+            @Override
+            public int getOpacity() {
+                return 0;
+            }
+        };
 
 
-//        super.setBackgroundDrawable(background);
+        super.setBackgroundDrawable(background);
 
     }
 
@@ -389,7 +385,6 @@ public class WheelView extends ScrollView {
      */
     private void onSeletedCallBack() {
         if (null != onWheelViewListener) {
-            ((TextView)views.getChildAt(0)).setTextColor(getResources().getColor(R.color.pop_checked_text_color));
             onWheelViewListener.onSelected(selectedIndex, items.get(selectedIndex));
         }
 
@@ -401,7 +396,7 @@ public class WheelView extends ScrollView {
         this.post(new Runnable() {
             @Override
             public void run() {
-                WheelView.this.smoothScrollTo(0, p * itemHeight);
+                WheelView2.this.smoothScrollTo(0, p * itemHeight);
             }
         });
 

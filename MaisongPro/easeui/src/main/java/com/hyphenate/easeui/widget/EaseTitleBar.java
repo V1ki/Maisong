@@ -46,7 +46,7 @@ public class EaseTitleBar extends RelativeLayout{
         rightImage = (ImageView) findViewById(R.id.right_image);
         titleView = (TextView) findViewById(R.id.title);
         titleLayout = (RelativeLayout) findViewById(R.id.root);
-        
+        rightImage.setVisibility(GONE);
         parseStyle(context, attrs);
     }
     

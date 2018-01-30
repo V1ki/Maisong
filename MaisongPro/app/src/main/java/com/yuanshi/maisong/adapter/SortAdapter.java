@@ -68,7 +68,7 @@ public class SortAdapter extends BaseAdapter implements SectionIndexer{
 		viewHolder.departmentTv.setText(this.list.get(position).getDepartment());
 		viewHolder.positionTv.setText(this.list.get(position).getPosition());
 		if(!TextUtils.isEmpty(this.list.get(position).getAvatar())){
-			Glide.with(mContext).load(this.list.get(position).getAvatar()).error(R.mipmap.ic_launcher).into(viewHolder.headIcon);
+			Glide.with(mContext).load(this.list.get(position).getAvatar()).error(R.mipmap.ease_default_avatar).into(viewHolder.headIcon);
 		}
 		return view;
 

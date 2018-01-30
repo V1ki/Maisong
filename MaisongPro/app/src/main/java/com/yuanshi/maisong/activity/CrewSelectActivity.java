@@ -68,7 +68,6 @@ public class CrewSelectActivity extends BaseActivity {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    Toast.makeText(getApplicationContext(), "点击了搜索", Toast.LENGTH_SHORT).show();
                     adapter.notifyDataSetChanged();
                     iHttpPresenter.searchcrew(edSearch.getText().toString().trim());
                 }
@@ -194,7 +193,6 @@ public class CrewSelectActivity extends BaseActivity {
             holder.applyJoin.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(getApplicationContext(),"选择加入"+crewInfoList.get(i).getTitle()+"剧组",Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(CrewSelectActivity.this, JoinCrewActivity.class);
                     intent.putExtra("crewId",crewInfoList.get(i).getId());
                     intent.putExtra("crewName",crewInfoList.get(i).getTitle());
