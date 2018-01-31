@@ -224,12 +224,10 @@ public class SettingsActivity extends BaseActivity {
                     LoginInfoBean localBean = loginBeanDaoUtil.qeuryUserInfo(Long.parseLong(loginPhone));
                     loginBeanDaoUtil.deleteUserInfo(localBean);
                 }
-                //个人资料完善改为false
-                getSharedPreferences(Constant.MAIN_SH_NAME,MODE_PRIVATE).edit().putBoolean(Constant.HAS_PUT_USER_INFO_KEY,false).commit();
                 singout();//环信退出登录
                 Intent intnet = new Intent(this,LoginAcitvity.class);
                 startActivity(intnet);
-                finish();
+                BaseActivity.BackToLoginActivity();
                 break;
         }
     }

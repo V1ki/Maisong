@@ -10,7 +10,7 @@ public class Constant {
     public static final int HTTP_REQUEST_SUCCESS = 1;//http请求成功
     public static final int HTTP_REQUEST_FAILD = 0;//http请求失败
     public static final String MAIN_SH_NAME = "MySongSp";
-    public static final String HAS_PUT_USER_INFO_KEY = "has_put_user_info";
+//    public static final String HAS_PUT_USER_INFO_KEY = "has_put_user_info";
     public static final String USER_PHONE_KEY ="user_phone_key";
     public static final String CURRENT_CREW_NAME_KEY = "CURRENT_CREW_NAME_KEY";
 

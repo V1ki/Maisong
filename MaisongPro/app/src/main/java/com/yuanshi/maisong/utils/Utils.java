@@ -11,8 +11,13 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.text.TextUtils;
 
+import com.baidu.mapapi.map.offline.MKOLSearchRecord;
+import com.desmond.citypicker.bean.BaseCity;
+import com.desmond.citypicker.bin.CityPicker;
+import com.desmond.citypicker.callback.IOnCityPickerCheckedCallBack;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
@@ -27,6 +32,8 @@ import com.yuanshi.iotpro.publiclib.bean.UserInfoBean;
 import com.yuanshi.iotpro.publiclib.presenter.IHttpPresenter;
 import com.yuanshi.iotpro.publiclib.utils.Constant;
 import com.yuanshi.iotpro.publiclib.utils.YLog;
+import com.yuanshi.maisong.R;
+import com.yuanshi.maisong.fragment.CrewFragment;
 
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
@@ -47,6 +54,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
@@ -251,26 +259,50 @@ public class Utils {
         return dateStr;
     }
 
-    public static String getLocalCity(Context context,double lat, double longit) {
-        String localCity = "";
-//        TextView myLocationText;
-//        myLocationText = (TextView)findViewById(R.id.myLocationText);
-        List<Address> addList = null;
-        Geocoder ge = new Geocoder(context);
+    public static String getLocalCity(Context context,double lat, double longit,Handler handler) {
         try {
+            String localCity = "";
+            List<Address> addList = null;
+            Geocoder ge = new Geocoder(context);
             addList = ge.getFromLocation(lat, longit, 1);
+            if(addList!=null && addList.size()>0){
+                for(int i=0; i<addList.size(); i++){
+                    Address ad = addList.get(i);
+                    localCity =  ad.getLocality();
+                    YLog.e("当前所在城市---》"+localCity);
+                    return localCity;
+                }
+            }
+          handler.sendEmptyMessage(CrewFragment.GET_WERTHERINFO_FAILD);
+            return "北京";
         } catch (IOException e) {
             // TODO Auto-generated catch block
+            handler.sendEmptyMessage(CrewFragment.GET_WERTHERINFO_FAILD);
             e.printStackTrace();
+            return "北京";
         }
-        if(addList!=null && addList.size()>0){
-            for(int i=0; i<addList.size(); i++){
-                Address ad = addList.get(i);
-                localCity =  ad.getLocality();
+    }
+
+    public static Address getLocationFromCityName(Context context, String cityName,Handler handler){
+        try {
+            Geocoder ge = new Geocoder(context);
+            List<Address> result = ge.getFromLocationName(cityName,1);
+            if(result != null && result.size() > 0){
+                for(Address address:result){
+                    YLog.e("--->"+address.getCountryName());
+                    YLog.e("--->"+address.getLatitude()+":"+address.getLongitude());
+                    if(address != null ){
+                        return address;
+                    }
+                }
             }
+            handler.sendEmptyMessage(CrewFragment.GET_WERTHERINFO_FAILD);
+            return new Address(Locale.CHINA);
+        } catch (IOException e) {
+            e.printStackTrace();
+            handler.sendEmptyMessage(CrewFragment.GET_WERTHERINFO_FAILD);
+            return new Address(Locale.CHINA);
         }
-        YLog.e("当前所在城市---》"+localCity);
-        return localCity;
     }
     /**
      * 华氏度转摄氏度
@@ -514,4 +546,44 @@ public class Utils {
         map.put("cid",cid);
         iHttpPresenter.doAdd(requestType,id, map,"");
     }
+    public static void startCityPicker(Context context,IOnCityPickerCheckedCallBack onCityPickerCheckedCallBack){
+        CityPicker.with(context)
+
+                //是否需要显示当前城市,如果为false那么就隐藏当前城市，并且调用setGpsCityByBaidu()或setGpsCityByAMap()都不会生效，非必选项,默认为true
+                .setUseGpsCity(false)
+
+                //自定义热门城市，输入数据库中的城市id（_id），非必选项，默认为数据库中的热门城市
+                .setHotCitiesId("98", "256", "224", "306", "125", "99", "16", "59", "92")
+
+                //设置最多显示历史点击城市数量，0为不显示历史城市
+                .setMaxHistory(3)
+                // 设置标题栏背景，非必选项
+        .setTitleBarDrawable(R.color.main_bg)
+
+                // 设置返回按钮图片，非必选项
+        .setTitleBarBackBtnDrawable(R.drawable.icon_back)
+
+                // 设置搜索框背景，非必选项
+//        .setSearchViewDrawable(...)
+
+                // 设置搜索框字体颜色，非必选项
+//        .setSearchViewTextColor(...)
+
+                // 设置搜索框字体大小，非必选项
+//        .setSearchViewTextSize(...)
+
+                // 设置右边检索栏字体颜色，非必选项
+                .setIndexBarTextColor(R.color.btn_bg)
+
+                // 设置右边检索栏字体大小，非必选项
+//        .setIndexBarTextSize(...)
+
+                // 是否使用沉浸式状态栏，默认使用，非必选项
+                .setUseImmerseBar(true)
+
+                // 回调
+                .setOnCityPickerCallBack(onCityPickerCheckedCallBack
+                ).open();
+    }
+
 }

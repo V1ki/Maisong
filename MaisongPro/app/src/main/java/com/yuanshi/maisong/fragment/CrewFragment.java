@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Address;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,6 +25,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.desmond.citypicker.bean.BaseCity;
+import com.desmond.citypicker.bin.CityPicker;
+import com.desmond.citypicker.callback.IOnCityPickerCheckedCallBack;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.github.dvdme.ForecastIOLib.ForecastIO;
@@ -170,11 +174,20 @@ public class CrewFragment extends BaseFragment implements PagingScrollHelper.onP
         memorandum.setText(Utils.getStringDateFromMillis(System.currentTimeMillis(), "yyyy年MM月dd日") + ">");
         scrollHelper.setUpRecycleView(weatherListLayout);
         scrollHelper.setOnPageChangeListener(this);
-        WeatherBean defaultweather = new WeatherBean();
-        weatherList.add(defaultweather);
-        adapter = new WeatherListAdapter((ArrayList<WeatherBean>) weatherList, getActivity(), localCity);
+        weatherList = new ArrayList<>();
+        adapter = new WeatherListAdapter((ArrayList<WeatherBean>) weatherList, getActivity(), localCity, new IOnCityPickerCheckedCallBack() {
+            @Override
+            public void onCityPickerChecked(BaseCity baseCity) {
+                if(baseCity!= null && !TextUtils.isEmpty(baseCity.getCityName())){
+                    YLog.e(baseCity.getCityName()+":"+baseCity.getId());
+                    Address address = Utils.getLocationFromCityName(CrewFragment.this.getContext(),baseCity.getCityName(),handler);
+                    getWeatherInfo(address.getLatitude(),address.getLongitude());
+                }
+            }
+        });
         weatherListLayout.setAdapter(adapter);
-        getWeatherInfo();//获取天气信息；
+        Location location = Utils.getLocation(this.getContext());
+        getWeatherInfo(location.getLatitude(),location.getLongitude());//获取天气信息；
     }
 
     @Override
@@ -183,7 +196,7 @@ public class CrewFragment extends BaseFragment implements PagingScrollHelper.onP
     }
 
     private final int GET_WEATHERINFO_SUCCESS = 0x0010;//获取天气信息成功
-    private final int GET_WERTHERINFO_FAILD = 0x0020;//获取天气信息失败
+    public static final int GET_WERTHERINFO_FAILD = 0x0020;//获取天气信息失败
     @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
         @Override
@@ -193,7 +206,8 @@ public class CrewFragment extends BaseFragment implements PagingScrollHelper.onP
                     List<WeatherBean> weatherBeanlist = (List<WeatherBean>) msg.obj;
                     loadWeather(weatherBeanlist);
                     adapter.setLocalCity(localCity);
-                    adapter.notifyItemChanged(0);
+                    adapter.setmData(weatherBeanlist);
+                    adapter.notifyDataSetChanged();
                     break;
                 case GET_WERTHERINFO_FAILD:
                     Toast.makeText(getActivity().getApplicationContext(), R.string.weather_got_faild, Toast.LENGTH_SHORT).show();
@@ -231,7 +245,7 @@ public class CrewFragment extends BaseFragment implements PagingScrollHelper.onP
 
     private String localCity;//当前所在城市
 
-    public void getWeatherInfo() {
+    public void getWeatherInfo(final double lat,final double longit) {
         MyApplication.THREAD_EXCUTER.execute(new Runnable() {
             @Override
             public void run() {
@@ -240,26 +254,11 @@ public class CrewFragment extends BaseFragment implements PagingScrollHelper.onP
                 //sets the units as SI - optional
                 fio.setLang("zh");
                 fio.setExcludeURL("hourly,minutely");
-                //excluded the minutely and hourly reports from the reply
-                double lat;
-                double longit;
-                Location location = Utils.getLocation(getActivity());
-                if (location == null) {
-                    YLog.e("GPS定位失败,默认定位北京");
-                    lat = 39.9046900000;
-                    longit = 116.4071700000;
-                    Message msg = new Message();
-                    msg.what = GET_WERTHERINFO_FAILD;
-                    handler.sendMessage(msg);
-                } else {
-                    lat = location.getLatitude();
-                    longit = location.getLongitude();
-                }
                 YLog.e("经纬度--》" + String.valueOf(lat) + "-----" + String.valueOf(longit));
                 fio.getForecast(String.valueOf(lat), String.valueOf(longit));   //sets the latitude and longitude - not optional
                 //it will fail to get forecast if it is not set
                 //this method should be called after the options were set
-                localCity = Utils.getLocalCity(CrewFragment.this.getActivity(), lat, longit);
+                localCity = Utils.getLocalCity(CrewFragment.this.getActivity(), lat, longit,handler);
                 JsonObject jsonObject = fio.getDaily();
                 JsonArray jsonArray = (JsonArray) jsonObject.get("data");
                 if (jsonArray != null && jsonArray.size() > 0) {

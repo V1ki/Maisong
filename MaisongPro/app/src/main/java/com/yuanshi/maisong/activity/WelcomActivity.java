@@ -83,11 +83,7 @@ public class WelcomActivity extends BaseActivity {
                 loginBeanDaoUtil.updateUserInfo(localBean);
                 getSharedPreferences(Constant.MAIN_SH_NAME, MODE_PRIVATE).edit().putString(Constant.USER_PHONE_KEY,responseBean.getPhone()).commit();
                 Intent intent = new Intent();
-                if(getSharedPreferences(Constant.MAIN_SH_NAME, MODE_PRIVATE).getBoolean(Constant.HAS_PUT_USER_INFO_KEY,false)){
-                    intent.setClass(WelcomActivity.this,MainActivity.class);
-                }else{
-                    intent.setClass( WelcomActivity.this,PerfectDataActivity.class);
-                }
+                intent.setClass( WelcomActivity.this,MainActivity.class);
                 startActivity(intent);
                 finish();
                 break;

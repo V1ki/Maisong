@@ -3,7 +3,9 @@ package com.yuanshi.maisong.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +27,8 @@ import com.yuanshi.iotpro.publiclib.utils.YLog;
 import com.yuanshi.maisong.R;
 import com.yuanshi.maisong.bean.DailyCallBean;
 import com.yuanshi.maisong.utils.Utils;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -81,6 +85,26 @@ public class SearchMemoireActivity extends BaseActivity {
                 return false;
             }
         });
+        edSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(!TextUtils.isEmpty(editable.toString())){
+
+                }else{
+                    iHttpPresenter.index(Constant.HTTP_REQUEST_MEMORANDUM,crewId);
+                }
+            }
+        });
 
         searchResultListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -92,6 +116,16 @@ public class SearchMemoireActivity extends BaseActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(!TextUtils.isEmpty(edSearch.getText().toString().trim())){
+
+        }else{
+            iHttpPresenter.index(Constant.HTTP_REQUEST_MEMORANDUM,crewId);
+        }
     }
 
     public void initData(Object obj) {
@@ -118,6 +152,7 @@ public class SearchMemoireActivity extends BaseActivity {
                 break;
             case R.id.delete_icon:
                 edSearch.setText("");
+//                iHttpPresenter.index(Constant.HTTP_REQUEST_MEMORANDUM,crewId);
                 break;
             case R.id.edit_btn:
                 Intent intent = new Intent(this, EditNotifyActivity.class);

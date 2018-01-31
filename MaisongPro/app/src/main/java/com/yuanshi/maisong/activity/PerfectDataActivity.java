@@ -114,17 +114,12 @@ public class PerfectDataActivity extends BaseActivity {
         switch (msgType){
             case "edituser":
                 if(!TextUtils.isEmpty(msg)){
-                    saveUserInfo();
                     Intent intent= new Intent(PerfectDataActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();
                 }
                 break;
         }
-    }
-    public void saveUserInfo(){
-        SharedPreferences sp = getSharedPreferences(Constant.MAIN_SH_NAME,MODE_PRIVATE);
-        sp.edit().putBoolean(Constant.HAS_PUT_USER_INFO_KEY,true).commit();
     }
 
 }

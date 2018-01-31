@@ -32,7 +32,6 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
     protected abstract int getContentViewId();
     protected IHttpPresenter iHttpPresenter;
     protected abstract void init(Bundle savedInstanceState);
-
     protected Context mContext;
 
     @Override
@@ -259,11 +258,17 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
 
     public static void finishAll(){
         for(Activity activity: activities){
-//            if(activity != null && !activity.getLocalClassName().equals("activity.HomePageActivity")){
-                activity.finish();
-//            }
+            activity.finish();
         }
         android.os.Process.killProcess(android.os.Process.myPid());
+    }
+
+    public static void BackToLoginActivity(){
+        for(Activity activity: activities){
+            if(activity != null && !activity.getLocalClassName().equals("activity.LoginActivity")){
+                activity.finish();
+            }
+        }
     }
 
     public int getStatusBarHeight(Context context) {

@@ -31,8 +31,8 @@
                     android:layout_height="wrap_content"
                     android:textSize="12sp"
                     android:textColor="@color/main_text"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginTop="5dp"
+                    android:text="beijing"
+                    android:padding="6dp"
                     />
                 <ImageView
                     android:id="@+id/weather_icon"

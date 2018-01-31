@@ -48,7 +48,6 @@
             android:layout_marginBottom="40dp"
             android:layout_marginRight="60dp"
             android:layout_width="match_parent"
-            android:background="@null"
             android:layout_height="50dp" />
     </RelativeLayout>
 

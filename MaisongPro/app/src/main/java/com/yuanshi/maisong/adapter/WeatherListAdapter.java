@@ -1,6 +1,7 @@
 package com.yuanshi.maisong.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -10,6 +11,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.desmond.citypicker.bean.BaseCity;
+import com.desmond.citypicker.callback.IOnCityPickerCheckedCallBack;
+import com.desmond.citypicker.ui.CityPickerActivity;
 import com.google.gson.Gson;
 import com.yuanshi.iotpro.publiclib.utils.YLog;
 import com.yuanshi.maisong.R;
@@ -29,6 +33,7 @@ public class WeatherListAdapter extends RecyclerView.Adapter<WeatherListAdapter.
     private List<WeatherBean> mData;
     private Context context;
     private String localCity;
+    private IOnCityPickerCheckedCallBack onCityPickerCheckedCallBack;
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.mOnItemClickListener = listener;
     }
@@ -36,10 +41,19 @@ public class WeatherListAdapter extends RecyclerView.Adapter<WeatherListAdapter.
         this.mOnItemLongClickListener = listener;
     }
 
-    public WeatherListAdapter(ArrayList<WeatherBean> data, Context context, String localCity) {
+    public List<WeatherBean> getmData() {
+        return mData;
+    }
+
+    public void setmData(List<WeatherBean> mData) {
+        this.mData = mData;
+    }
+
+    public WeatherListAdapter(ArrayList<WeatherBean> data, Context context, String localCity,IOnCityPickerCheckedCallBack iOnCityPickerCheckedCallBack) {
         this.context = context;
         this.mData = data;
         this.localCity = localCity;
+        this.onCityPickerCheckedCallBack = iOnCityPickerCheckedCallBack;
     }
 
     public void updateData(List<WeatherBean> data) {
@@ -133,6 +147,12 @@ public class WeatherListAdapter extends RecyclerView.Adapter<WeatherListAdapter.
                 holder.weatherIcon.setImageResource(R.mipmap.weather_umbrellablack);
                 break;
         }
+        holder.cityTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+              Utils.startCityPicker(context,onCityPickerCheckedCallBack);
+            }
+        });
         holder.itemView.setTag(position);
     }
 

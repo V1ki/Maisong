@@ -1,5 +1,7 @@
 package com.yuanshi.maisong.activity;
 
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,9 +9,15 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baidu.mapapi.map.Text;
@@ -188,9 +196,7 @@ public class MainActivity extends BaseActivity {
         conversationListFragment.setConversationListItemLongClickListener(new EaseConversationListFragment.EaseConversationListItemLongClickListener() {
             @Override
             public void onListItemLongClicked(final EMConversation conversation) {
-                    boolean flag = EMClient.getInstance().chatManager().deleteConversation(conversation.conversationId(), true);
-                    YLog.e("长按--》"+conversation.conversationId()+":"+flag);
-                conversationListFragment.reloadCrewListData();
+                showDeleteConvertDialog(conversation);
             }
         });
 //
@@ -222,6 +228,50 @@ public class MainActivity extends BaseActivity {
             }
         });
     }
+
+    /**
+     * 弹出清除缓存确认框
+     */
+    public void showDeleteConvertDialog(final EMConversation conversation){
+        final Dialog mCameraDialog = new Dialog(this, R.style.datePickerStyle);
+        LinearLayout root = (LinearLayout) LayoutInflater.from(this).inflate(
+                R.layout.logout_dialog_layout, null);
+        TextView contentTv = root.findViewById(R.id.dialog_content);
+        contentTv.setText("确定要删除会话？");
+        root.findViewById(R.id.commit_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean flag = EMClient.getInstance().chatManager().deleteConversation(conversation.conversationId(), true);
+                reloadCrewListData();
+                mCameraDialog.dismiss();
+            }
+        });
+        root.findViewById(R.id.cancel_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mCameraDialog.dismiss();
+            }
+        });
+        mCameraDialog.setContentView(root);
+        Window dialogWindow = mCameraDialog.getWindow();
+        dialogWindow.setGravity(Gravity.CENTER);
+        WindowManager.LayoutParams lp = dialogWindow.getAttributes(); // 获取对话框当前的参数值
+        lp.x = 0; // 新位置X坐标
+        lp.y = 0; // 新位置Y坐标
+
+        WindowManager wm = (WindowManager)this
+                .getSystemService(Context.WINDOW_SERVICE);
+
+        int width = wm.getDefaultDisplay().getWidth();
+        int height = wm.getDefaultDisplay().getHeight();
+        lp.width = width-80; // 宽度
+        root.measure(0, 0);
+        lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        lp.alpha = 2f; // 透明度
+        dialogWindow.setAttributes(lp);
+        mCameraDialog.show();
+    }
+
     /**
      * 加载底部tab布局
      */

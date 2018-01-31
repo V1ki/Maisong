@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -59,6 +60,7 @@ public class LoginAcitvity extends BaseActivity {
     protected void init(Bundle savedInstanceState) {
         fullScreen();
         loginBeanDaoUtil = new LoginBeanDaoUtil(this);
+        edPassword.setImeOptions(EditorInfo.IME_ACTION_DONE);
     }
 
     @Override
@@ -83,7 +85,6 @@ public class LoginAcitvity extends BaseActivity {
                 if(checkPhone(phone) && checkCode(checkCode)){
                     iHttpPresenter.login(phone,checkCode);
                 }
-                singup(phone,phone);
                 break;
         }
     }
@@ -116,6 +117,10 @@ public class LoginAcitvity extends BaseActivity {
                     @Override
                     public void onError(int i, String s) {
                         YLog.e(" EMClient login error!!--"+s);
+                        Message msg = new Message();
+                        msg.what = LOGIN_FAILD;
+                        msg.obj = s;
+                        handler.sendMessage(msg);
                     }
 
                     @Override
@@ -128,6 +133,7 @@ public class LoginAcitvity extends BaseActivity {
     }
 
     private static final int WAIT_RESEND_CHECK_CODE = 0x0010;
+    private static final int LOGIN_FAILD = 0x0020;
     @SuppressLint("HandlerLeak")
     private Handler handler = new Handler(){
         @SuppressLint("ResourceType")
@@ -148,21 +154,35 @@ public class LoginAcitvity extends BaseActivity {
                         getCheckCodeBtn.setEnabled(false);
                     }
                     break;
+                case LOGIN_FAILD:
+                    String str = (String) msg.obj;
+                    Toast.makeText(getApplicationContext(),str,Toast.LENGTH_SHORT).show();
+                    break;
             }
         }
     };
 
     private void startNextActivity(){
+        String loginPhone = getSharedPreferences(Constant.MAIN_SH_NAME,MODE_PRIVATE).getString(Constant.USER_PHONE_KEY,"");
+        if(!TextUtils.isEmpty(loginPhone)){
+            LoginInfoBean localBean = loginBeanDaoUtil.qeuryUserInfo(Long.parseLong(loginPhone));
+            Intent intent = new Intent();
+            if(!TextUtils.isEmpty(localBean.getNickname())){
+                intent.setClass(LoginAcitvity.this, MainActivity.class);
+            }else{
+                intent.setClass(LoginAcitvity.this, PerfectDataActivity.class);
+            }
+            startActivity(intent);
+            finish();
+        }
 
-        Intent intent = new Intent(LoginAcitvity.this, PerfectDataActivity.class);
-        startActivity(intent);
-        finish();
     }
 
     @Override
     public void onHttpSuccess(String msgType, String msg, Object obj) {
         switch (msgType){
             case "login":
+                String phone = edUserName.getText().toString().trim();
                 YLog.e("login onHttpSuccess~~~~~"+msg);
                 Gson gson = new Gson();
                 LoginInfoBean loginInfoBean =  gson.fromJson(gson.toJson(obj),LoginInfoBean.class);
@@ -170,7 +190,7 @@ public class LoginAcitvity extends BaseActivity {
                 YLog.e("loginBean~~"+gson.toJson(loginInfoBean));
                 createCount(loginInfoBean.getPhone(),loginInfoBean.getPhone());
                 saveLoginInfo(loginInfoBean);
-                startNextActivity();
+                singup(phone,phone);
                 break;
             case "getverify":
                 YLog.e("getverify onHttpSuccess~~~~~"+msg);

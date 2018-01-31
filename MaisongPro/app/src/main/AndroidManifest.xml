@@ -111,6 +111,10 @@
             />
 
         <activity android:name="com.yuanshi.iotpro.publiclib.view.FileDisplayActivity"/>
+
+        <activity android:name=".activity.CitySelectActivity"
+            android:windowSoftInputMode="adjustResize|stateAlwaysVisible"
+            />
         <!-- 环信sdk相关activity-->
         <activity android:name="com.hyphenate.easeui.ui.EaseShowBigImageActivity"/>
         <activity android:name="com.yuanshi.maisong.activity.ESContactsActivity"

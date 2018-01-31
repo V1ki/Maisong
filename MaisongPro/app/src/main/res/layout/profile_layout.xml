@@ -82,7 +82,6 @@
                     android:layout_width="0dp"
                     android:paddingLeft="15dp"
                     android:textColor="@color/main_text"
-                    android:text="这个手刹不太灵"
                     android:maxLines="1"
                     android:ellipsize="end"
                     android:textSize="16sp"
@@ -369,12 +368,13 @@
                         android:layout_weight="1.2"
                         android:layout_width="0dp"
                         android:paddingLeft="15dp"
-                        android:textColor="@color/main_text"
+                        android:textColor="@color/tab_unselected"
                         android:textSize="16sp"
                         android:gravity="center_vertical|left"
                         android:layout_height="match_parent"
                         android:textColorHint="@color/hint_text"
                         android:background="@null"
+                        android:enabled="false"
                          />
 
                     <TextView

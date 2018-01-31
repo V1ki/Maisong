@@ -67,5 +67,6 @@ dependencies {
     compile 'com.joanzapata.pdfview:android-pdfview:1.0.4@aar'
     implementation project(':richeditor')
     compile 'net.margaritov.preference.colorpicker.ColorPickerPreference:ColorPickerPreference:1.0.0'
+    implementation project(':CityPicker-master')
 }
 
