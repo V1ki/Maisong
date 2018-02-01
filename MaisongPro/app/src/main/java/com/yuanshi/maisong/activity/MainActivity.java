@@ -20,7 +20,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.baidu.mapapi.map.Text;
 import com.google.gson.Gson;
 import com.hyphenate.EMContactListener;
 import com.hyphenate.EMMessageListener;
@@ -30,14 +29,13 @@ import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMGroup;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.EaseConstant;
-import com.hyphenate.easeui.model.EaseAtMessageHelper;
 import com.hyphenate.easeui.ui.EaseContactListFragment;
 import com.hyphenate.easeui.ui.EaseConversationListFragment;
-import com.hyphenate.easeui.utils.EaseUserUtils;
-import com.hyphenate.exceptions.HyphenateException;
+import com.tencent.bugly.beta.Beta;
 import com.yuanshi.iotpro.daoutils.FriendApplyBeanDaoUtil;
 import com.yuanshi.iotpro.daoutils.LoginBeanDaoUtil;
 import com.yuanshi.iotpro.daoutils.UserBeanDaoUtil;
+import com.yuanshi.iotpro.publiclib.activity.BaseActivity;
 import com.yuanshi.iotpro.publiclib.bean.FriendsApplyBean;
 import com.yuanshi.iotpro.publiclib.bean.LoginInfoBean;
 import com.yuanshi.iotpro.publiclib.bean.UserInfoBean;
@@ -46,12 +44,10 @@ import com.yuanshi.iotpro.publiclib.utils.NativeReadBroadcast;
 import com.yuanshi.iotpro.publiclib.utils.YLog;
 import com.yuanshi.maisong.R;
 import com.yuanshi.maisong.bean.CrewHttpBean;
-import com.yuanshi.maisong.bean.GroupBean;
 import com.yuanshi.maisong.fragment.CrewFragment;
 import com.yuanshi.maisong.fragment.EMconversationFragment;
 import com.yuanshi.maisong.fragment.MoreFragment;
 import com.yuanshi.maisong.fragment.ServiceFlatformFragment;
-import com.yuanshi.iotpro.publiclib.activity.BaseActivity;
 import com.yuanshi.maisong.utils.Utils;
 import com.yuanshi.maisong.view.BottomTabItem;
 
@@ -95,6 +91,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void init(Bundle savedInstanceState) {
+        Beta.checkUpgrade();
         friendApplyBeanDaoUtil = new FriendApplyBeanDaoUtil(this);
         setOnContactFriendListener();
         initBottomLayout();

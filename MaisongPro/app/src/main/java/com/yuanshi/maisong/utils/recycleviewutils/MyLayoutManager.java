@@ -1,12 +1,8 @@
 package com.yuanshi.maisong.utils.recycleviewutils;
 
-import android.animation.Animator;
-import android.animation.ValueAnimator;
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.SparseArray;
-import android.view.MotionEvent;
 import android.view.View;
 
 /**

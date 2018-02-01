@@ -1,7 +1,6 @@
 package com.yuanshi.maisong.activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -13,12 +12,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yuanshi.iotpro.publiclib.activity.BaseActivity;
-import com.yuanshi.iotpro.publiclib.utils.Constant;
-import com.yuanshi.maisong.R;
 import com.yuanshi.iotpro.publiclib.bean.UserInfoBean;
+import com.yuanshi.maisong.R;
 import com.yuanshi.maisong.utils.Utils;
-
-import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

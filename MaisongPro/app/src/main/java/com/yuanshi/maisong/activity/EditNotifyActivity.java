@@ -3,11 +3,7 @@ package com.yuanshi.maisong.activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,7 +25,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.yanzhenjie.album.Action;
 import com.yanzhenjie.album.Album;
@@ -44,7 +39,6 @@ import com.yuanshi.maisong.utils.SoftHideKeyBoardUtil;
 import com.yuanshi.maisong.utils.UploadFileRequestBody;
 import com.yuanshi.maisong.utils.Utils;
 import com.yuanshi.maisong.utils.recycleviewutils.EditUtilsRecycleAdapter;
-import com.yuanshi.maisong.view.ProgressImageView;
 import com.yuanshi.maisong.view.RoundProgressBar;
 
 import net.margaritov.preference.colorpicker.ColorPickerDialog;

@@ -11,6 +11,8 @@ package com.yuanshi.maisong.utils;
 import android.content.Context;
 import android.os.Environment;
 
+import com.tencent.bugly.crashreport.CrashReport;
+
 import java.io.File;
 import java.math.BigDecimal;
 
@@ -61,7 +63,7 @@ public class DataCleanManager {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            CrashReport.postCatchedException(e);
         }
         return size;
     }

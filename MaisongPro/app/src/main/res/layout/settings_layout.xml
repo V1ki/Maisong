@@ -62,6 +62,7 @@
                     android:id="@+id/version_code_layout"
                     android:layout_weight="1"
                     android:layout_width="wrap_content"
+                    android:background="@drawable/view_click_selector1"
                     android:layout_height="0dp">
                     <TextView
                         android:layout_width="wrap_content"
@@ -75,12 +76,12 @@
                         />
 
                     <TextView
+                        android:id="@+id/version_name"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:textColor="@color/second_color"
                         android:gravity="center_vertical|right"
                         android:paddingRight="20dp"
-                        android:text="@string/version_code"
                         android:textSize="14sp"
                         android:layout_alignParentRight="true"
                         />
@@ -96,6 +97,7 @@
                     android:id="@+id/clear_cache_layout"
                     android:layout_weight="1"
                     android:layout_width="wrap_content"
+                    android:background="@drawable/view_click_selector1"
                     android:layout_height="0dp">
                     <TextView
                         android:layout_width="wrap_content"

@@ -11,8 +11,6 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 
-import com.yuanshi.iotpro.publiclib.utils.YLog;
-
 /**
  * 解决键盘档住输入框
  * Created by SmileXie on 2017/4/3.

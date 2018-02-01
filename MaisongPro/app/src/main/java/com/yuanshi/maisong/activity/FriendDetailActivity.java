@@ -23,11 +23,11 @@ import com.google.gson.Gson;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.exceptions.HyphenateException;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.yuanshi.iotpro.publiclib.activity.BaseActivity;
 import com.yuanshi.iotpro.publiclib.application.MyApplication;
-import com.yuanshi.iotpro.publiclib.utils.YLog;
-import com.yuanshi.maisong.R;
 import com.yuanshi.iotpro.publiclib.bean.UserInfoBean;
+import com.yuanshi.maisong.R;
 import com.yuanshi.maisong.view.CircleImageView;
 
 import java.util.List;
@@ -198,18 +198,16 @@ public class FriendDetailActivity extends BaseActivity {
                 @Override
                 public Boolean call() throws Exception {
                     List<String> usernames = EMClient.getInstance().contactManager().getAllContactsFromServer();
-                    YLog.e("my friends size-->"+usernames.size());
                     for(String str : usernames){
-                        YLog.e("my friends-->"+str);
                     }
                     return usernames.contains(phone);
                 }
             }).get();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            CrashReport.postCatchedException(e);
             return false;
         } catch (ExecutionException e) {
-            e.printStackTrace();
+            CrashReport.postCatchedException(e);
             return false;
         }
     }
@@ -260,7 +258,7 @@ public class FriendDetailActivity extends BaseActivity {
         try {
             EMClient.getInstance().contactManager().addContact(userInfo.getPhone(), reason);
         } catch (HyphenateException e) {
-            e.printStackTrace();
+            CrashReport.postCatchedException(e);
         }
     }
 }

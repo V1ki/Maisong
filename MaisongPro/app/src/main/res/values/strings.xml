@@ -87,7 +87,6 @@
     <string name="memoire">备忘录</string>
     <string name="search_memoire">搜索备忘录</string>
     <string name="version_info">版本信息</string>
-    <string name="version_code">V1.0.0</string>
     <string name="clear_cache">清除缓存</string>
     <string name="logout">退出登录</string>
     <string name="save_intent">保存</string>

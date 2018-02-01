@@ -2,25 +2,22 @@ package com.yuanshi.iotpro.publiclib.presenter;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
-import android.widget.ProgressBar;
 
 import com.google.gson.Gson;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.yuanshi.iotpro.publiclib.activity.IBaseView;
 import com.yuanshi.iotpro.publiclib.bean.Status;
 import com.yuanshi.iotpro.publiclib.model.IHttpModelImpl;
-import com.yuanshi.iotpro.publiclib.model.http.ApiManager;
 import com.yuanshi.iotpro.publiclib.model.interfacepkg.IHttpModel;
 import com.yuanshi.iotpro.publiclib.utils.Constant;
 import com.yuanshi.iotpro.publiclib.utils.FileCallBack;
 import com.yuanshi.iotpro.publiclib.utils.YLog;
 
-import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 
 import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import rx.Observer;
 
@@ -179,7 +176,7 @@ public class IHttpPresenterIml implements IHttpPresenter {
             }
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
+                CrashReport.postCatchedException(e);
                 YLog.e("appupload~~~OnError:"+e.getMessage());
                 view.onError("appupload",e.getMessage(),null);
             }
@@ -207,7 +204,7 @@ public class IHttpPresenterIml implements IHttpPresenter {
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
+                CrashReport.postCatchedException(e);
                 view.onError("index",e.getMessage(),null);
             }
 
@@ -234,7 +231,7 @@ public class IHttpPresenterIml implements IHttpPresenter {
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
+                CrashReport.postCatchedException(e);
                 view.onError("searchcrew",e.getMessage(),null);
             }
 
@@ -260,7 +257,7 @@ public class IHttpPresenterIml implements IHttpPresenter {
             }
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
+                CrashReport.postCatchedException(e);
                 view.onError("doAdd",e.getMessage(),null);
             }
 
@@ -287,7 +284,7 @@ public class IHttpPresenterIml implements IHttpPresenter {
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
+                CrashReport.postCatchedException(e);
                 view.onError("thecrewinfo",e.getMessage(),null);
             }
 
@@ -316,7 +313,7 @@ public class IHttpPresenterIml implements IHttpPresenter {
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
+                CrashReport.postCatchedException(e);
                 view.onError("editusercrew",e.getMessage(),null);
             }
 
@@ -342,7 +339,7 @@ public class IHttpPresenterIml implements IHttpPresenter {
             }
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
+                CrashReport.postCatchedException(e);
                 view.onError("joins",e.getMessage(),null);
             }
 
@@ -368,7 +365,7 @@ public class IHttpPresenterIml implements IHttpPresenter {
             }
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
+                CrashReport.postCatchedException(e);
                 view.onError("department",e.getMessage(),null);
             }
 
@@ -393,7 +390,7 @@ public class IHttpPresenterIml implements IHttpPresenter {
             }
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
+                CrashReport.postCatchedException(e);
                 view.onError("usercrew",e.getMessage(),null);
             }
 
@@ -419,7 +416,7 @@ public class IHttpPresenterIml implements IHttpPresenter {
             }
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
+                CrashReport.postCatchedException(e);
                 view.onError("phonegetuser",e.getMessage(),null);
             }
 
@@ -451,7 +448,7 @@ public class IHttpPresenterIml implements IHttpPresenter {
             }
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
+                CrashReport.postCatchedException(e);
                 view.onError(requestType+":index",e.getMessage(),null);
             }
 
@@ -478,7 +475,7 @@ public class IHttpPresenterIml implements IHttpPresenter {
             }
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
+                CrashReport.postCatchedException(e);
                 view.onError(requestType+":details",e.getMessage(),null);
             }
 
@@ -504,7 +501,7 @@ public class IHttpPresenterIml implements IHttpPresenter {
             }
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
+                CrashReport.postCatchedException(e);
                 view.onError(requestType+":del",e.getMessage(),null);
             }
 
@@ -530,7 +527,7 @@ public class IHttpPresenterIml implements IHttpPresenter {
             }
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
+                CrashReport.postCatchedException(e);
                 view.onError(requestType+":doAdd",e.getMessage(),null);
             }
             @Override
@@ -584,7 +581,7 @@ public class IHttpPresenterIml implements IHttpPresenter {
             }
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
+                CrashReport.postCatchedException(e);
                 view.onError("outs",e.getMessage(),null);
             }
             @Override
@@ -609,7 +606,7 @@ public class IHttpPresenterIml implements IHttpPresenter {
             }
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
+                CrashReport.postCatchedException(e);
                 view.onError("searchMemorandum",e.getMessage(),null);
             }
             @Override

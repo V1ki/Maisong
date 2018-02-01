@@ -3,6 +3,7 @@ package com.yuanshi.iotpro.daoutils;
 import android.content.Context;
 import android.util.Log;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.yuanshi.iotpro.publiclib.bean.UserInfoBean;
 
 import java.util.List;
@@ -50,7 +51,7 @@ public class UserBeanDaoUtil {
             });
             flag = true;
         } catch (Exception e) {
-            e.printStackTrace();
+            CrashReport.postCatchedException(e);
         }
         return flag;
     }
@@ -66,7 +67,7 @@ public class UserBeanDaoUtil {
             mManager.getDaoSession().update(userInfoBean);
             flag = true;
         }catch (Exception e){
-            e.printStackTrace();
+            CrashReport.postCatchedException(e);
         }
         return flag;
     }
@@ -83,7 +84,7 @@ public class UserBeanDaoUtil {
             mManager.getDaoSession().delete(userInfoBean);
             flag = true;
         }catch (Exception e){
-            e.printStackTrace();
+            CrashReport.postCatchedException(e);
         }
         return flag;
     }
@@ -99,7 +100,7 @@ public class UserBeanDaoUtil {
             mManager.getDaoSession().deleteAll(UserInfoBean.class);
             flag = true;
         }catch (Exception e){
-            e.printStackTrace();
+            CrashReport.postCatchedException(e);
         }
         return flag;
     }

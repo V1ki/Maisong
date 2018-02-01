@@ -1,10 +1,5 @@
 package com.yuanshi.maisong.view.datepickview;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -18,9 +13,12 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.TextView;
 
-import com.yuanshi.iotpro.publiclib.utils.YLog;
 import com.yuanshi.maisong.R;
 import com.yuanshi.maisong.bean.DateBean;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 
 public class MonthDateView extends View {
@@ -193,7 +191,6 @@ public class MonthDateView extends View {
 //		if(mSelDay <= 0 || mSelMonth <=0 || mSelYear <= 0){
 //			return null;
 //		}else{
-		YLog.e("选中日期："+mSelYear+mSelMonth+mSelDay);
 			return new DateBean(mSelYear,mSelMonth,mSelDay);
 //		}
 	}

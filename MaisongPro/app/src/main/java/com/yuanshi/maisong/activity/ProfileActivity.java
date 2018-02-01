@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.yuanshi.iotpro.publiclib.activity.BaseActivity;
 import com.yuanshi.maisong.R;
 import com.yuanshi.maisong.bean.AuthBean;
@@ -125,7 +126,7 @@ public class ProfileActivity extends BaseActivity {
                 edPosition.setText(currentPostion.getTitle());
             }
         }catch (NullPointerException e){
-            e.printStackTrace();
+            CrashReport.postCatchedException(e);
         }
 
         checkTelShowType();

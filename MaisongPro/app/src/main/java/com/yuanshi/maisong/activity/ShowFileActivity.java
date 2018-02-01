@@ -1,6 +1,5 @@
 package com.yuanshi.maisong.activity;
 
-import android.content.Intent;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -17,8 +16,6 @@ import com.joanzapata.pdfview.listener.OnLoadCompleteListener;
 import com.joanzapata.pdfview.listener.OnPageChangeListener;
 import com.yuanshi.iotpro.publiclib.activity.BaseActivity;
 import com.yuanshi.iotpro.publiclib.utils.Constant;
-import com.yuanshi.iotpro.publiclib.utils.YLog;
-import com.yuanshi.iotpro.publiclib.view.FileDisplayActivity;
 import com.yuanshi.iotpro.publiclib.view.SuperFileView2;
 import com.yuanshi.maisong.R;
 import com.yuanshi.maisong.utils.Utils;

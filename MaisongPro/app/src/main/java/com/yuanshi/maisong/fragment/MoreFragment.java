@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,15 +17,11 @@ import com.hyphenate.easeui.ui.EaseContactListFragment;
 import com.yuanshi.iotpro.daoutils.LoginBeanDaoUtil;
 import com.yuanshi.iotpro.publiclib.bean.LoginInfoBean;
 import com.yuanshi.iotpro.publiclib.utils.Constant;
-import com.yuanshi.iotpro.publiclib.utils.YLog;
 import com.yuanshi.maisong.R;
 import com.yuanshi.maisong.activity.AccountSettingActivity;
 import com.yuanshi.maisong.activity.ESContactsActivity;
-import com.yuanshi.maisong.activity.MainActivity;
 import com.yuanshi.maisong.activity.SettingsActivity;
 import com.yuanshi.maisong.view.CircleImageView;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -103,9 +98,7 @@ public class MoreFragment extends BaseFragment{
     public void setUerInfo(){
         userPhone = getActivity().getSharedPreferences(Constant.MAIN_SH_NAME, Context.MODE_PRIVATE).getString(Constant.USER_PHONE_KEY,"");
         LoginInfoBean loginInfoBean = getLoginInfoBean(userPhone);
-        YLog.e("setUserInfo--->"+loginInfoBean);
         if(loginInfoBean!= null && !TextUtils.isEmpty(loginInfoBean.getAvatar())){
-            YLog.e("setUserInfo--->"+loginInfoBean.getAvatar());
             Glide.with(getActivity()).load(loginInfoBean.getAvatar()).error(R.mipmap.ease_default_avatar).into(headIcon);
             userName.setText(loginInfoBean.getNickname());
         }

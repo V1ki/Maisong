@@ -7,9 +7,8 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
-import com.hyphenate.easeui.domain.EaseUser;
 import com.hyphenate.easeui.ui.EaseConversationListFragment;
-import com.hyphenate.easeui.utils.EaseUserUtils;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.yuanshi.iotpro.daoutils.UserBeanDaoUtil;
 import com.yuanshi.iotpro.publiclib.activity.IBaseView;
 import com.yuanshi.iotpro.publiclib.bean.UserInfoBean;
@@ -51,7 +50,7 @@ public class EMconversationFragment extends EaseConversationListFragment impleme
             // Internal is TimSort algorithm, has bug
             sortConversationByLastChatTime(sortList);
         } catch (Exception e) {
-            e.printStackTrace();
+            CrashReport.postCatchedException(e);
         }
         List<EMConversation> list = new ArrayList<EMConversation>();
         for (Pair<Long, EMConversation> sortItem : sortList) {

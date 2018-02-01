@@ -28,8 +28,6 @@ import com.yuanshi.maisong.R;
 import com.yuanshi.maisong.bean.DailyCallBean;
 import com.yuanshi.maisong.utils.Utils;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 
 import butterknife.BindView;

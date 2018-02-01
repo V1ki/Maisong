@@ -1,7 +1,6 @@
 package com.yuanshi.maisong.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -11,9 +10,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.desmond.citypicker.bean.BaseCity;
 import com.desmond.citypicker.callback.IOnCityPickerCheckedCallBack;
-import com.desmond.citypicker.ui.CityPickerActivity;
 import com.google.gson.Gson;
 import com.yuanshi.iotpro.publiclib.utils.YLog;
 import com.yuanshi.maisong.R;

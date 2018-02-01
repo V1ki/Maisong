@@ -16,13 +16,11 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.yuanshi.iotpro.publiclib.activity.BaseActivity;
 import com.yuanshi.maisong.R;
 import com.yuanshi.maisong.bean.CrewHttpBean;
-import com.yuanshi.maisong.bean.CrewInfoBean;
 import com.yuanshi.maisong.utils.Utils;
 
 import java.util.ArrayList;

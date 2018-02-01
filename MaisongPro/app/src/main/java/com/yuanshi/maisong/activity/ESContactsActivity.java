@@ -8,6 +8,7 @@ import com.hyphenate.chat.EMClient;
 import com.hyphenate.easeui.domain.EaseUser;
 import com.hyphenate.easeui.ui.EaseContactListFragment;
 import com.hyphenate.exceptions.HyphenateException;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.yuanshi.iotpro.publiclib.activity.BaseActivity;
 import com.yuanshi.iotpro.publiclib.application.MyApplication;
 import com.yuanshi.maisong.R;
@@ -72,16 +73,16 @@ public class ESContactsActivity extends BaseActivity{
                             }
                         }
                     } catch (HyphenateException e) {
-                        e.printStackTrace();
+                        CrashReport.postCatchedException(e);
                     }
                     return contacts;
                 }
             }).get();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            CrashReport.postCatchedException(e);
             return new HashMap<String, EaseUser>();
         } catch (ExecutionException e) {
-            e.printStackTrace();
+            CrashReport.postCatchedException(e);
             return new HashMap<String, EaseUser>();
         }
     }

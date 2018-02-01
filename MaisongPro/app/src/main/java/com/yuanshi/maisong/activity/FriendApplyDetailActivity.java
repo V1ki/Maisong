@@ -19,6 +19,7 @@ import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.exceptions.HyphenateException;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.yuanshi.iotpro.daoutils.FriendApplyBeanDaoUtil;
 import com.yuanshi.iotpro.daoutils.LoginBeanDaoUtil;
 import com.yuanshi.iotpro.publiclib.activity.BaseActivity;
@@ -26,7 +27,6 @@ import com.yuanshi.iotpro.publiclib.bean.FriendsApplyBean;
 import com.yuanshi.iotpro.publiclib.bean.LoginInfoBean;
 import com.yuanshi.iotpro.publiclib.bean.UserInfoBean;
 import com.yuanshi.iotpro.publiclib.utils.Constant;
-import com.yuanshi.iotpro.publiclib.utils.YLog;
 import com.yuanshi.maisong.R;
 import com.yuanshi.maisong.utils.Utils;
 
@@ -155,7 +155,7 @@ public class FriendApplyDetailActivity extends BaseActivity {
                     try {
                         EMClient.getInstance().contactManager().acceptInvitation(fBean.getPhone());
                     } catch (HyphenateException e) {
-                        e.printStackTrace();
+                        CrashReport.postCatchedException(e);
                     }
                 }
             });
@@ -165,7 +165,7 @@ public class FriendApplyDetailActivity extends BaseActivity {
                     try {
                         EMClient.getInstance().contactManager().declineInvitation(fBean.getPhone());
                     } catch (HyphenateException e) {
-                        e.printStackTrace();
+                        CrashReport.postCatchedException(e);
                     }
                     fBean.setState(Constant.FRD_APPLY_STATE_DECLINED);
                     friendApplyBeanDaoUtil.updateFrdApplyInfo(fBean);
@@ -239,7 +239,7 @@ public class FriendApplyDetailActivity extends BaseActivity {
             }
             adapter.notifyDataSetChanged();
         }catch (Exception e){
-          e.printStackTrace();
+          CrashReport.postCatchedException(e);
         }
 
     }

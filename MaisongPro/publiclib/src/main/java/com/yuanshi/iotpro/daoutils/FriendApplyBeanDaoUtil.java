@@ -3,6 +3,7 @@ package com.yuanshi.iotpro.daoutils;
 import android.content.Context;
 import android.util.Log;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.yuanshi.iotpro.publiclib.bean.FriendsApplyBean;
 import com.yuanshi.iotpro.publiclib.bean.UserInfoBean;
 
@@ -51,7 +52,7 @@ public class FriendApplyBeanDaoUtil {
             });
             flag = true;
         } catch (Exception e) {
-            e.printStackTrace();
+            CrashReport.postCatchedException(e);
         }
         return flag;
     }
@@ -67,7 +68,7 @@ public class FriendApplyBeanDaoUtil {
             mManager.getDaoSession().update(friendsApplyBean);
             flag = true;
         }catch (Exception e){
-            e.printStackTrace();
+            CrashReport.postCatchedException(e);
         }
         return flag;
     }
@@ -84,7 +85,7 @@ public class FriendApplyBeanDaoUtil {
             mManager.getDaoSession().delete(userInfoBean);
             flag = true;
         }catch (Exception e){
-            e.printStackTrace();
+            CrashReport.postCatchedException(e);
         }
         return flag;
     }
@@ -100,7 +101,7 @@ public class FriendApplyBeanDaoUtil {
             mManager.getDaoSession().deleteAll(FriendsApplyBean.class);
             flag = true;
         }catch (Exception e){
-            e.printStackTrace();
+            CrashReport.postCatchedException(e);
         }
         return flag;
     }

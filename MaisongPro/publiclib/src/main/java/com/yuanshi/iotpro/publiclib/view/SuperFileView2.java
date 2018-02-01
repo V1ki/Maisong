@@ -9,7 +9,6 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.tencent.smtt.sdk.TbsReaderView;
-import com.yuanshi.iotpro.publiclib.utils.YLog;
 
 import java.io.File;
 
@@ -60,16 +59,13 @@ public class SuperFileView2 extends FrameLayout implements TbsReaderView.ReaderC
             File bsReaderTempFile =new File(bsReaderTemp);
 
             if (!bsReaderTempFile.exists()) {
-                YLog.d("准备创建/storage/emulated/0/TbsReaderTemp！！");
                 boolean mkdir = bsReaderTempFile.mkdir();
                 if(!mkdir){
-                    YLog.e("创建/storage/emulated/0/TbsReaderTemp失败！！！！！");
                 }
             }
 
             //加载文件
             Bundle localBundle = new Bundle();
-            YLog.d(mFile.toString());
             localBundle.putString("filePath", mFile.toString());
 
             localBundle.putString("tempPath", Environment.getExternalStorageDirectory() + "/" + "TbsReaderTemp");
@@ -81,7 +77,6 @@ public class SuperFileView2 extends FrameLayout implements TbsReaderView.ReaderC
                 this.mTbsReaderView.openFile(localBundle);
             }
         } else {
-            YLog.e("文件路径无效！");
         }
 
     }
@@ -96,19 +91,15 @@ public class SuperFileView2 extends FrameLayout implements TbsReaderView.ReaderC
         String str = "";
 
         if (TextUtils.isEmpty(paramString)) {
-            YLog.d("paramString---->null");
             return str;
         }
-        YLog.d( "paramString:" + paramString);
         int i = paramString.lastIndexOf('.');
         if (i <= -1) {
-            YLog.d( "i <= -1");
             return str;
         }
 
 
         str = paramString.substring(i + 1);
-        YLog.d("paramString.substring(i + 1)------>" + str);
         return str;
     }
 
@@ -128,7 +119,6 @@ public class SuperFileView2 extends FrameLayout implements TbsReaderView.ReaderC
 
     @Override
     public void onCallBackAction(Integer integer, Object o, Object o1) {
-        YLog.e("****************************************************" + integer);
     }
 
     public void onStopDisplay() {

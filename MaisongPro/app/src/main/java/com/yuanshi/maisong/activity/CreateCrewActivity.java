@@ -20,7 +20,6 @@ import com.yuanshi.iotpro.daoutils.LoginBeanDaoUtil;
 import com.yuanshi.iotpro.publiclib.activity.BaseActivity;
 import com.yuanshi.iotpro.publiclib.bean.LoginInfoBean;
 import com.yuanshi.iotpro.publiclib.utils.Constant;
-import com.yuanshi.iotpro.publiclib.utils.YLog;
 import com.yuanshi.maisong.R;
 import com.yuanshi.maisong.utils.Utils;
 import com.yuanshi.maisong.view.datepickview.CalendarView;
@@ -88,9 +87,6 @@ public class CreateCrewActivity extends BaseActivity {
             String phone = getSharedPreferences(Constant.MAIN_SH_NAME,MODE_PRIVATE).getString(Constant.USER_PHONE_KEY,"");
             LoginInfoBean loginInfoBean = util.qeuryUserInfo(Long.parseLong(phone));
             EMGroup group = Utils.createChatRoom(loginInfoBean,groupName.toString(), edProductName.getText().toString().trim(), new String[]{}, edDirectorName.getText().toString().trim());
-            YLog.e("roomOwner-->" + group.getOwner());
-            YLog.e("roomName-->" + group.getGroupName());
-            YLog.e("roomId-->" + group.getGroupId());
             iHttpPresenter.doAdd("0",
                     edCrewName.getText().toString().trim(),
                     edDirectorName.getText().toString().trim(),

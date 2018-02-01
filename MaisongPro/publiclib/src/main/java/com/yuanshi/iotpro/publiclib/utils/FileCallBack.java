@@ -2,6 +2,8 @@ package com.yuanshi.iotpro.publiclib.utils;
 
 import android.util.Log;
 
+import com.tencent.bugly.crashreport.CrashReport;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -57,9 +59,9 @@ public abstract class FileCallBack<T> {
             unsubscribe();
             //onCompleted();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            CrashReport.postCatchedException(e);
         } catch (IOException e) {
-            e.printStackTrace();
+            CrashReport.postCatchedException(e);
         } finally {
             try {
                 if (is != null) is.close();

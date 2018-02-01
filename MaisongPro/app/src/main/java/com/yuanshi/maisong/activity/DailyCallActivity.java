@@ -21,17 +21,13 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.yuanshi.iotpro.publiclib.activity.BaseActivity;
-import com.yuanshi.iotpro.publiclib.presenter.IHttpPresenter;
 import com.yuanshi.iotpro.publiclib.utils.Constant;
-import com.yuanshi.iotpro.publiclib.utils.YLog;
 import com.yuanshi.maisong.R;
 import com.yuanshi.maisong.bean.DailyCallBean;
 import com.yuanshi.maisong.utils.Utils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

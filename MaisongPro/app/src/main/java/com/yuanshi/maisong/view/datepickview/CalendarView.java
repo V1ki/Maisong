@@ -1,11 +1,5 @@
 package com.yuanshi.maisong.view.datepickview;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -18,7 +12,12 @@ import android.widget.Toast;
 
 import com.yuanshi.maisong.R;
 import com.yuanshi.maisong.bean.DateBean;
-import com.yuanshi.iotpro.publiclib.utils.YLog;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 
 public class CalendarView extends LinearLayout {
@@ -132,7 +131,6 @@ public class CalendarView extends LinearLayout {
 		addTxteTv.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				YLog.e(""+monthDateView.getSelectDate());
 				if(onCreateMemoClick != null){
 					if(monthDateView.getSelectDate()!= null &&
 							monthDateView.getSelectDate().getYear() != 0 &&

@@ -26,12 +26,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.desmond.citypicker.bean.BaseCity;
-import com.desmond.citypicker.bin.CityPicker;
 import com.desmond.citypicker.callback.IOnCityPickerCheckedCallBack;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.github.dvdme.ForecastIOLib.ForecastIO;
 import com.google.gson.Gson;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.yuanshi.iotpro.publiclib.application.MyApplication;
 import com.yuanshi.iotpro.publiclib.presenter.IHttpPresenter;
 import com.yuanshi.iotpro.publiclib.presenter.IHttpPresenterIml;
@@ -175,6 +175,15 @@ public class CrewFragment extends BaseFragment implements PagingScrollHelper.onP
         scrollHelper.setUpRecycleView(weatherListLayout);
         scrollHelper.setOnPageChangeListener(this);
         weatherList = new ArrayList<>();
+        WeatherBean defaultBean = new WeatherBean();//显示默认的无天气信息
+        defaultBean.setTemperatureMax(0.0);
+        defaultBean.setTemperatureMin(0.0);
+        defaultBean.setSunriseTime(System.currentTimeMillis()/1000/3600*3600);
+        defaultBean.setSunsetTime(System.currentTimeMillis()/1000/3600*3600);
+        defaultBean.setSummary("暂无");
+        defaultBean.setIcon("unknown");
+        localCity = "北京市";
+        weatherList.add(defaultBean);
         adapter = new WeatherListAdapter((ArrayList<WeatherBean>) weatherList, getActivity(), localCity, new IOnCityPickerCheckedCallBack() {
             @Override
             public void onCityPickerChecked(BaseCity baseCity) {
@@ -186,8 +195,14 @@ public class CrewFragment extends BaseFragment implements PagingScrollHelper.onP
             }
         });
         weatherListLayout.setAdapter(adapter);
+        loadWeather(weatherList);
         Location location = Utils.getLocation(this.getContext());
-        getWeatherInfo(location.getLatitude(),location.getLongitude());//获取天气信息；
+        if(location != null){
+            getWeatherInfo(location.getLatitude(),location.getLongitude());//获取天气信息；
+        }else{
+            getWeatherInfo(39.9046900000,116.4071700000);
+        }
+
     }
 
     @Override
@@ -263,7 +278,7 @@ public class CrewFragment extends BaseFragment implements PagingScrollHelper.onP
                 JsonArray jsonArray = (JsonArray) jsonObject.get("data");
                 if (jsonArray != null && jsonArray.size() > 0) {
                     YLog.e("天气信息获取成功" + jsonArray.toString());
-                    List<WeatherBean> weatherBeanList = Utils.jsonToList(jsonArray.toString(), WeatherBean[].class);
+                    final List<WeatherBean> weatherBeanList = Utils.jsonToList(jsonArray.toString(), WeatherBean[].class);
                     Message msg = new Message();
                     msg.what = GET_WEATHERINFO_SUCCESS;
                     msg.obj = weatherBeanList;
@@ -379,7 +394,6 @@ public class CrewFragment extends BaseFragment implements PagingScrollHelper.onP
         root.findViewById(R.id.commit_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {//此处处理点击了已选剧组后续操作
-                YLog.e("选中了列表的第" + wheelView.getSeletedIndex() + "项-->" + wheelView.getSeletedItem());
                 if (mCameraDialog != null && mCameraDialog.isShowing()) {
                     crewName.setText(wheelView.getSeletedItem());
                     currentCrew = findCrewByName(wheelView.getSeletedItem());
@@ -417,7 +431,6 @@ public class CrewFragment extends BaseFragment implements PagingScrollHelper.onP
     }
 
     public void getMemorandum() {
-        YLog.e("重新请求备忘录");
         memorandumTitle.setText(R.string.no_memoire_today);
         memorandumDateList.clear();
         iHttpPresenter.index(Constant.HTTP_REQUEST_MEMORANDUM, currentCrew.getId());
@@ -532,7 +545,6 @@ public class CrewFragment extends BaseFragment implements PagingScrollHelper.onP
         for (DailyCallBean dailyCallBean : list) {
             String dateTime = dailyCallBean.getAddtime();
 
-            YLog.e("getAddTime::" + dateTime);
             try {
                 String date = dateTime.split(" ")[0];
                 String[] dateStrs = date.split("-");
@@ -545,7 +557,7 @@ public class CrewFragment extends BaseFragment implements PagingScrollHelper.onP
                 }
                 memorandumDateList.add(dayAndPrice);
             } catch (Exception e) {
-                e.printStackTrace();
+                CrashReport.postCatchedException(e);
             }
         }
     }

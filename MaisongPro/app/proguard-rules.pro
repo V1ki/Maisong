@@ -29,3 +29,8 @@
 #    java.lang.Object writeReplace();
 #    java.lang.Object readResolve();
 #}
+-dontwarn com.tencent.bugly.**
+-keep public class com.tencent.bugly.**{*;}
+-dontwarn com.tencent.bugly.**
+-keep public class com.tencent.bugly.**{*;}
+-keep class android.support.**{*;}

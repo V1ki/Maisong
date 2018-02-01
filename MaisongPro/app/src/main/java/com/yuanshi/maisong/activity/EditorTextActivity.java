@@ -6,9 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
-import com.yuanshi.iotpro.publiclib.utils.YLog;
 import com.yuanshi.maisong.R;
-import com.yuanshi.maisong.utils.Utils;
 
 import jp.wasabeef.richeditor.RichEditor;
 

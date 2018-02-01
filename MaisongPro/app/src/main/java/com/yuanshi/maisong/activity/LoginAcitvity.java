@@ -17,6 +17,7 @@ import com.google.gson.Gson;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.exceptions.HyphenateException;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.yuanshi.iotpro.daoutils.LoginBeanDaoUtil;
 import com.yuanshi.iotpro.publiclib.activity.BaseActivity;
 import com.yuanshi.iotpro.publiclib.bean.LoginInfoBean;
@@ -97,7 +98,8 @@ public class LoginAcitvity extends BaseActivity {
                                 YLog.e("createAccount success!!");
                                 singup(userName,pwd);
                             } catch (HyphenateException e) {
-                                e.printStackTrace();
+
+                                CrashReport.postCatchedException(e);
                                 YLog.e("createAccount faild!!-->"+e.getErrorCode());
                                 return;
                             }

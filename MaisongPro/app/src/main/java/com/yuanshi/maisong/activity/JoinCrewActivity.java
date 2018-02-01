@@ -14,16 +14,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMGroup;
 import com.hyphenate.exceptions.HyphenateException;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.yuanshi.iotpro.daoutils.LoginBeanDaoUtil;
 import com.yuanshi.iotpro.publiclib.activity.BaseActivity;
 import com.yuanshi.iotpro.publiclib.application.MyApplication;
 import com.yuanshi.iotpro.publiclib.bean.LoginInfoBean;
 import com.yuanshi.iotpro.publiclib.utils.Constant;
-import com.yuanshi.iotpro.publiclib.utils.YLog;
 import com.yuanshi.maisong.R;
 import com.yuanshi.maisong.bean.AuthBean;
 import com.yuanshi.maisong.bean.HttpDepartmentBean;
@@ -93,7 +92,6 @@ public class JoinCrewActivity extends BaseActivity {
                 edPosition.setText(selectAuthBean.getTitle());
                 break;
             case "joins":
-                YLog.e("msg");
                 MyApplication.THREAD_EXCUTER.execute(new Runnable() {
                     @Override
                     public void run() {
@@ -108,7 +106,7 @@ public class JoinCrewActivity extends BaseActivity {
                                 Utils.sendHelloMessage(loginInfoBean,selectDepartment.getGroupid(),"大家好，我是"+loginInfoBean.getNickname()+",很高兴认识各位");
                             }
                         } catch (HyphenateException e) {
-                            e.printStackTrace();
+                            CrashReport.postCatchedException(e);
                         }
                     }
                 });
@@ -217,12 +215,10 @@ public class JoinCrewActivity extends BaseActivity {
         root.findViewById(R.id.commit_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {//此处处理点击了已选剧组后续操作
-                YLog.e("选中了列表的第" + wheelView.getSeletedIndex() + "项-->" + wheelView.getSeletedItem());
                 if (mCameraDialog != null && mCameraDialog.isShowing()) {
                     switch (showType) {
                         case SHOW_DEPARTMENT:
                             selectDepartment = findDepartMentByTitle( wheelView.getSeletedItem());
-                            YLog.e("部门groupId"+selectDepartment.getGroupid());
                             edDepartment.setText(wheelView.getSeletedItem());
                             edPosition.setText(selectDepartment.getAuth().get(0).getTitle());
                             mCameraDialog.dismiss();

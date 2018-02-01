@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -17,7 +18,6 @@ import com.yuanshi.iotpro.publiclib.R;
 import com.yuanshi.iotpro.publiclib.presenter.IHttpPresenter;
 import com.yuanshi.iotpro.publiclib.presenter.IHttpPresenterIml;
 import com.yuanshi.iotpro.publiclib.utils.NativeReadBroadcast;
-import com.yuanshi.iotpro.publiclib.utils.YLog;
 
 import java.util.ArrayList;
 
@@ -142,25 +142,25 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
         });
     }
     protected void wiFiConnected(String ssid){
-        YLog.e("已连接到网络："+ssid);
+        Log.e("","已连接到网络："+ssid);
     }
     protected void onMobileNetwork(){
-        YLog.e("切换到手机网络");
+        Log.e("","切换到手机网络");
     }
     protected void wiFiDisconnected(){
-        YLog.e("网络连接断开！");
+        Log.e("","网络连接断开！");
     }
     protected void netWorkWiFi(){
-        YLog.e("切换到WiFi网络！");
+        Log.e("","切换到WiFi网络！");
     }
     protected void netWorkNone(){
-        YLog.e("切换到无网络连接！");
+        Log.e("","切换到无网络连接！");
     }
     protected void wifiClosed(){
-        YLog.e("WiFi开关关闭");
+        Log.e("","WiFi开关关闭");
     }
     protected void wifiOpened(){
-        YLog.e("WiFi开关打开");
+        Log.e("","WiFi开关打开");
     }
 
     protected void fullScreen() {

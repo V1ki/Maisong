@@ -1,7 +1,5 @@
 package com.yuanshi.maisong.adapter;
 
-import java.util.List;
-
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -15,6 +13,8 @@ import com.bumptech.glide.Glide;
 import com.yuanshi.maisong.R;
 import com.yuanshi.maisong.bean.ContactMember;
 import com.yuanshi.maisong.view.CircleImageView;
+
+import java.util.List;
 
 public class SortAdapter extends BaseAdapter implements SectionIndexer{
 	private List<ContactMember> list = null;

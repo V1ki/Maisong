@@ -18,11 +18,14 @@ import android.widget.TextView;
 
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
+import com.tencent.bugly.beta.Beta;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.yuanshi.iotpro.daoutils.LoginBeanDaoUtil;
 import com.yuanshi.iotpro.publiclib.activity.BaseActivity;
 import com.yuanshi.iotpro.publiclib.bean.LoginInfoBean;
 import com.yuanshi.iotpro.publiclib.utils.Constant;
 import com.yuanshi.iotpro.publiclib.utils.YLog;
+import com.yuanshi.maisong.BuildConfig;
 import com.yuanshi.maisong.R;
 import com.yuanshi.maisong.utils.DataCleanManager;
 
@@ -46,8 +49,11 @@ public class SettingsActivity extends BaseActivity {
     TextView logoutBtn;
     @BindView(R.id.cache_size_tv)
     TextView cacheSizeTv;
+    @BindView(R.id.version_name)
+    TextView versionName;
 
     private LoginBeanDaoUtil loginBeanDaoUtil;
+
     @Override
     protected int getContentViewId() {
         return R.layout.settings_layout;
@@ -55,10 +61,10 @@ public class SettingsActivity extends BaseActivity {
 
     @Override
     protected void init(Bundle savedInstanceState) {
+        Beta.checkUpgrade();
+        versionName.setText(BuildConfig.VERSION_NAME);
         loginBeanDaoUtil = new LoginBeanDaoUtil(this);
         getCacheSize();
-        checkNewVersion();
-
     }
 
     /**
@@ -69,7 +75,7 @@ public class SettingsActivity extends BaseActivity {
         try {
             cacheSize = DataCleanManager.getTotalCacheSize(this);
         } catch (Exception e) {
-            e.printStackTrace();
+            CrashReport.postCatchedException(e);
         }
         cacheSizeTv.setText(cacheSize);
     }
@@ -102,7 +108,7 @@ public class SettingsActivity extends BaseActivity {
     /**
      * 弹出退出登录确认框
      */
-    public void showLogoutDialog(){
+    public void showLogoutDialog() {
         final Dialog mCameraDialog = new Dialog(this, R.style.datePickerStyle);
         LinearLayout root = (LinearLayout) LayoutInflater.from(this).inflate(
                 R.layout.logout_dialog_layout, null);
@@ -128,12 +134,12 @@ public class SettingsActivity extends BaseActivity {
         lp.x = 0; // 新位置X坐标
         lp.y = 0; // 新位置Y坐标
 
-        WindowManager wm = (WindowManager)this
+        WindowManager wm = (WindowManager) this
                 .getSystemService(Context.WINDOW_SERVICE);
 
         int width = wm.getDefaultDisplay().getWidth();
         int height = wm.getDefaultDisplay().getHeight();
-        lp.width = width-80; // 宽度
+        lp.width = width - 80; // 宽度
         root.measure(0, 0);
         lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         lp.alpha = 2f; // 透明度
@@ -144,7 +150,7 @@ public class SettingsActivity extends BaseActivity {
     /**
      * 弹出清除缓存确认框
      */
-    public void showClearCacheDialog(){
+    public void showClearCacheDialog() {
         final Dialog mCameraDialog = new Dialog(this, R.style.datePickerStyle);
         LinearLayout root = (LinearLayout) LayoutInflater.from(this).inflate(
                 R.layout.logout_dialog_layout, null);
@@ -170,12 +176,12 @@ public class SettingsActivity extends BaseActivity {
         lp.x = 0; // 新位置X坐标
         lp.y = 0; // 新位置Y坐标
 
-        WindowManager wm = (WindowManager)this
+        WindowManager wm = (WindowManager) this
                 .getSystemService(Context.WINDOW_SERVICE);
 
         int width = wm.getDefaultDisplay().getWidth();
         int height = wm.getDefaultDisplay().getHeight();
-        lp.width = width-80; // 宽度
+        lp.width = width - 80; // 宽度
         root.measure(0, 0);
         lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         lp.alpha = 2f; // 透明度
@@ -188,7 +194,7 @@ public class SettingsActivity extends BaseActivity {
      * 检查最新版本
      */
     public void checkNewVersion() {
-
+        Beta.checkUpgrade();
     }
 
     /**
@@ -205,10 +211,10 @@ public class SettingsActivity extends BaseActivity {
 
     @Override
     public void onHttpFaild(String msgType, String msg, Object obj) {
-        super.onHttpFaild(msgType,msg,obj);
-        switch (msgType){
+        super.onHttpFaild(msgType, msg, obj);
+        switch (msgType) {
             case "logout":
-                YLog.e("logout~~~~onHttpFaild"+msg);
+                YLog.e("logout~~~~onHttpFaild" + msg);
 
                 break;
         }
@@ -216,16 +222,16 @@ public class SettingsActivity extends BaseActivity {
 
     @Override
     public void onHttpSuccess(String msgType, String msg, Object obj) {
-        switch (msgType){
+        switch (msgType) {
             case "logout":
-                YLog.e("logout~~~~onHttpSuccess"+msg);
-                String loginPhone = getSharedPreferences(Constant.MAIN_SH_NAME,MODE_PRIVATE).getString(Constant.USER_PHONE_KEY,"");
-                if(!TextUtils.isEmpty(loginPhone)){
+                YLog.e("logout~~~~onHttpSuccess" + msg);
+                String loginPhone = getSharedPreferences(Constant.MAIN_SH_NAME, MODE_PRIVATE).getString(Constant.USER_PHONE_KEY, "");
+                if (!TextUtils.isEmpty(loginPhone)) {
                     LoginInfoBean localBean = loginBeanDaoUtil.qeuryUserInfo(Long.parseLong(loginPhone));
                     loginBeanDaoUtil.deleteUserInfo(localBean);
                 }
                 singout();//环信退出登录
-                Intent intnet = new Intent(this,LoginAcitvity.class);
+                Intent intnet = new Intent(this, LoginAcitvity.class);
                 startActivity(intnet);
                 BaseActivity.BackToLoginActivity();
                 break;
@@ -233,24 +239,25 @@ public class SettingsActivity extends BaseActivity {
     }
 
 
-    public void singout(){
-        new Thread(new Runnable(){
+    public void singout() {
+        new Thread(new Runnable() {
             @Override
             public void run() {
-                EMClient.getInstance().logout(true,new EMCallBack() {
+                EMClient.getInstance().logout(true, new EMCallBack() {
                     @Override
                     public void onSuccess() {
                         YLog.e("loginout success!!");
 //                        startNextActivity();
                     }
+
                     @Override
                     public void onError(int i, String s) {
-                        YLog.e("loginout error!!--"+s);
+                        YLog.e("loginout error!!--" + s);
                     }
 
                     @Override
                     public void onProgress(int i, String s) {
-                        YLog.e("loginouting!!--"+s);
+                        YLog.e("loginouting!!--" + s);
                     }
                 });
             }
@@ -259,9 +266,9 @@ public class SettingsActivity extends BaseActivity {
 
     @Override
     public void onError(String msgType, String msg, Object obj) {
-        switch (msgType){
+        switch (msgType) {
             case "logout":
-                YLog.e("logout~~~~onError"+msg);
+                YLog.e("logout~~~~onError" + msg);
                 break;
         }
     }

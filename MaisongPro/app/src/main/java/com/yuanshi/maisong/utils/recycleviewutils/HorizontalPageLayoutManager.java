@@ -2,11 +2,8 @@ package com.yuanshi.maisong.utils.recycleviewutils;
 
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.GridLayout;
 
 /**
  * Created by zhuguohui on 2016/11/9.

@@ -14,8 +14,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.text.TextUtils;
 
-import com.baidu.mapapi.map.offline.MKOLSearchRecord;
-import com.desmond.citypicker.bean.BaseCity;
 import com.desmond.citypicker.bin.CityPicker;
 import com.desmond.citypicker.callback.IOnCityPickerCheckedCallBack;
 import com.google.gson.Gson;
@@ -26,6 +24,7 @@ import com.hyphenate.chat.EMGroup;
 import com.hyphenate.chat.EMGroupManager;
 import com.hyphenate.chat.EMGroupOptions;
 import com.hyphenate.chat.EMMessage;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.yuanshi.iotpro.publiclib.application.MyApplication;
 import com.yuanshi.iotpro.publiclib.bean.LoginInfoBean;
 import com.yuanshi.iotpro.publiclib.bean.UserInfoBean;
@@ -241,30 +240,26 @@ public class Utils {
     public static String getDateTimeFromMillisecond(Long millisecond){
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         String dateStr = sdf.format(millisecond*1000);
-        YLog.e(dateStr);
         return dateStr;
     }
 
     public static String getCurrentDate(Long seconds){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String dateStr = sdf.format(seconds*1000);
-        YLog.e(dateStr);
         return dateStr;
     }
 
     public static String getStringDateFromMillis(Long mills,String format){
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         String dateStr = sdf.format(mills);
-        YLog.e(dateStr);
         return dateStr;
     }
 
-    public static String getLocalCity(Context context,double lat, double longit,Handler handler) {
+    public static String getLocalCity(final Context context,double lat, double longit,Handler handler) {
         try {
             String localCity = "";
-            List<Address> addList = null;
             Geocoder ge = new Geocoder(context);
-            addList = ge.getFromLocation(lat, longit, 1);
+            final List<Address> addList = ge.getFromLocation(lat, longit, 1);
             if(addList!=null && addList.size()>0){
                 for(int i=0; i<addList.size(); i++){
                     Address ad = addList.get(i);
@@ -278,15 +273,15 @@ public class Utils {
         } catch (IOException e) {
             // TODO Auto-generated catch block
             handler.sendEmptyMessage(CrewFragment.GET_WERTHERINFO_FAILD);
-            e.printStackTrace();
+            CrashReport.postCatchedException(e);
             return "北京";
         }
     }
 
-    public static Address getLocationFromCityName(Context context, String cityName,Handler handler){
+    public static Address getLocationFromCityName(final Context context, String cityName, Handler handler){
         try {
             Geocoder ge = new Geocoder(context);
-            List<Address> result = ge.getFromLocationName(cityName,1);
+            final List<Address> result = ge.getFromLocationName(cityName,3);
             if(result != null && result.size() > 0){
                 for(Address address:result){
                     YLog.e("--->"+address.getCountryName());
@@ -299,7 +294,7 @@ public class Utils {
             handler.sendEmptyMessage(CrewFragment.GET_WERTHERINFO_FAILD);
             return new Address(Locale.CHINA);
         } catch (IOException e) {
-            e.printStackTrace();
+            CrashReport.postCatchedException(e);
             handler.sendEmptyMessage(CrewFragment.GET_WERTHERINFO_FAILD);
             return new Address(Locale.CHINA);
         }
@@ -341,7 +336,7 @@ public class Utils {
      * @return
      */
     public static EMGroup createChatRoom(final LoginInfoBean loginInfoBean,final String groupName, final String desc, final String[] allMembers, final String reason){
-        YLog.e("insertDeviceInfo");
+        YLog.e("createChatRoom");
         try {
             return MyApplication.THREAD_EXCUTER.submit(new Callable<EMGroup>() {
                 @Override
@@ -360,7 +355,7 @@ public class Utils {
                 }
             }).get();
         } catch (Exception e) {
-            e.printStackTrace();
+            CrashReport.postCatchedException(e);
             return null;
         }
     }
@@ -371,7 +366,7 @@ public class Utils {
      * @return
      */
     public static void sendHelloMessage(final LoginInfoBean loginInfoBean,final String phone, final String msg){
-        YLog.e("insertDeviceInfo");
+        YLog.e("sendHelloMessage");
         try {
              MyApplication.THREAD_EXCUTER.execute(new Runnable() {
                 @Override
@@ -385,7 +380,7 @@ public class Utils {
                 }
             });
         } catch (Exception e) {
-            e.printStackTrace();
+            CrashReport.postCatchedException(e);
         }
     }
 
@@ -407,7 +402,7 @@ public class Utils {
                     output += java.lang.Character.toString(curchar);
             }
         } catch (BadHanyuPinyinOutputFormatCombination e) {
-            e.printStackTrace();
+            CrashReport.postCatchedException(e);
         }
         return output;
     }
@@ -445,7 +440,6 @@ public class Utils {
         } catch (OutOfMemoryError exception) {
             exception.printStackTrace();
         }finally {
-            YLog.e("压缩后的图片大小"+bmp.getByteCount());
             return bmp;
         }
     }
@@ -460,25 +454,24 @@ public class Utils {
             try {
                 file.createNewFile();
             } catch (IOException e) {
-                e.printStackTrace();
+                CrashReport.postCatchedException(e);
             }
         }
         FileOutputStream out = null;
         try {
             out = new FileOutputStream(file);
             mBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
-            YLog.e("图片写入完成  headpath-->"+file.getPath());
             return file.getPath();
 //            headIconPath = file.getPath();
 //            resetHeadIcon(headIconPath);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            CrashReport.postCatchedException(e);
         }
         try {
             out.flush();
             out.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            CrashReport.postCatchedException(e);
         }
         return file.getPath();
     }

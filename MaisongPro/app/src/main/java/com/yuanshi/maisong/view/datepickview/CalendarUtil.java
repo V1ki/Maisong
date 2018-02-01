@@ -1,11 +1,13 @@
 package com.yuanshi.maisong.view.datepickview;
 
+import android.text.TextUtils;
+
+import com.tencent.bugly.crashreport.CrashReport;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-
-import android.text.TextUtils;
 
 /**
  * 把公历时间处理成农历时间
@@ -183,7 +185,7 @@ public class CalendarUtil {
         try {
             baseDate = chineseDateFormat.parse("1900年1月31日");
         } catch (ParseException e) {
-            e.printStackTrace(); // To change body of catch statement use
+            CrashReport.postCatchedException(e); // To change body of catch statement use
             // Options | File Templates.
         }
  

@@ -8,7 +8,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 
-
+import com.tencent.bugly.crashreport.CrashReport;
 import com.yuanshi.maisong.activity.WelcomActivity;
 import com.yuanshi.maisong.utils.Utils;
 
@@ -77,7 +77,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
             try {
                 thread.sleep(4000);// 如果处理了，让程序继续运行4秒再退出，保证文件保存
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                CrashReport.postCatchedException(e);
             }
             restartApp();
         }
@@ -125,7 +125,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
                 info.put("versionCode", versionCode);
             }
         } catch (NameNotFoundException e) {
-            e.printStackTrace();
+            CrashReport.postCatchedException(e);
         }
 
         Field[] fields = Build.class.getDeclaredFields();// 反射机制
@@ -135,9 +135,9 @@ public class CrashHandler implements UncaughtExceptionHandler {
                 info.put(field.getName(), field.get("").toString());
                 Log.d(TAG, field.getName() + ":" + field.get(""));
             } catch (IllegalArgumentException e) {
-                e.printStackTrace();
+                CrashReport.postCatchedException(e);
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                CrashReport.postCatchedException(e);
             }
         }
     }
@@ -178,9 +178,9 @@ public class CrashHandler implements UncaughtExceptionHandler {
                 fos.close();
                 return fileName;
             } catch (FileNotFoundException e) {
-                e.printStackTrace();
+                CrashReport.postCatchedException(e);
             } catch (IOException e) {
-                e.printStackTrace();
+                CrashReport.postCatchedException(e);
             }
         }
         return null;

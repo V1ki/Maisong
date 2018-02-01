@@ -1,8 +1,5 @@
 package com.yuanshi.maisong.bean;
 
-import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Id;
-
 /**
  * Created by Dengbocheng on 2017/10/25.
  */

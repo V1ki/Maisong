@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.yanzhenjie.album.Action;
 import com.yanzhenjie.album.Album;
 import com.yanzhenjie.album.AlbumFile;
@@ -34,7 +35,6 @@ import com.yuanshi.iotpro.daoutils.LoginBeanDaoUtil;
 import com.yuanshi.iotpro.publiclib.activity.BaseActivity;
 import com.yuanshi.iotpro.publiclib.bean.LoginInfoBean;
 import com.yuanshi.iotpro.publiclib.utils.Constant;
-import com.yuanshi.iotpro.publiclib.utils.YLog;
 import com.yuanshi.maisong.R;
 import com.yuanshi.maisong.bean.HttpImgUrlBean;
 import com.yuanshi.maisong.utils.Utils;
@@ -46,7 +46,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -98,9 +97,7 @@ public class AccountSettingActivity extends BaseActivity {
         loginBeanDaoUtil = new LoginBeanDaoUtil(this);
         path = Utils.getHeadIconPath();
         userPhone = getSharedPreferences(Constant.MAIN_SH_NAME,MODE_PRIVATE).getString(Constant.USER_PHONE_KEY,"");
-        YLog.e("userPhone--->"+userPhone);
         loginInfoBean = getLoginInfoBean(userPhone);
-        YLog.e("loginInfoBean--->"+loginInfoBean);
         if(loginInfoBean != null){
             edNikeName.setText(loginInfoBean.getNickname());
             edEmail.setText(loginInfoBean.getEmail());
@@ -111,7 +108,6 @@ public class AccountSettingActivity extends BaseActivity {
             }else{
                 selectSexTv.setText(R.string.sex_boy);
             }
-            YLog.e("头像地址--》"+loginInfoBean.getAvatar());
             Glide.with(this).load(loginInfoBean.getAvatar()).error(R.mipmap.ease_default_avatar).into(headIcon);
         }
     }
@@ -189,7 +185,6 @@ public class AccountSettingActivity extends BaseActivity {
         if(requestCode == REQUEST_CODE_CROP_PIC){//图片裁剪完成，返回裁剪后的图片地址
             Bundle extras = data.getExtras();
             head = extras.getParcelable("data");
-            YLog.e("图片裁剪完成  head-->"+head);
             if(head != null){
                 setPicToView(head);
                 Drawable drawable =new BitmapDrawable(head);
@@ -209,7 +204,6 @@ public class AccountSettingActivity extends BaseActivity {
         map.put("weixin",loginInfoBean.getWeixin());
         map.put("email",loginInfoBean.getEmail());
         map.put("avatar",loginInfoBean.getAvatar());
-        YLog.e("保存修改--》"+loginInfoBean.getAvatar());
         iHttpPresenter.edituser(map);
     }
     public void uploadHeadIcon(){
@@ -229,7 +223,6 @@ public class AccountSettingActivity extends BaseActivity {
     public void onHttpSuccess(String msgType, String msg, Object obj) {
         switch (msgType){
             case "edituser":
-                YLog.e("保存修改成功");
                 saveLoginInfo();
                 finish();
                 break;
@@ -239,7 +232,6 @@ public class AccountSettingActivity extends BaseActivity {
                 HttpImgUrlBean httpImgUrlBean = gson.fromJson(json, HttpImgUrlBean.class);
                 if(httpImgUrlBean != null){
                     String httpIconUrl = httpImgUrlBean.getImgUrl();
-                    YLog.e("图片上传成功--》"+httpIconUrl);
                     loginInfoBean.setAvatar(httpIconUrl);
                 }
                 editUserInfo();
@@ -268,24 +260,23 @@ public class AccountSettingActivity extends BaseActivity {
             try {
                 file.createNewFile();
             } catch (IOException e) {
-                e.printStackTrace();
+                CrashReport.postCatchedException(e);
             }
         }
         FileOutputStream out = null;
         try {
             out = new FileOutputStream(file);
             mBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
-            YLog.e("图片写入完成  headpath-->"+file.getPath());
 //            headIconPath = file.getPath();
 //            resetHeadIcon(headIconPath);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            CrashReport.postCatchedException(e);
         }
         try {
             out.flush();
             out.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            CrashReport.postCatchedException(e);
         }
     }
 

@@ -8,10 +8,10 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.yuanshi.iotpro.publiclib.R;
 import com.yuanshi.iotpro.publiclib.utils.LoadFileModel;
 import com.yuanshi.iotpro.publiclib.utils.Md5Tool;
-import com.yuanshi.iotpro.publiclib.utils.YLog;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -56,7 +56,6 @@ public class FileDisplayActivity extends AppCompatActivity {
         String path = (String) intent.getSerializableExtra("path");
 
         if (!TextUtils.isEmpty(path)) {
-            YLog.d("文件path:" + path);
             setFilePath(path);
         }
         mSuperFileView.show();
@@ -79,7 +78,6 @@ public class FileDisplayActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        YLog.d("FileDisplayActivity-->onDestroy");
         if (mSuperFileView != null) {
             mSuperFileView.onStopDisplay();
         }
@@ -109,7 +107,6 @@ public class FileDisplayActivity extends AppCompatActivity {
         File cacheFile = getCacheFile(url);
         if (cacheFile.exists()) {
             if (cacheFile.length() <= 0) {
-                YLog.d( "删除空文件！！");
                 cacheFile.delete();
                 return;
             }
@@ -120,7 +117,6 @@ public class FileDisplayActivity extends AppCompatActivity {
         LoadFileModel.loadPdfFile(url, new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                YLog.d("下载文件-->onResponse");
                 boolean flag;
                 InputStream is = null;
                 byte[] buf = new byte[2048];
@@ -134,14 +130,12 @@ public class FileDisplayActivity extends AppCompatActivity {
                     File file1 = getCacheDir(url);
                     if (!file1.exists()) {
                         file1.mkdirs();
-                        YLog.d("创建缓存目录： " + file1.toString());
                     }
 
 
                     //fileN : /storage/emulated/0/pdf/kauibao20170821040512.pdf
                     File fileN = getCacheFile(url);//new File(getCacheDir(url), getFileName(url))
 
-                    YLog.d("创建缓存文件： " + fileN.toString());
                     if (!fileN.exists()) {
                         boolean mkdir = fileN.createNewFile();
                     }
@@ -151,14 +145,12 @@ public class FileDisplayActivity extends AppCompatActivity {
                         fos.write(buf, 0, len);
                         sum += len;
                         int progress = (int) (sum * 1.0f / total * 100);
-                        YLog.d( "写入缓存文件" + fileN.getName() + "进度: " + progress);
                     }
                     fos.flush();
-                    YLog.d("文件下载成功,准备展示文件。");
                     //2.ACache记录文件的有效期
                     mSuperFileView2.displayFile(fileN);
                 } catch (Exception e) {
-                    YLog.d( "文件下载异常 = " + e.toString());
+                    CrashReport.postCatchedException(e);
                 } finally {
                     try {
                         if (is != null)
@@ -175,10 +167,8 @@ public class FileDisplayActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                YLog.d( "文件下载失败");
                 File file = getCacheFile(url);
                 if (!file.exists()) {
-                    YLog.d( "删除下载失败文件");
                     file.delete();
                 }
             }
@@ -207,7 +197,6 @@ public class FileDisplayActivity extends AppCompatActivity {
     private File getCacheFile(String url) {
         File cacheFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/007/"
                 + getFileName(url));
-        YLog.d("缓存文件 = " + cacheFile.toString());
         return cacheFile;
     }
 
@@ -232,19 +221,15 @@ public class FileDisplayActivity extends AppCompatActivity {
         String str = "";
 
         if (TextUtils.isEmpty(paramString)) {
-            YLog.d( "paramString---->null");
             return str;
         }
-        YLog.d("paramString:"+paramString);
         int i = paramString.lastIndexOf('.');
         if (i <= -1) {
-            YLog.d("i <= -1");
             return str;
         }
 
 
         str = paramString.substring(i + 1);
-        YLog.d("paramString.substring(i + 1)------>"+str);
         return str;
     }
 
