@@ -33,7 +33,6 @@ import com.hyphenate.easeui.widget.EaseImageView;
 import com.hyphenate.util.DateUtils;
 import com.yuanshi.iotpro.daoutils.UserBeanDaoUtil;
 import com.yuanshi.iotpro.publiclib.bean.UserInfoBean;
-import com.yuanshi.iotpro.publiclib.utils.YLog;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -111,7 +110,6 @@ public class EaseConversationAdapter extends ArrayAdapter<EMConversation> {
         String username = conversation.conversationId();
         String avatar = "";
         UserInfoBean userInfoBean = userBeanDaoUtil.qeuryUserInfo(Long.parseLong(conversation.conversationId()));
-        YLog.e("phonegetuser getUserInfo-->"+new Gson().toJson(userInfoBean));
         if(userInfoBean != null){
             username = userInfoBean.getNickname();
             avatar = userInfoBean.getAvatar();

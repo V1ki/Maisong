@@ -119,7 +119,7 @@ public class EaseConversationListFragment extends EaseBaseFragment{
                     if(listItemLongClickListener != null){
                         listItemLongClickListener.onListItemLongClicked(conversation);
                     }
-                    return false;
+                    return true;
                 }
             });
 

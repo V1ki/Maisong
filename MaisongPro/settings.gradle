@@ -1,1 +1,1 @@
-include ':app', ':publiclib', ':easeui', ':album', ':okhttp3-persistent-cookiejar'
+include ':app', ':publiclib', ':easeui', ':album', ':okhttp3-persistent-cookiejar', ':richeditor', ':CityPicker-master'

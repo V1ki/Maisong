@@ -2,6 +2,7 @@ package com.hyphenate.easeui.widget.chatrow;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.BaseAdapter;
@@ -30,6 +31,7 @@ import com.hyphenate.exceptions.HyphenateException;
 import com.hyphenate.util.DateUtils;
 import com.yuanshi.iotpro.daoutils.LoginBeanDaoUtil;
 import com.yuanshi.iotpro.publiclib.bean.LoginInfoBean;
+import com.yuanshi.iotpro.publiclib.utils.Constant;
 
 import java.util.Date;
 
@@ -128,9 +130,17 @@ public abstract class EaseChatRow extends LinearLayout {
         if(userAvatarView != null) {
             //set nickname and avatar
             if (message.direct() == Direct.SEND) {
+                String avatar = "";
                 EaseUserUtils.setUserAvatar(context, EMClient.getInstance().getCurrentUser(), userAvatarView);
-                String avatar  = new LoginBeanDaoUtil(getContext()).qeuryUserInfo(13590461973L).getAvatar();
-                Glide.with(context).load(avatar).error(R.drawable.ease_default_avatar).into(userAvatarView);
+                String loginPhone = context.getSharedPreferences(Constant.MAIN_SH_NAME,Context.MODE_PRIVATE).getString(Constant.USER_PHONE_KEY,"");
+                if(!TextUtils.isEmpty(loginPhone)){
+                    LoginInfoBean loginInfoBean = new LoginBeanDaoUtil(getContext()).qeuryUserInfo(Long.parseLong(loginPhone));
+                    if(loginInfoBean != null)
+                        avatar = loginInfoBean.getAvatar();
+                }
+                if(!TextUtils.isEmpty(avatar)){
+                    Glide.with(context).load(avatar).error(R.drawable.ease_default_avatar).into(userAvatarView);
+                }
             } else {
                 try {
                     String avatar = message.getStringAttribute("chatUserHead");

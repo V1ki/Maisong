@@ -58,7 +58,6 @@ import com.hyphenate.util.PathUtil;
 import com.yuanshi.iotpro.daoutils.LoginBeanDaoUtil;
 import com.yuanshi.iotpro.publiclib.bean.LoginInfoBean;
 import com.yuanshi.iotpro.publiclib.utils.Constant;
-import com.yuanshi.iotpro.publiclib.utils.YLog;
 
 import java.io.File;
 import java.util.List;
@@ -783,7 +782,6 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
         }
         //send message
         setAttribute(message);
-        YLog.e("send msg~~~~~~~");
         EMClient.getInstance().chatManager().sendMessage(message);
         //refresh ui
         if(isMessageListInited) {

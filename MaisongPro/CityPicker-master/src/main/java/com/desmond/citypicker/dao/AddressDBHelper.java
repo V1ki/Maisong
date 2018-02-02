@@ -41,7 +41,7 @@ public class AddressDBHelper extends SQLiteOpenHelper
             this.getReadableDatabase();
         } catch (Exception e)
         {
-            e.printStackTrace();
+
         }
     }
 
